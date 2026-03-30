@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "490495428242",
+    "project_id": "smartagrosiramku-8c647",
+    "storage_bucket": "smartagrosiramku-8c647.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:490495428242:android:311a1a79e18cb2e266084b",
+        "android_client_info": {
+          "package_name": "com.example.smartagrosiramku"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDar0i3UkHS83eld6OHYY2d9k9n722C3Ec"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
