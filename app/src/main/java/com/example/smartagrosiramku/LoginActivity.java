@@ -1,6 +1,8 @@
 package com.example.smartagrosiramku;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -98,14 +100,10 @@ public class LoginActivity extends AppCompatActivity {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    // Pindah ke activity utama
-                    // Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    // startActivity(intent);
-                    // finish();
-
-                    // Reset button
-                    btnLogin.setEnabled(true);
-                    btnLogin.setText("Masuk");
+                    // Pindah ke activity Dashboard
+                    Intent intent = new Intent(LoginActivity.this, Dashboard.class);
+                    startActivity(intent);
+                    finish();
                 }
             }, 1500);
 
