@@ -3,16 +3,19 @@ package com.example.smartagrosiramku;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 
 public class Notifikasi extends AppCompatActivity {
 
     // Deklarasi View
     private TextView tabSemua, tabBelumDibaca;
     private TextView tvDashboard, tvHistory, tvControl, tvNotifications, tvAccount;
+    private ImageView btnBack;
 
     // Tombol aksi
     private TextView btnTandaiDibaca1, btnHapus1;
@@ -41,6 +44,9 @@ public class Notifikasi extends AppCompatActivity {
         // Inisialisasi Tab
         tabSemua = findViewById(R.id.tabSemua);
         tabBelumDibaca = findViewById(R.id.tabBelumDibaca);
+        
+        // Inisialisasi Tombol Kembali
+        btnBack = findViewById(R.id.btnBack);
 
         // Inisialisasi Tombol Aksi
         btnTandaiDibaca1 = findViewById(R.id.btnTandaiDibaca1);
@@ -63,150 +69,107 @@ public class Notifikasi extends AppCompatActivity {
     }
 
     private void setupListeners() {
+        // Listener untuk Tombol Kembali
+        if (btnBack != null) {
+            btnBack.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                }
+            });
+        }
+
         // Listener untuk Tab Semua
-        tabSemua.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Ubah style tab
-                tabSemua.setBackgroundColor(getColor(R.color.light_green));
-                tabSemua.setTextColor(getColor(R.color.primary_green));
-                tabBelumDibaca.setBackgroundColor(getColor(android.R.color.white));
-                tabBelumDibaca.setTextColor(getColor(R.color.text_secondary));
-
-                // Tampilkan semua notifikasi
-                showAllNotifications();
-
-                showToast("Menampilkan semua notifikasi");
-            }
-        });
+        if (tabSemua != null) {
+            tabSemua.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Ubah style tab
+                    tabSemua.setBackgroundColor(ContextCompat.getColor(Notifikasi.this, R.color.light_green));
+                    tabSemua.setTextColor(ContextCompat.getColor(Notifikasi.this, R.color.primary_green));
+                    if (tabBelumDibaca != null) {
+                        tabBelumDibaca.setBackgroundColor(ContextCompat.getColor(Notifikasi.this, android.R.color.white));
+                        tabBelumDibaca.setTextColor(ContextCompat.getColor(Notifikasi.this, R.color.text_secondary));
+                    }
+                    showAllNotifications();
+                    showToast("Menampilkan semua notifikasi");
+                }
+            });
+        }
 
         // Listener untuk Tab Belum Dibaca
-        tabBelumDibaca.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Ubah style tab
-                tabBelumDibaca.setBackgroundColor(getColor(R.color.light_green));
-                tabBelumDibaca.setTextColor(getColor(R.color.primary_green));
-                tabSemua.setBackgroundColor(getColor(android.R.color.white));
-                tabSemua.setTextColor(getColor(R.color.text_secondary));
+        if (tabBelumDibaca != null) {
+            tabBelumDibaca.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Ubah style tab
+                    tabBelumDibaca.setBackgroundColor(ContextCompat.getColor(Notifikasi.this, R.color.light_green));
+                    tabBelumDibaca.setTextColor(ContextCompat.getColor(Notifikasi.this, R.color.primary_green));
+                    if (tabSemua != null) {
+                        tabSemua.setBackgroundColor(ContextCompat.getColor(Notifikasi.this, android.R.color.white));
+                        tabSemua.setTextColor(ContextCompat.getColor(Notifikasi.this, R.color.text_secondary));
+                    }
+                    showUnreadNotifications();
+                    showToast("Menampilkan notifikasi belum dibaca");
+                }
+            });
+        }
 
-                // Tampilkan hanya notifikasi yang belum dibaca
-                showUnreadNotifications();
+        // Setup listeners untuk tombol hapus dan tandai dibaca
+        setupActionListeners();
+    }
 
-                showToast("Menampilkan notifikasi belum dibaca");
-            }
-        });
-
-        // Listener untuk Tombol Tandai Dibaca (Notifikasi 1)
+    private void setupActionListeners() {
         if (btnTandaiDibaca1 != null) {
-            btnTandaiDibaca1.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    markAsRead(notifikasi1);
-                    showToast("Notifikasi ditandai sudah dibaca");
-                }
-            });
+            btnTandaiDibaca1.setOnClickListener(v -> { markAsRead(notifikasi1); showToast("Notifikasi ditandai sudah dibaca"); });
         }
-
-        // Listener untuk Tombol Hapus (Notifikasi 1)
         if (btnHapus1 != null) {
-            btnHapus1.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    deleteNotification(notifikasi1);
-                    showToast("Notifikasi dihapus");
-                }
-            });
+            btnHapus1.setOnClickListener(v -> { deleteNotification(notifikasi1); showToast("Notifikasi dihapus"); });
         }
-
-        // Listener untuk Tombol Tandai Dibaca (Notifikasi 2)
         if (btnTandaiDibaca2 != null) {
-            btnTandaiDibaca2.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    markAsRead(notifikasi2);
-                    showToast("Notifikasi ditandai sudah dibaca");
-                }
-            });
+            btnTandaiDibaca2.setOnClickListener(v -> { markAsRead(notifikasi2); showToast("Notifikasi ditandai sudah dibaca"); });
         }
-
-        // Listener untuk Tombol Hapus (Notifikasi 2)
         if (btnHapus2 != null) {
-            btnHapus2.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    deleteNotification(notifikasi2);
-                    showToast("Notifikasi dihapus");
-                }
-            });
+            btnHapus2.setOnClickListener(v -> { deleteNotification(notifikasi2); showToast("Notifikasi dihapus"); });
         }
-
-        // Listener untuk Tombol Hapus (Notifikasi 3)
         if (btnHapus3 != null) {
-            btnHapus3.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    deleteNotification(notifikasi3);
-                    showToast("Notifikasi dihapus");
-                }
-            });
+            btnHapus3.setOnClickListener(v -> { deleteNotification(notifikasi3); showToast("Notifikasi dihapus"); });
         }
     }
 
     private void setupBottomNavigation() {
-        // Dashboard
-        tvDashboard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Notifikasi.this, Dashboard.class);
-                startActivity(intent);
+        if (tvDashboard != null) {
+            tvDashboard.setOnClickListener(v -> {
+                startActivity(new Intent(Notifikasi.this, Dashboard.class));
                 finish();
-            }
-        });
-
-        // Histori
-        tvHistory.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Notifikasi.this, HistoryActivity.class);
-                startActivity(intent);
+            });
+        }
+        if (tvHistory != null) {
+            tvHistory.setOnClickListener(v -> {
+                startActivity(new Intent(Notifikasi.this, HistoryActivity.class));
                 finish();
-            }
-        });
-
-        // Kontrol
-        tvControl.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Notifikasi.this, ControlActivity.class);
-                startActivity(intent);
+            });
+        }
+        if (tvControl != null) {
+            tvControl.setOnClickListener(v -> {
+                startActivity(new Intent(Notifikasi.this, ControlActivity.class));
                 finish();
-            }
-        });
-
-        // Notifikasi (current activity)
-        tvNotifications.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showToast("Anda sedang di halaman Notifikasi");
-            }
-        });
-
-        // Akun
-        tvAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Notifikasi.this, AccountActivity.class);
-                startActivity(intent);
+            });
+        }
+        if (tvNotifications != null) {
+            tvNotifications.setOnClickListener(v -> showToast("Anda sedang di halaman Notifikasi"));
+        }
+        if (tvAccount != null) {
+            tvAccount.setOnClickListener(v -> {
+                startActivity(new Intent(Notifikasi.this, AccountActivity.class));
                 finish();
-            }
-        });
+            });
+        }
     }
 
     private void markAsRead(CardView notification) {
         if (notification != null) {
-            // Ubah background menjadi putih (tanda sudah dibaca)
-            notification.setCardBackgroundColor(getColor(android.R.color.white));
+            notification.setCardBackgroundColor(ContextCompat.getColor(this, android.R.color.white));
         }
     }
 
@@ -217,17 +180,15 @@ public class Notifikasi extends AppCompatActivity {
     }
 
     private void showAllNotifications() {
-        // Tampilkan semua notifikasi
         if (notifikasi1 != null) notifikasi1.setVisibility(View.VISIBLE);
         if (notifikasi2 != null) notifikasi2.setVisibility(View.VISIBLE);
         if (notifikasi3 != null) notifikasi3.setVisibility(View.VISIBLE);
     }
 
     private void showUnreadNotifications() {
-        // Tampilkan hanya notifikasi yang belum dibaca
         if (notifikasi1 != null) notifikasi1.setVisibility(View.VISIBLE);
         if (notifikasi2 != null) notifikasi2.setVisibility(View.VISIBLE);
-        if (notifikasi3 != null) notifikasi3.setVisibility(View.GONE); // Notifikasi 3 sudah dibaca
+        if (notifikasi3 != null) notifikasi3.setVisibility(View.GONE);
     }
 
     private void showToast(String message) {

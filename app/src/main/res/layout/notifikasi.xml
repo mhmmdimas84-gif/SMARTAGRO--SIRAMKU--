@@ -6,29 +6,59 @@
     android:orientation="vertical"
     android:background="#F5F5F5">
 
-    <!-- Header -->
+    <!-- Header with Back Button -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp"
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="16dp"
+        android:paddingTop="48dp"
         android:background="#FFFFFF"
-        android:elevation="4dp">
+        android:elevation="4dp"
+        android:gravity="center_vertical">
 
-        <TextView
+        <ImageView
+            android:id="@+id/btnBack"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@android:drawable/ic_menu_revert"
+            android:padding="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true"
+            android:contentDescription="Kembali"
+            app:tint="#2E7D32" />
+
+        <ImageView
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:src="@drawable/logo_siramku"
+            android:contentDescription="Logo SIRAMKU"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="12dp"/>
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="#SIRAMKU"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:textColor="#2E7D32" />
+            android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Smart Hydroponic System"
-            android:textSize="14sp"
-            android:textColor="#757575" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Notifikasi"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="#2E7D32" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Smart Hydroponic System"
+                android:textSize="12sp"
+                android:textColor="#757575" />
+        </LinearLayout>
     </LinearLayout>
 
     <!-- ScrollView untuk konten -->
@@ -43,36 +73,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp">
-
-            <!-- Judul Halaman dan Jumlah Notifikasi -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="16dp">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Notifikasi"
-                    android:textColor="#333333"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="2 notifikasi baru"
-                    android:textColor="#2E7D32"
-                    android:textSize="14sp"
-                    android:background="#E8F5E9"
-                    android:padding="8dp"
-                    android:paddingStart="12dp"
-                    android:paddingEnd="12dp"
-                    android:layout_marginStart="8dp" />
-            </LinearLayout>
 
             <!-- Tab Filter -->
             <LinearLayout
@@ -110,7 +110,7 @@
 
             <!-- Daftar Notifikasi -->
 
-            <!-- Notifikasi 1 - pH Level Rendah -->
+            <!-- Notifikasi 1 -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/notifikasi1"
                 android:layout_width="match_parent"
@@ -124,16 +124,13 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:padding="16dp"
-                    android:background="#FFF9C4"> <!-- Warna kuning untuk notifikasi baru -->
-
-                    <!-- Header Notifikasi -->
+                    android:background="#FFF9C4">
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
                         android:layout_marginBottom="8dp">
-
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -142,7 +139,6 @@
                             android:textColor="#333333"
                             android:textSize="16sp"
                             android:textStyle="bold" />
-
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -154,8 +150,6 @@
                             android:paddingStart="8dp"
                             android:paddingEnd="8dp" />
                     </LinearLayout>
-
-                    <!-- Pesan Notifikasi -->
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -163,8 +157,6 @@
                         android:textColor="#757575"
                         android:textSize="14sp"
                         android:layout_marginBottom="8dp" />
-
-                    <!-- Waktu -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -172,21 +164,12 @@
                         android:textColor="#9E9E9E"
                         android:textSize="12sp"
                         android:layout_marginBottom="12dp" />
-
-                    <!-- Divider -->
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="#E0E0E0"
-                        android:layout_marginBottom="12dp" />
-
-                    <!-- Tombol Aksi -->
+                    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#E0E0E0" android:layout_marginBottom="12dp" />
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="end">
-
                         <TextView
                             android:id="@+id/btnTandaiDibaca1"
                             android:layout_width="wrap_content"
@@ -194,11 +177,7 @@
                             android:text="Tandai Dibaca"
                             android:textColor="#2E7D32"
                             android:textSize="14sp"
-                            android:padding="8dp"
-                            android:paddingStart="12dp"
-                            android:paddingEnd="12dp"
-                            android:background="?android:attr/selectableItemBackground" />
-
+                            android:padding="8dp" />
                         <TextView
                             android:id="@+id/btnHapus1"
                             android:layout_width="wrap_content"
@@ -207,15 +186,12 @@
                             android:textColor="#F44336"
                             android:textSize="14sp"
                             android:padding="8dp"
-                            android:paddingStart="12dp"
-                            android:paddingEnd="12dp"
-                            android:background="?android:attr/selectableItemBackground"
                             android:layout_marginStart="8dp" />
                     </LinearLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Notifikasi 2 - Pompa Nutrisi Aktif -->
+            <!-- Notifikasi 2 -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/notifikasi2"
                 android:layout_width="match_parent"
@@ -229,16 +205,13 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:padding="16dp"
-                    android:background="#FFF9C4"> <!-- Warna kuning untuk notifikasi baru -->
-
-                    <!-- Header Notifikasi -->
+                    android:background="#FFF9C4">
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
                         android:layout_marginBottom="8dp">
-
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -247,7 +220,6 @@
                             android:textColor="#333333"
                             android:textSize="16sp"
                             android:textStyle="bold" />
-
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -259,8 +231,6 @@
                             android:paddingStart="8dp"
                             android:paddingEnd="8dp" />
                     </LinearLayout>
-
-                    <!-- Pesan Notifikasi -->
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -268,8 +238,6 @@
                         android:textColor="#757575"
                         android:textSize="14sp"
                         android:layout_marginBottom="8dp" />
-
-                    <!-- Waktu -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -277,21 +245,12 @@
                         android:textColor="#9E9E9E"
                         android:textSize="12sp"
                         android:layout_marginBottom="12dp" />
-
-                    <!-- Divider -->
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="#E0E0E0"
-                        android:layout_marginBottom="12dp" />
-
-                    <!-- Tombol Aksi -->
+                    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#E0E0E0" android:layout_marginBottom="12dp" />
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="end">
-
                         <TextView
                             android:id="@+id/btnTandaiDibaca2"
                             android:layout_width="wrap_content"
@@ -299,11 +258,7 @@
                             android:text="Tandai Dibaca"
                             android:textColor="#2E7D32"
                             android:textSize="14sp"
-                            android:padding="8dp"
-                            android:paddingStart="12dp"
-                            android:paddingEnd="12dp"
-                            android:background="?android:attr/selectableItemBackground" />
-
+                            android:padding="8dp" />
                         <TextView
                             android:id="@+id/btnHapus2"
                             android:layout_width="wrap_content"
@@ -312,15 +267,12 @@
                             android:textColor="#F44336"
                             android:textSize="14sp"
                             android:padding="8dp"
-                            android:paddingStart="12dp"
-                            android:paddingEnd="12dp"
-                            android:background="?android:attr/selectableItemBackground"
                             android:layout_marginStart="8dp" />
                     </LinearLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Notifikasi 3 - Level Air Rendah (Notifikasi Lama) -->
+            <!-- Notifikasi 3 (Lama) -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/notifikasi3"
                 android:layout_width="match_parent"
@@ -334,9 +286,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:padding="16dp"
-                    android:background="#FFFFFF"> <!-- Warna putih untuk notifikasi lama -->
-
-                    <!-- Header Notifikasi -->
+                    android:background="#FFFFFF">
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -345,8 +295,6 @@
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:layout_marginBottom="8dp" />
-
-                    <!-- Pesan Notifikasi -->
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -354,8 +302,6 @@
                         android:textColor="#757575"
                         android:textSize="14sp"
                         android:layout_marginBottom="8dp" />
-
-                    <!-- Waktu -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -363,21 +309,12 @@
                         android:textColor="#9E9E9E"
                         android:textSize="12sp"
                         android:layout_marginBottom="12dp" />
-
-                    <!-- Divider -->
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="#E0E0E0"
-                        android:layout_marginBottom="12dp" />
-
-                    <!-- Tombol Aksi -->
+                    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#E0E0E0" android:layout_marginBottom="12dp" />
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="end">
-
                         <TextView
                             android:id="@+id/btnHapus3"
                             android:layout_width="wrap_content"
@@ -385,156 +322,99 @@
                             android:text="Hapus"
                             android:textColor="#F44336"
                             android:textSize="14sp"
-                            android:padding="8dp"
-                            android:paddingStart="12dp"
-                            android:paddingEnd="12dp"
-                            android:background="?android:attr/selectableItemBackground" />
+                            android:padding="8dp" />
                     </LinearLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Notifikasi 4 - Contoh Notifikasi Lama Lainnya -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/notifikasi4"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="2dp"
-                android:visibility="gone"> <!-- Visibility gone untuk contoh, nanti diatur di Java -->
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp"
-                    android:background="#FFFFFF">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Suhu Terlalu Tinggi"
-                        android:textColor="#333333"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="8dp" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Suhu mencapai 32°C, kipas pendingin diaktifkan"
-                        android:textColor="#757575"
-                        android:textSize="14sp"
-                        android:layout_marginBottom="8dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="2 jam yang lalu"
-                        android:textColor="#9E9E9E"
-                        android:textSize="12sp"
-                        android:layout_marginBottom="12dp" />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="#E0E0E0"
-                        android:layout_marginBottom="12dp" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="end">
-
-                        <TextView
-                            android:id="@+id/btnTandaiDibaca4"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Tandai Dibaca"
-                            android:textColor="#2E7D32"
-                            android:textSize="14sp"
-                            android:padding="8dp"
-                            android:paddingStart="12dp"
-                            android:paddingEnd="12dp"
-                            android:background="?android:attr/selectableItemBackground" />
-
-                        <TextView
-                            android:id="@+id/btnHapus4"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Hapus"
-                            android:textColor="#F44336"
-                            android:textSize="14sp"
-                            android:padding="8dp"
-                            android:paddingStart="12dp"
-                            android:paddingEnd="12dp"
-                            android:background="?android:attr/selectableItemBackground"
-                            android:layout_marginStart="8dp" />
-                    </LinearLayout>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
         </LinearLayout>
     </ScrollView>
 
     <!-- Bottom Navigation -->
-    <LinearLayout
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:background="#FFFFFF"
-        android:elevation="8dp"
-        android:padding="12dp">
+        android:layout_margin="12dp"
+        app:cardCornerRadius="24dp"
+        app:cardElevation="8dp">
 
-        <TextView
-            android:id="@+id/tvDashboard"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Dashboard"
-            android:textColor="#757575"
-            android:textSize="14sp"
-            android:gravity="center" />
+            android:orientation="horizontal"
+            android:background="#FFFFFF"
+            android:padding="8dp">
 
-        <TextView
-            android:id="@+id/tvHistory"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Histori"
-            android:textColor="#757575"
-            android:textSize="14sp"
-            android:gravity="center" />
+            <TextView
+                android:id="@+id/tvDashboard"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Dashboard"
+                android:textColor="#757575"
+                android:textSize="12sp"
+                android:gravity="center"
+                app:drawableTopCompat="@android:drawable/ic_menu_today"
+                android:drawablePadding="4dp"
+                android:clickable="true"
+                android:focusable="true" />
 
-        <TextView
-            android:id="@+id/tvControl"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Kontrol"
-            android:textColor="#757575"
-            android:textSize="14sp"
-            android:gravity="center" />
+            <TextView
+                android:id="@+id/tvHistory"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Histori"
+                android:textColor="#757575"
+                android:textSize="12sp"
+                android:gravity="center"
+                app:drawableTopCompat="@android:drawable/ic_menu_recent_history"
+                android:drawablePadding="4dp"
+                android:clickable="true"
+                android:focusable="true" />
 
-        <TextView
-            android:id="@+id/tvNotifications"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Notifikasi"
-            android:textColor="#2E7D32"
-            android:textSize="14sp"
-            android:gravity="center"
-            android:textStyle="bold" />
+            <TextView
+                android:id="@+id/tvControl"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Kontrol"
+                android:textColor="#757575"
+                android:textSize="12sp"
+                android:gravity="center"
+                app:drawableTopCompat="@android:drawable/ic_menu_manage"
+                android:drawablePadding="4dp"
+                android:clickable="true"
+                android:focusable="true" />
 
-        <TextView
-            android:id="@+id/tvAccount"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Akun"
-            android:textColor="#757575"
-            android:textSize="14sp"
-            android:gravity="center" />
-    </LinearLayout>
+            <TextView
+                android:id="@+id/tvNotifications"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Notifikasi"
+                android:textColor="#2E7D32"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                app:drawableTopCompat="@android:drawable/ic_popup_reminder"
+                android:drawablePadding="4dp"
+                android:clickable="true"
+                android:focusable="true" />
+
+            <TextView
+                android:id="@+id/tvAccount"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Akun"
+                android:textColor="#757575"
+                android:textSize="12sp"
+                android:gravity="center"
+                app:drawableTopCompat="@android:drawable/ic_menu_myplaces"
+                android:drawablePadding="4dp"
+                android:clickable="true"
+                android:focusable="true" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
 </LinearLayout>
