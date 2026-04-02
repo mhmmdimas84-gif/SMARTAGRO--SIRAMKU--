@@ -31,54 +31,22 @@
                 android:contentDescription="Logo SIRAMKU"
                 android:layout_marginEnd="12dp"/>
 
-            <LinearLayout
-                android:layout_width="0dp"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="SIRAMKU"
-                    android:textSize="28sp"
-                    android:textStyle="bold"
-                    android:textColor="#2E7D32" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Smart Hydroponic System"
-                    android:textSize="14sp"
-                    android:textColor="#757575" />
-            </LinearLayout>
-
-            <!-- Notifikasi Icon di Header -->
-            <FrameLayout
-                android:id="@+id/btnNotificationsHeader"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:clickable="true"
-                android:focusable="true">
-
-                <ImageView
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
-                    android:layout_gravity="center"
-                    android:src="@android:drawable/ic_popup_reminder"
-                    app:tint="#2E7D32" />
-
-                <View
-                    android:layout_width="10dp"
-                    android:layout_height="10dp"
-                    android:layout_gravity="top|end"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginEnd="10dp"
-                    android:background="@android:drawable/presence_online"
-                    android:backgroundTint="#F44336" />
-            </FrameLayout>
+                android:text="SIRAMKU"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                android:textColor="#2E7D32" />
         </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Smart Hydroponic System"
+            android:textSize="14sp"
+            android:textColor="#757575"
+            android:layout_marginStart="52dp" />
     </LinearLayout>
 
 
@@ -224,7 +192,7 @@
                         android:textSize="12sp"
                         android:textStyle="bold"
                         android:gravity="center"
-                        android:padding="12dp"
+                        android:padding="20dp"
                         android:background="#FF9800" />
                 </androidx.cardview.widget.CardView>
 
@@ -245,7 +213,7 @@
                         android:textSize="12sp"
                         android:textStyle="bold"
                         android:gravity="center"
-                        android:padding="12dp"
+                        android:padding="20dp"
                         android:background="#2196F3" />
                 </androidx.cardview.widget.CardView>
             </LinearLayout>
@@ -483,6 +451,7 @@
                     android:padding="16dp"
                     android:background="#FFFFFF">
 
+                    <!-- Header Pompa -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -513,6 +482,7 @@
                             android:paddingEnd="12dp" />
                     </LinearLayout>
 
+                    <!-- Mode Operasi -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -530,10 +500,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Manual"
-                            android:textColor="#757575"
+                            android:textColor="#2E7D32"
                             android:textSize="14sp"
                             android:textStyle="bold"
-                            android:background="#EEEEEE"
+                            android:background="#E8F5E9"
                             android:padding="2dp"
                             android:paddingStart="8dp"
                             android:paddingEnd="8dp" />
@@ -557,6 +527,7 @@
                     android:padding="16dp"
                     android:background="#FFFFFF">
 
+                    <!-- Header Pompa -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -587,6 +558,7 @@
                             android:paddingEnd="12dp" />
                     </LinearLayout>
 
+                    <!-- Mode Operasi -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -604,10 +576,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Manual"
-                            android:textColor="#757575"
+                            android:textColor="#2E7D32"
                             android:textSize="14sp"
                             android:textStyle="bold"
-                            android:background="#EEEEEE"
+                            android:background="#E8F5E9"
                             android:padding="2dp"
                             android:paddingStart="8dp"
                             android:paddingEnd="8dp" />
@@ -705,4 +677,5 @@
                 android:focusable="true" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
+
 </LinearLayout>
