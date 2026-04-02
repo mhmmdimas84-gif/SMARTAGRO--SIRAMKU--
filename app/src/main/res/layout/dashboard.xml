@@ -53,7 +53,7 @@
                     android:textColor="#757575" />
             </LinearLayout>
 
-            <!-- Notifikasi Icon di Header (Lurus dan Warna Netral) -->
+            <!-- Notifikasi Icon di Header -->
             <FrameLayout
                 android:id="@+id/btnNotificationsHeader"
                 android:layout_width="48dp"
@@ -64,12 +64,11 @@
 
                 <ImageView
                     android:layout_width="28dp"
-                    android:layout_height="28dp"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:src="@android:drawable/ic_lock_idle_alarm"
+                    android:src="@android:drawable/ic_popup_reminder"
                     app:tint="#757575" />
 
-                <!-- Badge Notifikasi (opsional) -->
                 <View
                     android:layout_width="10dp"
                     android:layout_height="10dp"

@@ -16,7 +16,7 @@
         android:theme="@style/Theme.SmartAgroSiramku">
 
         <activity
-            android:name=".LoginActivity"
+            android:name=".SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,6 +24,9 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".LoginActivity"
+            android:exported="false" />
         <activity
             android:name=".Dashboard"
             android:exported="false" />

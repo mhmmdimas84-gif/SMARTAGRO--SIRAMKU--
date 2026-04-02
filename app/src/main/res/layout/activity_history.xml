@@ -64,10 +64,10 @@
 
                 <ImageView
                     android:layout_width="28dp"
-                    android:layout_height="28dp"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:src="@android:drawable/ic_popup_reminder"
-                    app:tint="#2E7D32" />
+                    app:tint="#757575" />
 
                 <View
                     android:layout_width="10dp"

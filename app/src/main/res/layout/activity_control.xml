@@ -31,22 +31,54 @@
                 android:contentDescription="Logo SIRAMKU"
                 android:layout_marginEnd="12dp"/>
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="SIRAMKU"
-                android:textSize="28sp"
-                android:textStyle="bold"
-                android:textColor="#2E7D32" />
-        </LinearLayout>
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Smart Hydroponic System"
-            android:textSize="14sp"
-            android:textColor="#757575"
-            android:layout_marginStart="52dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="SIRAMKU"
+                    android:textSize="28sp"
+                    android:textStyle="bold"
+                    android:textColor="#2E7D32" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Smart Hydroponic System"
+                    android:textSize="14sp"
+                    android:textColor="#757575" />
+            </LinearLayout>
+
+            <!-- Notifikasi Icon di Header -->
+            <FrameLayout
+                android:id="@+id/btnNotificationsHeader"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:focusable="true">
+
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@android:drawable/ic_popup_reminder"
+                    app:tint="#757575" />
+
+                <View
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:layout_gravity="top|end"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="@android:drawable/presence_online"
+                    android:backgroundTint="#F44336" />
+            </FrameLayout>
+        </LinearLayout>
     </LinearLayout>
 
 
@@ -79,19 +111,6 @@
                     android:textColor="#333333"
                     android:textSize="24sp"
                     android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tvWaktu"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="13.19"
-                    android:textColor="#2E7D32"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:background="#E8F5E9"
-                    android:padding="8dp"
-                    android:paddingStart="12dp"
-                    android:paddingEnd="12dp" />
             </LinearLayout>
 
             <!-- Mode Operasi Utama -->
@@ -644,20 +663,6 @@
                 android:textStyle="bold"
                 android:gravity="center"
                 app:drawableTopCompat="@android:drawable/ic_menu_manage"
-                android:drawablePadding="4dp"
-                android:clickable="true"
-                android:focusable="true" />
-
-            <TextView
-                android:id="@+id/tvNotifications"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Notifikasi"
-                android:textColor="#757575"
-                android:textSize="12sp"
-                android:gravity="center"
-                app:drawableTopCompat="@android:drawable/ic_popup_reminder"
                 android:drawablePadding="4dp"
                 android:clickable="true"
                 android:focusable="true" />
