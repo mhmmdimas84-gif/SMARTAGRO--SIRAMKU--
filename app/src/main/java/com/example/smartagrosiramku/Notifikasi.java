@@ -14,7 +14,7 @@ public class Notifikasi extends AppCompatActivity {
 
     // Deklarasi View
     private TextView tabSemua, tabBelumDibaca;
-    private TextView tvDashboard, tvHistory, tvControl, tvNotifications, tvAccount;
+    private TextView tvDashboard, tvHistory, tvControl, tvAccount;
     private ImageView btnBack;
 
     // Tombol aksi
@@ -64,7 +64,6 @@ public class Notifikasi extends AppCompatActivity {
         tvDashboard = findViewById(R.id.tvDashboard);
         tvHistory = findViewById(R.id.tvHistory);
         tvControl = findViewById(R.id.tvControl);
-        tvNotifications = findViewById(R.id.tvNotifications);
         tvAccount = findViewById(R.id.tvAccount);
     }
 
@@ -155,9 +154,6 @@ public class Notifikasi extends AppCompatActivity {
                 startActivity(new Intent(Notifikasi.this, ControlActivity.class));
                 finish();
             });
-        }
-        if (tvNotifications != null) {
-            tvNotifications.setOnClickListener(v -> showToast("Anda sedang di halaman Notifikasi"));
         }
         if (tvAccount != null) {
             tvAccount.setOnClickListener(v -> {

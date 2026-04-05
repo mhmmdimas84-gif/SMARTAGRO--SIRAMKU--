@@ -3,6 +3,7 @@ package com.example.smartagrosiramku;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,7 +15,10 @@ import java.util.Locale;
 public class ControlActivity extends AppCompatActivity {
 
     // Deklarasi View untuk Bottom Navigation
-    private TextView tvDashboard, tvHistory, tvControl, tvNotifications, tvAccount;
+    private TextView tvDashboard, tvHistory, tvControl, tvAccount;
+    
+    // Deklarasi View untuk Header Notification
+    private FrameLayout btnNotificationsHeader;
 
     // Deklarasi View untuk Tombol Aksi
     private CardView btnMulaiSemua, btnHentikanSemua, btnReset, btnTimer;
@@ -42,6 +46,9 @@ public class ControlActivity extends AppCompatActivity {
 
         // Setup bottom navigation
         setupBottomNavigation();
+        
+        // Setup Header Actions
+        setupHeaderActions();
     }
 
     private void initializeViews() {
@@ -49,8 +56,10 @@ public class ControlActivity extends AppCompatActivity {
         tvDashboard = findViewById(R.id.tvDashboard);
         tvHistory = findViewById(R.id.tvHistory);
         tvControl = findViewById(R.id.tvControl);
-        tvNotifications = findViewById(R.id.tvNotifications);
         tvAccount = findViewById(R.id.tvAccount);
+        
+        // Inisialisasi Header Notification
+        btnNotificationsHeader = findViewById(R.id.btnNotificationsHeader);
 
         // Inisialisasi Tombol Aksi
         btnMulaiSemua = findViewById(R.id.btnMulaiSemua);
@@ -78,6 +87,18 @@ public class ControlActivity extends AppCompatActivity {
         modePompaPhDown = findViewById(R.id.modePompaPhDown);
     }
 
+    private void setupHeaderActions() {
+        if (btnNotificationsHeader != null) {
+            btnNotificationsHeader.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(ControlActivity.this, Notifikasi.class);
+                    startActivity(intent);
+                }
+            });
+        }
+    }
+
     private void updateWaktu() {
         // Update waktu saat ini
         SimpleDateFormat sdf = new SimpleDateFormat("HH.mm", Locale.getDefault());
@@ -94,21 +115,17 @@ public class ControlActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // Ubah status semua pompa menjadi Aktif
                 statusPompaNutrisi.setText("Aktif");
-                statusPompaNutrisi.setTextColor(getResources().getColor(R.color.primary_green));
-                statusPompaNutrisi.setBackgroundColor(getResources().getColor(R.color.light_green));
-
+                statusPompaNutrisi.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
+                
                 statusPompaAir.setText("Aktif");
-                statusPompaAir.setTextColor(getResources().getColor(R.color.primary_green));
-                statusPompaAir.setBackgroundColor(getResources().getColor(R.color.light_green));
+                statusPompaAir.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
 
                 statusPompaPhUp.setText("Aktif");
-                statusPompaPhUp.setTextColor(getResources().getColor(R.color.primary_green));
-                statusPompaPhUp.setBackgroundColor(getResources().getColor(R.color.light_green));
+                statusPompaPhUp.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
 
                 if (statusPompaPhDown != null) {
                     statusPompaPhDown.setText("Aktif");
-                    statusPompaPhDown.setTextColor(getResources().getColor(R.color.primary_green));
-                    statusPompaPhDown.setBackgroundColor(getResources().getColor(R.color.light_green));
+                    statusPompaPhDown.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
                 }
 
                 Toast.makeText(ControlActivity.this, "Semua pompa diaktifkan", Toast.LENGTH_SHORT).show();
@@ -121,21 +138,17 @@ public class ControlActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // Ubah status semua pompa menjadi Tidak Aktif
                 statusPompaNutrisi.setText("Tidak Aktif");
-                statusPompaNutrisi.setTextColor(getResources().getColor(R.color.status_inactive));
-                statusPompaNutrisi.setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));
+                statusPompaNutrisi.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
 
                 statusPompaAir.setText("Tidak Aktif");
-                statusPompaAir.setTextColor(getResources().getColor(R.color.status_inactive));
-                statusPompaAir.setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));
+                statusPompaAir.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
 
                 statusPompaPhUp.setText("Tidak Aktif");
-                statusPompaPhUp.setTextColor(getResources().getColor(R.color.status_inactive));
-                statusPompaPhUp.setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));
+                statusPompaPhUp.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
 
                 if (statusPompaPhDown != null) {
                     statusPompaPhDown.setText("Tidak Aktif");
-                    statusPompaPhDown.setTextColor(getResources().getColor(R.color.status_inactive));
-                    statusPompaPhDown.setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));
+                    statusPompaPhDown.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
                 }
 
                 Toast.makeText(ControlActivity.this, "Semua pompa dihentikan", Toast.LENGTH_SHORT).show();
@@ -148,16 +161,13 @@ public class ControlActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // Reset ke pengaturan default
                 statusPompaNutrisi.setText("Tidak Aktif");
-                statusPompaNutrisi.setTextColor(getResources().getColor(R.color.status_inactive));
-                statusPompaNutrisi.setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));
+                statusPompaNutrisi.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
 
                 statusPompaAir.setText("Tidak Aktif");
-                statusPompaAir.setTextColor(getResources().getColor(R.color.status_inactive));
-                statusPompaAir.setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));
+                statusPompaAir.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
 
                 statusPompaPhUp.setText("Tidak Aktif");
-                statusPompaPhUp.setTextColor(getResources().getColor(R.color.status_inactive));
-                statusPompaPhUp.setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));
+                statusPompaPhUp.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
 
                 modePompaNutrisi.setText("Otomatis");
                 modePompaAir.setText("Otomatis");
@@ -181,51 +191,49 @@ public class ControlActivity extends AppCompatActivity {
 
     private void setupBottomNavigation() {
         // Dashboard
-        tvDashboard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ControlActivity.this, Dashboard.class);
-                startActivity(intent);
-                finish();
-            }
-        });
+        if (tvDashboard != null) {
+            tvDashboard.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(ControlActivity.this, Dashboard.class);
+                    startActivity(intent);
+                    finish();
+                }
+            });
+        }
 
         // Histori
-        tvHistory.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ControlActivity.this, HistoryActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
+        if (tvHistory != null) {
+            tvHistory.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(ControlActivity.this, HistoryActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+            });
+        }
 
         // Kontrol (current activity)
-        tvControl.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(ControlActivity.this, "Anda sedang di halaman Kontrol", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        // Notifikasi
-        tvNotifications.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ControlActivity.this, Notifikasi.class);
-                startActivity(intent);
-                finish();
-            }
-        });
+        if (tvControl != null) {
+            tvControl.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(ControlActivity.this, "Anda sedang di halaman Kontrol", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
 
         // Akun
-        tvAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ControlActivity.this, AccountActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
+        if (tvAccount != null) {
+            tvAccount.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(ControlActivity.this, AccountActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+            });
+        }
     }
 }
