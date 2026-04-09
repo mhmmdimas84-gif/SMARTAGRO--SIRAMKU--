@@ -82,10 +82,7 @@ public class AccountActivity extends AppCompatActivity {
             startActivity(new Intent(AccountActivity.this, ControlActivity.class));
             finish();
         });
-        findViewById(R.id.tvNotifications).setOnClickListener(v -> {
-            startActivity(new Intent(AccountActivity.this, Notifikasi.class));
-            finish();
-        });
+        // tvNotifications was removed from bottom navigation layout
     }
 
     private void loadSettings() {

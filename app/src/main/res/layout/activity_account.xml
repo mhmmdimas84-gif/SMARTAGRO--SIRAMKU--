@@ -355,20 +355,6 @@
                 android:drawablePadding="4dp" />
 
             <TextView
-                android:id="@+id/tvNotifications"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Notifikasi"
-                android:textColor="#757575"
-                android:textSize="12sp"
-                android:gravity="center"
-                app:drawableTopCompat="@android:drawable/ic_popup_reminder"
-                android:drawablePadding="4dp"
-                android:clickable="true"
-                android:focusable="true" />
-
-            <TextView
                 android:id="@+id/tvAccount"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

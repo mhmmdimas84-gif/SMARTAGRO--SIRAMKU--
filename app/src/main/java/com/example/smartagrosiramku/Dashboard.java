@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 public class Dashboard extends AppCompatActivity {
 
     // Deklarasi View untuk Bottom Navigation
-    private TextView tvDashboard, tvHistory, tvControl, tvNotifications, tvAccount;
+    private TextView tvDashboard, tvHistory, tvControl, tvAccount;
     
     // Deklarasi View untuk Header Notification
     private FrameLayout btnNotificationsHeader;
@@ -36,7 +36,6 @@ public class Dashboard extends AppCompatActivity {
         tvDashboard = findViewById(R.id.tvDashboard);
         tvHistory = findViewById(R.id.tvHistory);
         tvControl = findViewById(R.id.tvControl);
-        tvNotifications = findViewById(R.id.tvNotifications);
         tvAccount = findViewById(R.id.tvAccount);
         
         // Inisialisasi Header Notification
@@ -83,17 +82,6 @@ public class Dashboard extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(Dashboard.this, ControlActivity.class);
-                    startActivity(intent);
-                }
-            });
-        }
-
-        // Notifikasi
-        if (tvNotifications != null) {
-            tvNotifications.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(Dashboard.this, Notifikasi.class);
                     startActivity(intent);
                 }
             });
