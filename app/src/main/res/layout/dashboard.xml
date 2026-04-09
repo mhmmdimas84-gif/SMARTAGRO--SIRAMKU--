@@ -378,7 +378,7 @@
                             android:textColor="#FFFFFF"
                             app:backgroundTint="#2E7D32"
                             app:cornerRadius="10dp"
-                            app:icon="@drawable/ic_water_drop"
+                            app:icon="@drawable/ic_droplet"
                             app:iconTint="#FFFFFF"
                             app:iconSize="14dp"/>
 
