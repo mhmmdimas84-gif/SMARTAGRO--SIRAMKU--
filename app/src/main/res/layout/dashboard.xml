@@ -3,293 +3,332 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#F5F5F5">
+    android:background="#F0F7F0"
+    android:orientation="vertical">
 
-    <!-- Header -->
+    <!-- ===== TOP BAR ===== -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:paddingBottom="16dp"
-        android:paddingTop="48dp"
-        android:background="#FFFFFF"
-        android:elevation="4dp">
+        android:background="#1B5E20"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="16dp">
+
+        <ImageView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:src="@drawable/logo_siramku"
+            android:background="@drawable/bg_logo_white"
+            android:padding="6dp"
+            android:scaleType="fitCenter"/>
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginStart="10dp">
 
-            <ImageView
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:src="@drawable/logo_siramku"
-                android:contentDescription="Logo SIRAMKU"
-                android:layout_marginEnd="12dp"/>
-
-            <LinearLayout
-                android:layout_width="0dp"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
+                android:text="SIRAMKU"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:textStyle="bold"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="SIRAMKU"
-                    android:textSize="28sp"
-                    android:textStyle="bold"
-                    android:textColor="#2E7D32" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Smart Hydroponic System"
-                    android:textSize="14sp"
-                    android:textColor="#757575" />
-            </LinearLayout>
-
-            <!-- Notifikasi Icon di Header -->
-            <FrameLayout
-                android:id="@+id/btnNotificationsHeader"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:clickable="true"
-                android:focusable="true">
-
-                <ImageView
-                    android:layout_width="28dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:src="@android:drawable/ic_popup_reminder"
-                    app:tint="#757575" />
-
-                <View
-                    android:layout_width="10dp"
-                    android:layout_height="10dp"
-                    android:layout_gravity="top|end"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginEnd="10dp"
-                    android:background="@android:drawable/presence_online"
-                    android:backgroundTint="#F44336" />
-            </FrameLayout>
-
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Smart Hydroponic System"
+                android:textColor="#A5D6A7"
+                android:textSize="10sp"/>
         </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/btnNotif"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:src="@drawable/ic_notification"
+            android:background="@drawable/bg_icon_button"
+            android:layout_marginEnd="8dp"
+            android:padding="6dp"/>
+
+        <ImageButton
+            android:id="@+id/btnProfile"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:src="@drawable/ic_person"
+            android:background="@drawable/bg_icon_button"
+            android:padding="6dp"/>
     </LinearLayout>
 
-    <!-- ScrollView untuk konten -->
+    <!-- ===== SCROLLABLE CONTENT ===== -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:orientation="vertical">
 
-            <!-- Card Status Kesehatan -->
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="4dp"
-                android:layout_marginBottom="16dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="20dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Status Kesehatan"
-                        android:textSize="16sp"
-                        android:textColor="#757575" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginTop="12dp">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Sehat"
-                            android:textSize="32sp"
-                            android:textStyle="bold"
-                            android:textColor="#4CAF50" />
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="92"
-                                android:textSize="40sp"
-                                android:textStyle="bold"
-                                android:textColor="#333333" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Skor"
-                                android:textSize="14sp"
-                                android:textColor="#757575"
-                                android:layout_marginStart="4dp" />
-                        </LinearLayout>
-                    </LinearLayout>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Rekomendasi:"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:textColor="#333333"
-                        android:layout_marginTop="16dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Kondisi optimal untuk pertumbuhan"
-                        android:textSize="14sp"
-                        android:textColor="#757575"
-                        android:layout_marginTop="4dp" />
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <!-- Sensor Monitoring -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Sensor Monitoring"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="#333333"
-                android:layout_marginBottom="12dp" />
-
-            <!-- Grid Sensor -->
-            <GridLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:columnCount="2"
-                android:rowCount="2"
-                android:layout_marginBottom="16dp">
-
-                <!-- TDS -->
-                <androidx.cardview.widget.CardView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_columnWeight="1"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    app:cardCornerRadius="10dp"
-                    app:cardElevation="2dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="16dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="TDS"
-                            android:textSize="14sp"
-                            android:textColor="#757575" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="850 ppm"
-                            android:textSize="24sp"
-                            android:textStyle="bold"
-                            android:textColor="#333333"
-                            android:layout_marginTop="4dp" />
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-            </GridLayout>
-
-            <!-- Level Air dan Cahaya -->
+            <!-- ===== GREETING + HEALTH BANNER ===== -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="16dp">
+                android:background="#2E7D32"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:paddingTop="14dp"
+                android:paddingBottom="26dp">
 
-                <androidx.cardview.widget.CardView
-                    android:layout_width="0dp"
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="8dp"
-                    app:cardCornerRadius="10dp"
-                    app:cardElevation="2dp">
+                    android:text="Selamat pagi, Petani!"
+                    android:textColor="#A5D6A7"
+                    android:textSize="13sp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Kebun Anda dalam kondisi baik"
+                    android:textColor="#FFFFFF"
+                    android:textSize="17sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginBottom="12dp"/>
+
+                <!-- Health Score Card -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_health_card"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:padding="14dp">
 
                     <LinearLayout
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Status Kesehatan"
+                            android:textColor="#C8E6C9"
+                            android:textSize="11sp"/>
+
+                        <TextView
+                            android:id="@+id/tvStatusKesehatan"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Sehat"
+                            android:textColor="#69F0AE"
+                            android:textSize="22sp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="2dp"/>
+
+                        <TextView
+                            android:id="@+id/tvRekomendasi"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Kondisi optimal untuk pertumbuhan"
+                            android:textColor="#A5D6A7"
+                            android:textSize="11sp"
+                            android:layout_marginTop="2dp"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="16dp">
+                        android:gravity="center">
+
+                        <TextView
+                            android:id="@+id/tvSkor"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="92"
+                            android:textColor="#FFFFFF"
+                            android:textSize="36sp"
+                            android:textStyle="bold"/>
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Level Air"
-                            android:textSize="14sp"
-                            android:textColor="#757575" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="75 %"
-                            android:textSize="24sp"
-                            android:textStyle="bold"
-                            android:textColor="#333333"
-                            android:layout_marginTop="4dp" />
+                            android:text="Skor"
+                            android:textColor="#A5D6A7"
+                            android:textSize="10sp"
+                            android:background="@drawable/bg_pill_transparent"
+                            android:paddingHorizontal="8dp"
+                            android:paddingVertical="2dp"/>
                     </LinearLayout>
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
             </LinearLayout>
 
-            <!-- Kontrol Pompa -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Kontrol Pompa"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="#333333"
-                android:layout_marginBottom="12dp" />
-
-            <androidx.cardview.widget.CardView
+            <!-- ===== WHITE CARD CONTENT ===== -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="10dp"
-                app:cardElevation="2dp"
-                android:layout_marginBottom="16dp">
+                android:background="@drawable/bg_white_rounded_top"
+                android:layout_marginTop="-10dp"
+                android:orientation="vertical"
+                android:padding="16dp">
 
+                <!-- Sensor Title -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sensor Monitoring"
+                    android:textColor="#1B5E20"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="12dp"/>
+
+                <!-- Sensor Grid (2x2) -->
+                <GridLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:columnCount="2"
+                    android:rowCount="2"
+                    android:layout_marginBottom="18dp">
+
+                    <!-- TDS Card -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:layout_margin="5dp"
+                        android:background="@drawable/bg_sensor_green"
+                        android:orientation="vertical"
+                        android:padding="14dp">
+
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="TDS" android:textColor="#4CAF50" android:textSize="10sp" android:textStyle="bold"/>
+                        <TextView android:id="@+id/tvTDS"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="850" android:textColor="#1B5E20" android:textSize="22sp" android:textStyle="bold" android:layout_marginTop="4dp"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="ppm · Normal" android:textColor="#4CAF50" android:textSize="11sp"/>
+                        <ProgressBar
+                            android:id="@+id/progressTDS"
+                            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                            android:layout_width="match_parent" android:layout_height="4dp"
+                            android:layout_marginTop="8dp"
+                            android:progress="72"
+                            android:progressTint="#2E7D32"
+                            android:progressBackgroundTint="#C8E6C9"/>
+                    </LinearLayout>
+
+                    <!-- Level Air Card -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:layout_margin="5dp"
+                        android:background="@drawable/bg_sensor_blue"
+                        android:orientation="vertical"
+                        android:padding="14dp">
+
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Level Air" android:textColor="#1976D2" android:textSize="10sp" android:textStyle="bold"/>
+                        <TextView android:id="@+id/tvLevelAir"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="75" android:textColor="#0D47A1" android:textSize="22sp" android:textStyle="bold" android:layout_marginTop="4dp"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="% · Cukup" android:textColor="#1976D2" android:textSize="11sp"/>
+                        <ProgressBar
+                            android:id="@+id/progressAir"
+                            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                            android:layout_width="match_parent" android:layout_height="4dp"
+                            android:layout_marginTop="8dp"
+                            android:progress="75"
+                            android:progressTint="#1976D2"
+                            android:progressBackgroundTint="#BBDEFB"/>
+                    </LinearLayout>
+
+                    <!-- Suhu Card -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:layout_margin="5dp"
+                        android:background="@drawable/bg_sensor_amber"
+                        android:orientation="vertical"
+                        android:padding="14dp">
+
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Suhu" android:textColor="#F9A825" android:textSize="10sp" android:textStyle="bold"/>
+                        <TextView android:id="@+id/tvSuhu"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="24°" android:textColor="#E65100" android:textSize="22sp" android:textStyle="bold" android:layout_marginTop="4dp"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Celsius · Optimal" android:textColor="#F9A825" android:textSize="11sp"/>
+                        <ProgressBar
+                            android:id="@+id/progressSuhu"
+                            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                            android:layout_width="match_parent" android:layout_height="4dp"
+                            android:layout_marginTop="8dp"
+                            android:progress="55"
+                            android:progressTint="#F9A825"
+                            android:progressBackgroundTint="#FFECB3"/>
+                    </LinearLayout>
+
+                    <!-- pH Card -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:layout_margin="5dp"
+                        android:background="@drawable/bg_sensor_purple"
+                        android:orientation="vertical"
+                        android:padding="14dp">
+
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="pH Air" android:textColor="#8E24AA" android:textSize="10sp" android:textStyle="bold"/>
+                        <TextView android:id="@+id/tvPH"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="6.8" android:textColor="#4A148C" android:textSize="22sp" android:textStyle="bold" android:layout_marginTop="4dp"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Nilai · Normal" android:textColor="#8E24AA" android:textSize="11sp"/>
+                        <ProgressBar
+                            android:id="@+id/progressPH"
+                            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                            android:layout_width="match_parent" android:layout_height="4dp"
+                            android:layout_marginTop="8dp"
+                            android:progress="68"
+                            android:progressTint="#8E24AA"
+                            android:progressBackgroundTint="#E1BEE7"/>
+                    </LinearLayout>
+
+                </GridLayout>
+
+                <!-- Kontrol Pompa Title -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Kontrol Pompa"
+                    android:textColor="#1B5E20"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="10dp"/>
+
+                <!-- Pump Control Card -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/bg_pump_card"
                     android:orientation="vertical"
-                    android:padding="16dp">
+                    android:padding="14dp"
+                    android:layout_marginBottom="14dp">
 
-                    <!-- Pompa Nutrisi -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -297,190 +336,103 @@
                         android:gravity="center_vertical"
                         android:layout_marginBottom="12dp">
 
-                        <TextView
+                        <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Pompa Nutrisi"
-                            android:textSize="16sp"
-                            android:textColor="#333333" />
+                            android:orientation="vertical">
+
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:text="Pompa Utama" android:textColor="#1B5E20" android:textSize="13sp" android:textStyle="bold"/>
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:text="Aktif sejak 06:00" android:textColor="#558B2F" android:textSize="11sp"/>
+                        </LinearLayout>
 
                         <TextView
+                            android:id="@+id/tvPompaStatus"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Aktif"
-                            android:textSize="14sp"
-                            android:textColor="#4CAF50"
-                            android:background="#E8F5E9"
-                            android:padding="6dp"
-                            android:paddingStart="12dp"
-                            android:paddingEnd="12dp"
-                            android:layout_marginStart="8dp" />
+                            android:text="ON"
+                            android:textColor="#FFFFFF"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
+                            android:background="@drawable/bg_status_on"
+                            android:paddingHorizontal="12dp"
+                            android:paddingVertical="4dp"/>
                     </LinearLayout>
 
-                    <!-- Pompa Air -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:layout_marginBottom="12dp">
+                        android:weightSum="3">
 
-                        <TextView
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnNyalakan"
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content"
+                            android:layout_height="48dp"
                             android:layout_weight="1"
-                            android:text="Pompa Air"
-                            android:textSize="16sp"
-                            android:textColor="#333333" />
+                            android:layout_marginEnd="6dp"
+                            android:text="Nyalakan"
+                            android:textSize="11sp"
+                            android:textColor="#FFFFFF"
+                            app:backgroundTint="#2E7D32"
+                            app:cornerRadius="10dp"
+                            app:icon="@drawable/ic_water_drop"
+                            app:iconTint="#FFFFFF"
+                            app:iconSize="14dp"/>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Mati"
-                            android:textSize="14sp"
-                            android:textColor="#F44336"
-                            android:background="#FFEBEE"
-                            android:padding="6dp"
-                            android:paddingStart="12dp"
-                            android:paddingEnd="12dp"
-                            android:layout_marginStart="8dp" />
-                    </LinearLayout>
-
-                    <!-- pH Up -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:layout_marginBottom="12dp">
-
-                        <TextView
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnMatikan"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content"
+                            android:layout_height="48dp"
                             android:layout_weight="1"
-                            android:text="pH Up"
-                            android:textSize="16sp"
-                            android:textColor="#333333" />
+                            android:layout_marginEnd="6dp"
+                            android:text="Matikan"
+                            android:textSize="11sp"
+                            android:textColor="#558B2F"
+                            app:strokeColor="#C5E1A5"
+                            app:cornerRadius="10dp"/>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Mati"
-                            android:textSize="14sp"
-                            android:textColor="#F44336"
-                            android:background="#FFEBEE"
-                            android:padding="6dp"
-                            android:paddingStart="12dp"
-                            android:paddingEnd="12dp"
-                            android:layout_marginStart="8dp" />
-                    </LinearLayout>
-
-                    <!-- pH Down -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-
-                        <TextView
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnJadwal"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content"
+                            android:layout_height="48dp"
                             android:layout_weight="1"
-                            android:text="pH Down"
-                            android:textSize="16sp"
-                            android:textColor="#333333" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Mati"
-                            android:textSize="14sp"
-                            android:textColor="#F44336"
-                            android:background="#FFEBEE"
-                            android:padding="6dp"
-                            android:paddingStart="12dp"
-                            android:paddingEnd="12dp"
-                            android:layout_marginStart="8dp" />
+                            android:text="Jadwal"
+                            android:textSize="11sp"
+                            android:textColor="#558B2F"
+                            app:strokeColor="#C5E1A5"
+                            app:cornerRadius="10dp"/>
                     </LinearLayout>
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
 
-            <!-- Aktivitas Terkini -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Aktivitas Terkini"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="#333333"
-                android:layout_marginBottom="12dp" />
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardCornerRadius="10dp"
-                app:cardElevation="2dp"
-                android:layout_marginBottom="16dp">
-
+                <!-- AI Recommendation -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/bg_recommendation"
                     android:orientation="vertical"
-                    android:padding="16dp">
+                    android:padding="12dp"
+                    android:layout_marginBottom="16dp">
 
-                    <!-- Aktivitas 1 -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:layout_marginBottom="12dp">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Pompa Nutrisi Aktif"
-                            android:textSize="16sp"
-                            android:textColor="#333333" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="2 menit yang lalu"
-                            android:textSize="14sp"
-                            android:textColor="#757575" />
-                    </LinearLayout>
-
-                    <!-- Aktivitas 2 -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="pH Level Disesuaikan"
-                            android:textSize="16sp"
-                            android:textColor="#333333" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="15 menit yang lalu"
-                            android:textSize="14sp"
-                            android:textColor="#757575" />
-                    </LinearLayout>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Rekomendasi AI"
+                        android:textColor="#2E7D32" android:textSize="11sp" android:textStyle="bold"
+                        android:layout_marginBottom="4dp"/>
+                    <TextView android:id="@+id/tvRekomendasiAI"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Tambah nutrisi TDS sekitar 50 ppm untuk meningkatkan hasil panen minggu ini."
+                        android:textColor="#388E3C" android:textSize="12sp"/>
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 
-    <!-- Bottom Navigation (Hanya 4 Item) -->
+    <!-- Bottom Navigation -->
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -553,4 +505,5 @@
                 android:focusable="true" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
+
 </LinearLayout>

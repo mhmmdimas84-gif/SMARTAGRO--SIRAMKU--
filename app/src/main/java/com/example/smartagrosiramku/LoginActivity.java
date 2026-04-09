@@ -19,7 +19,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private EditText etEmail, etPassword;
     private Button btnLogin;
-    private TextView tvTime, tvRegister;
+    private TextView tvRegister;
     private CheckBox cbCaptcha;
     private DatabaseHelper db;
     private SharedPreferences sharedPreferences;
@@ -43,22 +43,16 @@ public class LoginActivity extends AppCompatActivity {
         db = new DatabaseHelper(this);
 
         initViews();
-        setCurrentTime();
+        // setCurrentTime(); // Removed because tvTime is not in layout
         setupListeners();
     }
 
     private void initViews() {
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
-        btnLogin = findViewById(R.id.btnLogin);
-        tvTime = findViewById(R.id.tvTime);
-        tvRegister = findViewById(R.id.tvRegister);
+        btnLogin = findViewById(R.id.btnMasuk);
+        tvRegister = findViewById(R.id.tvDaftar);
         cbCaptcha = findViewById(R.id.cbCaptcha);
-    }
-
-    private void setCurrentTime() {
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
-        tvTime.setText(sdf.format(new Date()));
     }
 
     private void setupListeners() {
