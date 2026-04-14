@@ -3,65 +3,57 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#F5F5F5">
+    android:background="#F0F7F0"
+    android:orientation="vertical">
 
-    <!-- Header with Back Button -->
+    <!-- ===== HEADER ===== -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#2E7D32"
         android:orientation="horizontal"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
-        android:paddingBottom="16dp"
-        android:paddingTop="48dp"
-        android:background="#FFFFFF"
-        android:elevation="4dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="30dp"
         android:gravity="center_vertical">
 
         <ImageView
             android:id="@+id/btnBack"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             android:src="@android:drawable/ic_menu_revert"
-            android:padding="8dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true"
-            android:contentDescription="Kembali"
-            app:tint="#2E7D32" />
-
-        <ImageView
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:src="@drawable/logo_siramku"
-            android:contentDescription="Logo SIRAMKU"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="12dp"/>
+            android:padding="6dp"
+            app:tint="#FFFFFF" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_marginStart="12dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Notifikasi"
-                android:textSize="22sp"
-                android:textStyle="bold"
-                android:textColor="#2E7D32" />
+                android:text="Pusat Notifikasi"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Smart Hydroponic System"
+                android:text="Pembaruan &amp; Peringatan Sistem"
+                android:textColor="#A5D6A7"
                 android:textSize="12sp"
-                android:textColor="#757575" />
+                android:layout_marginTop="2dp" />
         </LinearLayout>
     </LinearLayout>
 
-    <!-- ScrollView untuk konten -->
+    <!-- ===== SCROLLABLE CONTENT ===== -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -71,271 +63,347 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:orientation="vertical">
 
-            <!-- Tab Filter -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="20dp">
+                android:background="@drawable/bg_white_rounded_top"
+                android:layout_marginTop="-20dp"
+                android:orientation="vertical"
+                android:padding="16dp">
 
-                <TextView
-                    android:id="@+id/tabSemua"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Semua (8)"
-                    android:textColor="#2E7D32"
-                    android:textSize="14sp"
-                    android:gravity="center"
-                    android:padding="12dp"
-                    android:background="#E8F5E9"
-                    android:layout_marginEnd="4dp" />
-
-                <TextView
-                    android:id="@+id/tabBelumDibaca"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Belum Dibaca (2)"
-                    android:textColor="#757575"
-                    android:textSize="14sp"
-                    android:gravity="center"
-                    android:padding="12dp"
-                    android:background="#FFFFFF"
-                    android:layout_marginStart="4dp" />
-            </LinearLayout>
-
-            <!-- Daftar Notifikasi -->
-
-            <!-- Notifikasi 1 -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/notifikasi1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="2dp">
-
+                <!-- Filter Tabs -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="20dp"
+                    android:background="#F5F5F5"
+                    android:padding="4dp">
+
+                    <TextView
+                        android:id="@+id/tabSemua"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Semua (8)"
+                        android:textColor="#FFFFFF"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:paddingVertical="8dp"
+                        android:background="@drawable/bg_tab_active" />
+
+                    <TextView
+                        android:id="@+id/tabBelumDibaca"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Belum Dibaca (2)"
+                        android:textColor="#757575"
+                        android:textSize="13sp"
+                        android:gravity="center"
+                        android:paddingVertical="8dp" />
+                </LinearLayout>
+
+                <!-- Hari Ini Label -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="HARI INI"
+                    android:textColor="#9E9E9E"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.05"
+                    android:layout_marginBottom="12dp" />
+
+                <!-- Notifikasi 1 (Critical) -->
+                <LinearLayout
+                    android:id="@+id/notifikasi1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_pump_card_error"
                     android:orientation="vertical"
-                    android:padding="16dp"
-                    android:background="#FFF9C4">
+                    android:padding="14dp"
+                    android:layout_marginBottom="12dp">
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
                         android:layout_marginBottom="8dp">
-                        <TextView
+
+                        <ImageView
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            android:src="@android:drawable/ic_dialog_alert"
+                            android:background="@drawable/bg_icon_red_light"
+                            android:padding="8dp"
+                            app:tint="#D32F2F"/>
+
+                        <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="pH Level Rendah"
-                            android:textColor="#333333"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
+                            android:orientation="vertical"
+                            android:layout_marginStart="10dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="pH Level Rendah"
+                                android:textColor="#B71C1C"
+                                android:textSize="14sp"
+                                android:textStyle="bold"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="5 menit yang lalu"
+                                android:textColor="#EF5350"
+                                android:textSize="10sp"/>
+                        </LinearLayout>
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Baru"
-                            android:textColor="#FFFFFF"
-                            android:textSize="12sp"
-                            android:background="#F44336"
-                            android:padding="4dp"
-                            android:paddingStart="8dp"
-                            android:paddingEnd="8dp" />
+                            android:textColor="#D32F2F"
+                            android:textSize="10sp"
+                            android:textStyle="bold"
+                            android:background="@drawable/bg_badge_inactive"
+                            android:paddingHorizontal="8dp"
+                            android:paddingVertical="2dp" />
                     </LinearLayout>
+
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="pH turun ke 5.8, pompa pH Up diaktifkan otomatis"
-                        android:textColor="#757575"
-                        android:textSize="14sp"
-                        android:layout_marginBottom="8dp" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="5 menit yang lalu"
-                        android:textColor="#9E9E9E"
+                        android:text="pH turun ke 5.8, pompa pH Up diaktifkan otomatis untuk menstabilkan kondisi nutrisi."
+                        android:textColor="#5D4037"
                         android:textSize="12sp"
+                        android:lineSpacingExtra="2dp"
                         android:layout_marginBottom="12dp" />
-                    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#E0E0E0" android:layout_marginBottom="12dp" />
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="end">
+                        
                         <TextView
                             android:id="@+id/btnTandaiDibaca1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Tandai Dibaca"
                             android:textColor="#2E7D32"
-                            android:textSize="14sp"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
                             android:padding="8dp" />
+                            
                         <TextView
                             android:id="@+id/btnHapus1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Hapus"
-                            android:textColor="#F44336"
-                            android:textSize="14sp"
+                            android:textColor="#D32F2F"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
                             android:padding="8dp"
                             android:layout_marginStart="8dp" />
                     </LinearLayout>
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
 
-            <!-- Notifikasi 2 -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/notifikasi2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="2dp">
-
+                <!-- Notifikasi 2 (Info) -->
                 <LinearLayout
+                    android:id="@+id/notifikasi2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/bg_pump_card_green"
                     android:orientation="vertical"
-                    android:padding="16dp"
-                    android:background="#FFF9C4">
+                    android:padding="14dp"
+                    android:layout_marginBottom="16dp">
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
                         android:layout_marginBottom="8dp">
-                        <TextView
+
+                        <ImageView
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            android:src="@drawable/ic_water_drop"
+                            android:background="@drawable/bg_icon_green_light"
+                            android:padding="8dp"/>
+
+                        <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Pompa Nutrisi Aktif"
-                            android:textColor="#333333"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
+                            android:orientation="vertical"
+                            android:layout_marginStart="10dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Pompa Nutrisi Aktif"
+                                android:textColor="#1B5E20"
+                                android:textSize="14sp"
+                                android:textStyle="bold"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="30 menit yang lalu"
+                                android:textColor="#66BB6A"
+                                android:textSize="10sp"/>
+                        </LinearLayout>
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Baru"
                             android:textColor="#FFFFFF"
-                            android:textSize="12sp"
-                            android:background="#F44336"
-                            android:padding="4dp"
-                            android:paddingStart="8dp"
-                            android:paddingEnd="8dp" />
+                            android:textSize="10sp"
+                            android:textStyle="bold"
+                            android:background="@drawable/bg_badge_active"
+                            android:paddingHorizontal="8dp"
+                            android:paddingVertical="2dp" />
                     </LinearLayout>
+
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Pompa nutrisi berhasil diaktifkan untuk 15 menit"
-                        android:textColor="#757575"
-                        android:textSize="14sp"
-                        android:layout_marginBottom="8dp" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="30 menit yang lalu"
-                        android:textColor="#9E9E9E"
+                        android:text="Pompa nutrisi berhasil diaktifkan secara otomatis dan berjalan selama 15 menit."
+                        android:textColor="#33691E"
                         android:textSize="12sp"
+                        android:lineSpacingExtra="2dp"
                         android:layout_marginBottom="12dp" />
-                    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#E0E0E0" android:layout_marginBottom="12dp" />
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="end">
+                        
                         <TextView
                             android:id="@+id/btnTandaiDibaca2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Tandai Dibaca"
                             android:textColor="#2E7D32"
-                            android:textSize="14sp"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
                             android:padding="8dp" />
+                            
                         <TextView
                             android:id="@+id/btnHapus2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Hapus"
-                            android:textColor="#F44336"
-                            android:textSize="14sp"
+                            android:textColor="#D32F2F"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
                             android:padding="8dp"
                             android:layout_marginStart="8dp" />
                     </LinearLayout>
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
 
-            <!-- Notifikasi 3 (Lama) -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/notifikasi3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="2dp">
+                <!-- Kemarin Label -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="KEMARIN"
+                    android:textColor="#9E9E9E"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.05"
+                    android:layout_marginBottom="12dp" />
 
+                <!-- Notifikasi 3 (Lama Warning) -->
                 <LinearLayout
+                    android:id="@+id/notifikasi3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/bg_pump_card"
                     android:orientation="vertical"
-                    android:padding="16dp"
-                    android:background="#FFFFFF">
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Level Air Rendah"
-                        android:textColor="#333333"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="8dp" />
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Level air di bawah 30%, segera isi ulang tangki"
-                        android:textColor="#757575"
-                        android:textSize="14sp"
-                        android:layout_marginBottom="8dp" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="1 jam yang lalu"
-                        android:textColor="#9E9E9E"
-                        android:textSize="12sp"
-                        android:layout_marginBottom="12dp" />
+                    android:padding="14dp"
+                    android:layout_marginBottom="12dp">
 
-                    <View
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginBottom="12dp"
-                        android:background="#E0E0E0" />
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="8dp">
+
+                        <ImageView
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            android:src="@drawable/ic_shower"
+                            android:background="@drawable/bg_icon_blue_light"
+                            android:padding="8dp"/>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:layout_marginStart="10dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Level Air Rendah"
+                                android:textColor="#0D47A1"
+                                android:textSize="14sp"
+                                android:textStyle="bold"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Kemarin, 14:20"
+                                android:textColor="#757575"
+                                android:textSize="10sp"/>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Level air di bawah 30%, segera isi ulang tangki untuk mencegah kerusakan sistem."
+                        android:textColor="#424242"
+                        android:textSize="12sp"
+                        android:lineSpacingExtra="2dp"
+                        android:layout_marginBottom="12dp" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="end">
+                            
                         <TextView
                             android:id="@+id/btnHapus3"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Hapus"
-                            android:textColor="#F44336"
-                            android:textSize="14sp"
+                            android:textColor="#D32F2F"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
                             android:padding="8dp" />
                     </LinearLayout>
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 
-    <!-- Bottom Navigation (Hanya 4 Item) -->
+    <!-- ===== BOTTOM NAVIGATION ===== -->
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

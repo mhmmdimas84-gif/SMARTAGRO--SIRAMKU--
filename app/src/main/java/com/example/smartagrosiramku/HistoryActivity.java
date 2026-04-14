@@ -3,7 +3,7 @@ package com.example.smartagrosiramku;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,7 +13,7 @@ public class HistoryActivity extends AppCompatActivity {
 
     private TextView tabSemua, tabHariIni;
     private TextView tvDashboard, tvHistory, tvControl, tvAccount;
-    private FrameLayout btnNotificationsHeader;
+    private ImageButton btnNotif;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,13 +44,13 @@ public class HistoryActivity extends AppCompatActivity {
         tvControl = findViewById(R.id.tvControl);
         tvAccount = findViewById(R.id.tvAccount);
         
-        // Inisialisasi Header Notification
-        btnNotificationsHeader = findViewById(R.id.btnNotificationsHeader);
+        // Inisialisasi Header Notification - Fixed ID mismatch
+        btnNotif = findViewById(R.id.btnNotif);
     }
 
     private void setupHeaderActions() {
-        if (btnNotificationsHeader != null) {
-            btnNotificationsHeader.setOnClickListener(new View.OnClickListener() {
+        if (btnNotif != null) {
+            btnNotif.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(HistoryActivity.this, Notifikasi.class);

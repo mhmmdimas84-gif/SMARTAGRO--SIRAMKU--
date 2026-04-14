@@ -4,10 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 
 public class Notifikasi extends AppCompatActivity {
@@ -22,8 +22,8 @@ public class Notifikasi extends AppCompatActivity {
     private TextView btnTandaiDibaca2, btnHapus2;
     private TextView btnHapus3;
 
-    // CardView notifikasi
-    private CardView notifikasi1, notifikasi2, notifikasi3;
+    // Notifikasi cards
+    private LinearLayout notifikasi1, notifikasi2, notifikasi3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,13 +163,13 @@ public class Notifikasi extends AppCompatActivity {
         }
     }
 
-    private void markAsRead(CardView notification) {
+    private void markAsRead(LinearLayout notification) {
         if (notification != null) {
-            notification.setCardBackgroundColor(ContextCompat.getColor(this, android.R.color.white));
+            notification.setBackgroundColor(ContextCompat.getColor(this, android.R.color.white));
         }
     }
 
-    private void deleteNotification(CardView notification) {
+    private void deleteNotification(LinearLayout notification) {
         if (notification != null) {
             notification.setVisibility(View.GONE);
         }

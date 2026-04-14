@@ -3,33 +3,77 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#F5F5F5">
+    android:background="#F0F7F0"
+    android:orientation="vertical">
 
-    <!-- Header -->
+    <!-- ===== TOP BAR ===== -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#1B5E20"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="16dp">
+
+        <ImageView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:src="@drawable/logo_siramku"
+            android:background="@drawable/bg_logo_white"
+            android:padding="6dp"
+            android:scaleType="fitCenter"/>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginStart="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SIRAMKU"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Smart Hydroponic System"
+                android:textColor="#A5D6A7"
+                android:textSize="10sp"/>
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/btnNotif"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:src="@drawable/ic_notification"
+            android:background="@drawable/bg_icon_button"
+            android:layout_marginEnd="8dp"
+            android:padding="6dp"/>
+
+    </LinearLayout>
+
+    <!-- ===== HEADER KONTROL ===== -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#2E7D32"
         android:orientation="vertical"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
-        android:paddingBottom="16dp"
-        android:paddingTop="48dp"
-        android:background="#FFFFFF"
-        android:elevation="4dp">
+        android:paddingTop="14dp"
+        android:paddingBottom="26dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center_vertical">
-
-            <ImageView
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:src="@drawable/logo_siramku"
-                android:contentDescription="Logo SIRAMKU"
-                android:layout_marginEnd="12dp"/>
+            android:gravity="center_vertical"
+            android:layout_marginBottom="8dp">
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -40,733 +84,355 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="SIRAMKU"
-                    android:textSize="28sp"
-                    android:textStyle="bold"
-                    android:textColor="#2E7D32" />
+                    android:text="Kontrol Pompa"
+                    android:textColor="#FFFFFF"
+                    android:textSize="20sp"
+                    android:textStyle="bold"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Smart Hydroponic System"
-                    android:textSize="14sp"
-                    android:textColor="#757575" />
+                    android:text="Kelola jadwal &amp; operasi pompa"
+                    android:textColor="#A5D6A7"
+                    android:textSize="12sp"
+                    android:layout_marginTop="2dp"/>
             </LinearLayout>
-
-            <!-- Notifikasi Icon di Header -->
-            <FrameLayout
-                android:id="@+id/btnNotificationsHeader"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:clickable="true"
-                android:focusable="true">
-
-                <ImageView
-                    android:layout_width="28dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:src="@android:drawable/ic_popup_reminder"
-                    app:tint="#757575" />
-
-                <View
-                    android:layout_width="10dp"
-                    android:layout_height="10dp"
-                    android:layout_gravity="top|end"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginEnd="10dp"
-                    android:background="@android:drawable/presence_online"
-                    android:backgroundTint="#F44336" />
-            </FrameLayout>
         </LinearLayout>
     </LinearLayout>
 
-
-    <!-- ScrollView untuk konten -->
+    <!-- ===== SCROLLABLE PUMP LIST ===== -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:fillViewport="true">
+        android:layout_weight="1">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:orientation="vertical">
 
-            <!-- Judul Halaman dan Waktu -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="16dp">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Kontrol Pompa"
-                    android:textColor="#333333"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tvWaktu"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="00.00"
-                    android:textColor="#757575"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <!-- Mode Operasi Utama -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="20dp">
+                android:background="@drawable/bg_white_rounded_top"
+                android:layout_marginTop="-10dp"
+                android:orientation="vertical"
+                android:padding="16dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Mode:"
-                    android:textColor="#757575"
-                    android:textSize="16sp"
-                    android:layout_marginEnd="8dp" />
-
-                <TextView
-                    android:id="@+id/tvModeUtama"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Otomatis"
-                    android:textColor="#2E7D32"
-                    android:textSize="16sp"
+                    android:text="Daftar Pompa"
+                    android:textColor="#1B5E20"
+                    android:textSize="13sp"
                     android:textStyle="bold"
-                    android:background="#E8F5E9"
-                    android:padding="4dp"
-                    android:paddingStart="12dp"
-                    android:paddingEnd="12dp" />
+                    android:layout_marginBottom="14dp"/>
+
+                <!-- ===== POMPA NUTRISI ===== -->
+                <LinearLayout
+                    android:id="@+id/cardPompaNutrisi"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_pump_card_green"
+                    android:orientation="vertical"
+                    android:padding="14dp"
+                    android:layout_marginBottom="12dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="10dp">
+
+                        <ImageView
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            android:src="@drawable/ic_water_drop"
+                            android:background="@drawable/bg_icon_green_light"
+                            android:padding="8dp"/>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:layout_marginStart="10dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Pompa Nutrisi"
+                                android:textColor="#1B5E20"
+                                android:textSize="13sp"
+                                android:textStyle="bold"/>
+
+                            <TextView
+                                android:id="@+id/tvJadwalNutrisi"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="08:00 - 08:15"
+                                android:textColor="#558B2F"
+                                android:textSize="11sp"/>
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/tvStatusNutrisi"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Tidak Aktif"
+                            android:textColor="#C62828"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
+                            android:background="@drawable/bg_badge_inactive"
+                            android:paddingHorizontal="10dp"
+                            android:paddingVertical="3dp"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_info_row"
+                        android:orientation="vertical"
+                        android:padding="10dp"
+                        android:layout_marginBottom="10dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginBottom="6dp">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Mode Operasi"
+                                android:textColor="#757575"
+                                android:textSize="11sp"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Otomatis"
+                                android:textColor="#2E7D32"
+                                android:textSize="10sp"
+                                android:textStyle="bold"
+                                android:background="@drawable/bg_badge_mode"
+                                android:paddingHorizontal="8dp"
+                                android:paddingVertical="2dp"/>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Durasi"
+                                android:textColor="#757575"
+                                android:textSize="11sp"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="15 menit"
+                                android:textColor="#424242"
+                                android:textSize="11sp"
+                                android:textStyle="bold"/>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnNyalakanNutrisi"
+                            android:layout_width="0dp"
+                            android:layout_height="38dp"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="8dp"
+                            android:text="Nyalakan"
+                            android:textSize="11sp"
+                            android:textColor="#FFFFFF"
+                            app:backgroundTint="#2E7D32"
+                            app:cornerRadius="10dp"/>
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnEditNutrisi"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_width="0dp"
+                            android:layout_height="38dp"
+                            android:layout_weight="1"
+                            android:text="Edit Jadwal"
+                            android:textSize="11sp"
+                            android:textColor="#558B2F"
+                            app:strokeColor="#C5E1A5"
+                            app:cornerRadius="10dp"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- ===== POMPA AIR ===== -->
+                <LinearLayout
+                    android:id="@+id/cardPompaAir"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_pump_card_green"
+                    android:orientation="vertical"
+                    android:padding="14dp"
+                    android:layout_marginBottom="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="10dp">
+
+                        <ImageView
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            android:src="@drawable/ic_shower"
+                            android:background="@drawable/bg_icon_blue_light"
+                            android:padding="8dp"/>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:layout_marginStart="10dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Pompa Air"
+                                android:textColor="#0D47A1"
+                                android:textSize="13sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tvJadwalAir"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="12:00 - 12:20"
+                                android:textColor="#1565C0"
+                                android:textSize="11sp"/>
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/tvStatusAir"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Tidak Aktif"
+                            android:textColor="#C62828"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
+                            android:background="@drawable/bg_badge_inactive"
+                            android:paddingHorizontal="10dp"
+                            android:paddingVertical="3dp"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_info_row"
+                        android:orientation="vertical"
+                        android:padding="10dp"
+                        android:layout_marginBottom="10dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginBottom="6dp">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Mode Operasi"
+                                android:textColor="#757575"
+                                android:textSize="11sp"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Otomatis"
+                                android:textColor="#2E7D32"
+                                android:textSize="10sp"
+                                android:textStyle="bold"
+                                android:background="@drawable/bg_badge_mode"
+                                android:paddingHorizontal="8dp"
+                                android:paddingVertical="2dp"/>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Durasi"
+                                android:textColor="#757575"
+                                android:textSize="11sp"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="20 menit"
+                                android:textColor="#424242"
+                                android:textSize="11sp"
+                                android:textStyle="bold"/>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnNyalakanAir"
+                            android:layout_width="0dp"
+                            android:layout_height="38dp"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="8dp"
+                            android:text="Nyalakan"
+                            android:textSize="11sp"
+                            android:textColor="#FFFFFF"
+                            app:backgroundTint="#2E7D32"
+                            app:cornerRadius="10dp"/>
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnEditAir"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_width="0dp"
+                            android:layout_height="38dp"
+                            android:layout_weight="1"
+                            android:text="Edit Jadwal"
+                            android:textSize="11sp"
+                            android:textColor="#558B2F"
+                            app:strokeColor="#BBDEFB"
+                            app:cornerRadius="10dp"/>
+                    </LinearLayout>
+                </LinearLayout>
+
             </LinearLayout>
-
-            <!-- Tombol Aksi Utama -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="24dp">
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/btnMulaiSemua"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="6dp"
-                    app:cardCornerRadius="8dp"
-                    app:cardElevation="2dp">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Mulai Semua"
-                        android:textColor="#FFFFFF"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:gravity="center"
-                        android:padding="12dp"
-                        android:background="#4CAF50" />
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/btnHentikanSemua"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginStart="6dp"
-                    android:layout_marginEnd="6dp"
-                    app:cardCornerRadius="8dp"
-                    app:cardElevation="2dp">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Hentikan Semua"
-                        android:textColor="#FFFFFF"
-                        android:textSize="12sp"
-                        android:textStyle="bold"
-                        android:gravity="center"
-                        android:padding="12dp"
-                        android:background="#F44336" />
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/btnReset"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginStart="6dp"
-                    android:layout_marginEnd="6dp"
-                    app:cardCornerRadius="8dp"
-                    app:cardElevation="2dp">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Reset"
-                        android:textColor="#FFFFFF"
-                        android:textSize="12sp"
-                        android:textStyle="bold"
-                        android:gravity="center"
-                        android:padding="20dp"
-                        android:background="#FF9800" />
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/btnTimer"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginStart="6dp"
-                    app:cardCornerRadius="8dp"
-                    app:cardElevation="2dp">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Timer"
-                        android:textColor="#FFFFFF"
-                        android:textSize="12sp"
-                        android:textStyle="bold"
-                        android:gravity="center"
-                        android:padding="20dp"
-                        android:background="#2196F3" />
-                </androidx.cardview.widget.CardView>
-            </LinearLayout>
-
-            <!-- Divider -->
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#E0E0E0"
-                android:layout_marginBottom="20dp" />
-
-            <!-- Judul Section Kontrol Pompa -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Kontrol Pompa"
-                android:textColor="#333333"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="16dp" />
-
-            <!-- Card Pompa Nutrisi -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardPompaNutrisi"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="2dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp"
-                    android:background="#FFFFFF">
-
-                    <!-- Header Pompa -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:layout_marginBottom="12dp">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Pompa Nutrisi"
-                            android:textColor="#333333"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/statusPompaNutrisi"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Tidak Aktif"
-                            android:textColor="#F44336"
-                            android:textSize="12sp"
-                            android:textStyle="bold"
-                            android:background="#FFEBEE"
-                            android:padding="4dp"
-                            android:paddingStart="12dp"
-                            android:paddingEnd="12dp" />
-                    </LinearLayout>
-
-                    <!-- Jadwal -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginBottom="8dp">
-
-                        <TextView
-                            android:layout_width="80dp"
-                            android:layout_height="wrap_content"
-                            android:text="Jadwal"
-                            android:textColor="#757575"
-                            android:textSize="14sp" />
-
-                        <TextView
-                            android:id="@+id/jadwalPompaNutrisi"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="08:00 - 08:15"
-                            android:textColor="#333333"
-                            android:textSize="14sp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
-
-                    <!-- Mode Operasi -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="80dp"
-                            android:layout_height="wrap_content"
-                            android:text="Mode Operasi"
-                            android:textColor="#757575"
-                            android:textSize="14sp" />
-
-                        <TextView
-                            android:id="@+id/modePompaNutrisi"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Otomatis"
-                            android:textColor="#2E7D32"
-                            android:textSize="14sp"
-                            android:textStyle="bold"
-                            android:background="#E8F5E9"
-                            android:padding="2dp"
-                            android:paddingStart="8dp"
-                            android:paddingEnd="8dp" />
-                    </LinearLayout>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <!-- Card Pompa Air -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardPompaAir"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="2dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp"
-                    android:background="#FFFFFF">
-
-                    <!-- Header Pompa -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:layout_marginBottom="12dp">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Pompa Air"
-                            android:textColor="#333333"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/statusPompaAir"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Tidak Aktif"
-                            android:textColor="#F44336"
-                            android:textSize="12sp"
-                            android:textStyle="bold"
-                            android:background="#FFEBEE"
-                            android:padding="4dp"
-                            android:paddingStart="12dp"
-                            android:paddingEnd="12dp" />
-                    </LinearLayout>
-
-                    <!-- Jadwal -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginBottom="8dp">
-
-                        <TextView
-                            android:layout_width="80dp"
-                            android:layout_height="wrap_content"
-                            android:text="Jadwal"
-                            android:textColor="#757575"
-                            android:textSize="14sp" />
-
-                        <TextView
-                            android:id="@+id/jadwalPompaAir"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="12:00 - 12:20"
-                            android:textColor="#333333"
-                            android:textSize="14sp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
-
-                    <!-- Mode Operasi -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="80dp"
-                            android:layout_height="wrap_content"
-                            android:text="Mode Operasi"
-                            android:textColor="#757575"
-                            android:textSize="14sp" />
-
-                        <TextView
-                            android:id="@+id/modePompaAir"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Otomatis"
-                            android:textColor="#2E7D32"
-                            android:textSize="14sp"
-                            android:textStyle="bold"
-                            android:background="#E8F5E9"
-                            android:padding="2dp"
-                            android:paddingStart="8dp"
-                            android:paddingEnd="8dp" />
-                    </LinearLayout>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <!-- Card Pompa pH Up -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardPompaPhUp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="2dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp"
-                    android:background="#FFFFFF">
-
-                    <!-- Header Pompa -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:layout_marginBottom="12dp">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Pompa pH Up"
-                            android:textColor="#333333"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/statusPompaPhUp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Tidak Aktif"
-                            android:textColor="#F44336"
-                            android:textSize="12sp"
-                            android:textStyle="bold"
-                            android:background="#FFEBEE"
-                            android:padding="4dp"
-                            android:paddingStart="12dp"
-                            android:paddingEnd="12dp" />
-                    </LinearLayout>
-
-                    <!-- Mode Operasi -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="80dp"
-                            android:layout_height="wrap_content"
-                            android:text="Mode Operasi"
-                            android:textColor="#757575"
-                            android:textSize="14sp" />
-
-                        <TextView
-                            android:id="@+id/modePompaPhUp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Manual"
-                            android:textColor="#2E7D32"
-                            android:textSize="14sp"
-                            android:textStyle="bold"
-                            android:background="#E8F5E9"
-                            android:padding="2dp"
-                            android:paddingStart="8dp"
-                            android:paddingEnd="8dp" />
-                    </LinearLayout>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <!-- Card Pompa pH Down -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardPompaPhDown"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="2dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp"
-                    android:background="#FFFFFF">
-
-                    <!-- Header Pompa -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:layout_marginBottom="12dp">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Pompa pH Down"
-                            android:textColor="#333333"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/statusPompaPhDown"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Tidak Aktif"
-                            android:textColor="#F44336"
-                            android:textSize="12sp"
-                            android:textStyle="bold"
-                            android:background="#FFEBEE"
-                            android:padding="4dp"
-                            android:paddingStart="12dp"
-                            android:paddingEnd="12dp" />
-                    </LinearLayout>
-
-                    <!-- Mode Operasi -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="80dp"
-                            android:layout_height="wrap_content"
-                            android:text="Mode Operasi"
-                            android:textColor="#757575"
-                            android:textSize="14sp" />
-
-                        <TextView
-                            android:id="@+id/modePompaPhDown"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Manual"
-                            android:textColor="#2E7D32"
-                            android:textSize="14sp"
-                            android:textStyle="bold"
-                            android:background="#E8F5E9"
-                            android:padding="2dp"
-                            android:paddingStart="8dp"
-                            android:paddingEnd="8dp" />
-                    </LinearLayout>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <!-- Card Pompa pH Up -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardPompaPhUp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="2dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp"
-                    android:background="#FFFFFF">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:layout_marginBottom="12dp">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Pompa pH Up"
-                            android:textColor="#333333"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/statusPompaPhUp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Tidak Aktif"
-                            android:textColor="#F44336"
-                            android:textSize="12sp"
-                            android:textStyle="bold"
-                            android:background="#FFEBEE"
-                            android:padding="4dp"
-                            android:paddingStart="12dp"
-                            android:paddingEnd="12dp" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="80dp"
-                            android:layout_height="wrap_content"
-                            android:text="Mode Operasi"
-                            android:textColor="#757575"
-                            android:textSize="14sp" />
-
-                        <TextView
-                            android:id="@+id/modePompaPhUp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Manual"
-                            android:textColor="#2E7D32"
-                            android:textSize="14sp"
-                            android:textStyle="bold"
-                            android:background="#E8F5E9"
-                            android:padding="2dp"
-                            android:paddingStart="8dp"
-                            android:paddingEnd="8dp" />
-                    </LinearLayout>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <!-- Card Pompa pH Down -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardPompaPhDown"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="2dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp"
-                    android:background="#FFFFFF">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:layout_marginBottom="12dp">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Pompa pH Down"
-                            android:textColor="#333333"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/statusPompaPhDown"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Tidak Aktif"
-                            android:textColor="#F44336"
-                            android:textSize="12sp"
-                            android:textStyle="bold"
-                            android:background="#FFEBEE"
-                            android:padding="4dp"
-                            android:paddingStart="12dp"
-                            android:paddingEnd="12dp" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="80dp"
-                            android:layout_height="wrap_content"
-                            android:text="Mode Operasi"
-                            android:textColor="#757575"
-                            android:textSize="14sp" />
-
-                        <TextView
-                            android:id="@+id/modePompaPhDown"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Manual"
-                            android:textColor="#2E7D32"
-                            android:textSize="14sp"
-                            android:textStyle="bold"
-                            android:background="#E8F5E9"
-                            android:padding="2dp"
-                            android:paddingStart="8dp"
-                            android:paddingEnd="8dp" />
-                    </LinearLayout>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
         </LinearLayout>
     </ScrollView>
 
-    <!-- Bottom Navigation -->
+    <!-- ===== BOTTOM NAVIGATION ===== -->
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -793,7 +459,7 @@
                 app:drawableTopCompat="@android:drawable/ic_menu_today"
                 android:drawablePadding="4dp"
                 android:clickable="true"
-                android:focusable="true" />
+                android:focusable="true"/>
 
             <TextView
                 android:id="@+id/tvHistory"
@@ -807,7 +473,7 @@
                 app:drawableTopCompat="@android:drawable/ic_menu_recent_history"
                 android:drawablePadding="4dp"
                 android:clickable="true"
-                android:focusable="true" />
+                android:focusable="true"/>
 
             <TextView
                 android:id="@+id/tvControl"
@@ -822,7 +488,7 @@
                 app:drawableTopCompat="@android:drawable/ic_menu_manage"
                 android:drawablePadding="4dp"
                 android:clickable="true"
-                android:focusable="true" />
+                android:focusable="true"/>
 
             <TextView
                 android:id="@+id/tvAccount"
@@ -836,7 +502,7 @@
                 app:drawableTopCompat="@android:drawable/ic_menu_myplaces"
                 android:drawablePadding="4dp"
                 android:clickable="true"
-                android:focusable="true" />
+                android:focusable="true"/>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 

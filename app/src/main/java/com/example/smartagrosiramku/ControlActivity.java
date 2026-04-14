@@ -3,236 +3,183 @@ package com.example.smartagrosiramku;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
+import com.google.android.material.button.MaterialButton;
 
 public class ControlActivity extends AppCompatActivity {
 
-    // Deklarasi View untuk Bottom Navigation
+    // Bottom Navigation
     private TextView tvDashboard, tvHistory, tvControl, tvAccount;
-    
-    // Deklarasi View untuk Header Notification
-    private FrameLayout btnNotificationsHeader;
 
-    // Deklarasi View untuk Tombol Aksi
-    private CardView btnMulaiSemua, btnHentikanSemua, btnReset, btnTimer;
-    private TextView tvWaktu;
+    // Header
+    private ImageButton btnNotif;
 
-    // Deklarasi View untuk Status Pompa
-    private TextView statusPompaNutrisi, jadwalPompaNutrisi, modePompaNutrisi;
-    private TextView statusPompaAir, jadwalPompaAir, modePompaAir;
-    private TextView statusPompaPhUp, modePompaPhUp;
-    private TextView statusPompaPhDown, modePompaPhDown;
+    // Tombol Aksi Pompa Nutrisi
+    private MaterialButton btnNyalakanNutrisi, btnEditNutrisi;
+
+    // Tombol Aksi Pompa Air
+    private MaterialButton btnNyalakanAir, btnEditAir;
+
+    // Status & Jadwal Pompa Nutrisi
+    private TextView tvStatusNutrisi, tvJadwalNutrisi;
+
+    // Status & Jadwal Pompa Air
+    private TextView tvStatusAir, tvJadwalAir;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_control);
 
-        // Inisialisasi Views
         initializeViews();
-
-        // Update waktu
-        updateWaktu();
-
-        // Setup listeners
-        setupListeners();
-
-        // Setup bottom navigation
-        setupBottomNavigation();
-        
-        // Setup Header Actions
         setupHeaderActions();
+        setupPompaListeners();
+        setupBottomNavigation();
     }
 
     private void initializeViews() {
-        // Inisialisasi Bottom Navigation
+        // Bottom Navigation
         tvDashboard = findViewById(R.id.tvDashboard);
-        tvHistory = findViewById(R.id.tvHistory);
-        tvControl = findViewById(R.id.tvControl);
-        tvAccount = findViewById(R.id.tvAccount);
-        
-        // Inisialisasi Header Notification
-        btnNotificationsHeader = findViewById(R.id.btnNotificationsHeader);
+        tvHistory   = findViewById(R.id.tvHistory);
+        tvControl   = findViewById(R.id.tvControl);
+        tvAccount   = findViewById(R.id.tvAccount);
 
-        // Inisialisasi Tombol Aksi
-        btnMulaiSemua = findViewById(R.id.btnMulaiSemua);
-        btnHentikanSemua = findViewById(R.id.btnHentikanSemua);
-        btnReset = findViewById(R.id.btnReset);
-        btnTimer = findViewById(R.id.btnTimer);
-        tvWaktu = findViewById(R.id.tvWaktu);
+        // Header
+        btnNotif = findViewById(R.id.btnNotif);
 
-        // Inisialisasi Status Pompa Nutrisi
-        statusPompaNutrisi = findViewById(R.id.statusPompaNutrisi);
-        jadwalPompaNutrisi = findViewById(R.id.jadwalPompaNutrisi);
-        modePompaNutrisi = findViewById(R.id.modePompaNutrisi);
+        // Tombol Pompa Nutrisi
+        btnNyalakanNutrisi = findViewById(R.id.btnNyalakanNutrisi);
+        btnEditNutrisi     = findViewById(R.id.btnEditNutrisi);
 
-        // Inisialisasi Status Pompa Air
-        statusPompaAir = findViewById(R.id.statusPompaAir);
-        jadwalPompaAir = findViewById(R.id.jadwalPompaAir);
-        modePompaAir = findViewById(R.id.modePompaAir);
+        // Tombol Pompa Air
+        btnNyalakanAir = findViewById(R.id.btnNyalakanAir);
+        btnEditAir     = findViewById(R.id.btnEditAir);
 
-        // Inisialisasi Status Pompa pH Up
-        statusPompaPhUp = findViewById(R.id.statusPompaPhUp);
-        modePompaPhUp = findViewById(R.id.modePompaPhUp);
-
-        // Inisialisasi Status Pompa pH Down
-        statusPompaPhDown = findViewById(R.id.statusPompaPhDown);
-        modePompaPhDown = findViewById(R.id.modePompaPhDown);
+        // TextView Status & Jadwal
+        tvStatusNutrisi  = findViewById(R.id.tvStatusNutrisi);
+        tvJadwalNutrisi  = findViewById(R.id.tvJadwalNutrisi);
+        tvStatusAir      = findViewById(R.id.tvStatusAir);
+        tvJadwalAir      = findViewById(R.id.tvJadwalAir);
     }
 
     private void setupHeaderActions() {
-        if (btnNotificationsHeader != null) {
-            btnNotificationsHeader.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(ControlActivity.this, Notifikasi.class);
-                    startActivity(intent);
-                }
+        if (btnNotif != null) {
+            btnNotif.setOnClickListener(v -> {
+                Intent intent = new Intent(ControlActivity.this, Notifikasi.class);
+                startActivity(intent);
             });
         }
     }
 
-    private void updateWaktu() {
-        // Update waktu saat ini
-        SimpleDateFormat sdf = new SimpleDateFormat("HH.mm", Locale.getDefault());
-        String waktuSekarang = sdf.format(new Date());
-        if (tvWaktu != null) {
-            tvWaktu.setText(waktuSekarang);
+    private void setupPompaListeners() {
+
+        // ===== POMPA NUTRISI =====
+        if (btnNyalakanNutrisi != null) {
+            btnNyalakanNutrisi.setOnClickListener(v -> {
+                String statusSekarang = tvStatusNutrisi.getText().toString();
+
+                if (statusSekarang.equals("Tidak Aktif")) {
+                    // Nyalakan pompa nutrisi
+                    setStatusPompa(tvStatusNutrisi, "Aktif", true);
+                    btnNyalakanNutrisi.setText("Hentikan");
+                    btnNyalakanNutrisi.setBackgroundTintList(
+                            getResources().getColorStateList(android.R.color.holo_red_dark)
+                    );
+                    Toast.makeText(this, "Pompa Nutrisi dinyalakan", Toast.LENGTH_SHORT).show();
+                } else {
+                    // Matikan pompa nutrisi
+                    setStatusPompa(tvStatusNutrisi, "Tidak Aktif", false);
+                    btnNyalakanNutrisi.setText("Nyalakan");
+                    btnNyalakanNutrisi.setBackgroundTintList(
+                            getResources().getColorStateList(android.R.color.holo_green_dark)
+                    );
+                    Toast.makeText(this, "Pompa Nutrisi dihentikan", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+        if (btnEditNutrisi != null) {
+            btnEditNutrisi.setOnClickListener(v ->
+                    Toast.makeText(this, "Edit Jadwal Pompa Nutrisi (Coming Soon)", Toast.LENGTH_SHORT).show()
+            );
+        }
+
+        // ===== POMPA AIR =====
+        if (btnNyalakanAir != null) {
+            btnNyalakanAir.setOnClickListener(v -> {
+                String statusSekarang = tvStatusAir.getText().toString();
+
+                if (statusSekarang.equals("Tidak Aktif")) {
+                    setStatusPompa(tvStatusAir, "Aktif", true);
+                    btnNyalakanAir.setText("Hentikan");
+                    btnNyalakanAir.setBackgroundTintList(
+                            getResources().getColorStateList(android.R.color.holo_red_dark)
+                    );
+                    Toast.makeText(this, "Pompa Air dinyalakan", Toast.LENGTH_SHORT).show();
+                } else {
+                    setStatusPompa(tvStatusAir, "Tidak Aktif", false);
+                    btnNyalakanAir.setText("Nyalakan");
+                    btnNyalakanAir.setBackgroundTintList(
+                            getResources().getColorStateList(android.R.color.holo_green_dark) // <-- Ganti ini
+                    );
+                    Toast.makeText(this, "Pompa Air dihentikan", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+        if (btnEditAir != null) {
+            btnEditAir.setOnClickListener(v ->
+                    Toast.makeText(this, "Edit Jadwal Pompa Air (Coming Soon)", Toast.LENGTH_SHORT).show()
+            );
         }
     }
 
-    private void setupListeners() {
-        // Tombol Mulai Semua
-        btnMulaiSemua.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Ubah status semua pompa menjadi Aktif
-                statusPompaNutrisi.setText("Aktif");
-                statusPompaNutrisi.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
-                
-                statusPompaAir.setText("Aktif");
-                statusPompaAir.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
-
-                statusPompaPhUp.setText("Aktif");
-                statusPompaPhUp.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
-
-                if (statusPompaPhDown != null) {
-                    statusPompaPhDown.setText("Aktif");
-                    statusPompaPhDown.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
-                }
-
-                Toast.makeText(ControlActivity.this, "Semua pompa diaktifkan", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        // Tombol Hentikan Semua
-        btnHentikanSemua.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Ubah status semua pompa menjadi Tidak Aktif
-                statusPompaNutrisi.setText("Tidak Aktif");
-                statusPompaNutrisi.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
-
-                statusPompaAir.setText("Tidak Aktif");
-                statusPompaAir.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
-
-                statusPompaPhUp.setText("Tidak Aktif");
-                statusPompaPhUp.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
-
-                if (statusPompaPhDown != null) {
-                    statusPompaPhDown.setText("Tidak Aktif");
-                    statusPompaPhDown.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
-                }
-
-                Toast.makeText(ControlActivity.this, "Semua pompa dihentikan", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        // Tombol Reset
-        btnReset.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Reset ke pengaturan default
-                statusPompaNutrisi.setText("Tidak Aktif");
-                statusPompaNutrisi.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
-
-                statusPompaAir.setText("Tidak Aktif");
-                statusPompaAir.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
-
-                statusPompaPhUp.setText("Tidak Aktif");
-                statusPompaPhUp.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
-
-                modePompaNutrisi.setText("Otomatis");
-                modePompaAir.setText("Otomatis");
-                modePompaPhUp.setText("Manual");
-
-                jadwalPompaNutrisi.setText("08:00 - 08:15");
-                jadwalPompaAir.setText("12:00 - 12:20");
-
-                Toast.makeText(ControlActivity.this, "Reset ke pengaturan default", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        // Tombol Timer
-        btnTimer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(ControlActivity.this, "Fitur Timer (Coming Soon)", Toast.LENGTH_SHORT).show();
-            }
-        });
+    /**
+     * Helper untuk mengubah tampilan badge status pompa.
+     * @param tvStatus  TextView badge yang ingin diubah
+     * @param teks      Teks baru ("Aktif" / "Tidak Aktif")
+     * @param isAktif   true = warna hijau, false = warna merah
+     */
+    private void setStatusPompa(TextView tvStatus, String teks, boolean isAktif) {
+        if (tvStatus == null) return;
+        tvStatus.setText(teks);
+        if (isAktif) {
+            tvStatus.setTextColor(getResources().getColor(R.color.status_aktif_text));
+            tvStatus.setBackgroundResource(R.drawable.bg_badge_active);
+        } else {
+            tvStatus.setTextColor(getResources().getColor(R.color.status_inactive_text));
+            tvStatus.setBackgroundResource(R.drawable.bg_badge_inactive);
+        }
     }
 
     private void setupBottomNavigation() {
-        // Dashboard
         if (tvDashboard != null) {
-            tvDashboard.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(ControlActivity.this, Dashboard.class);
-                    startActivity(intent);
-                    finish();
-                }
+            tvDashboard.setOnClickListener(v -> {
+                startActivity(new Intent(ControlActivity.this, Dashboard.class));
+                finish();
             });
         }
 
-        // Histori
         if (tvHistory != null) {
-            tvHistory.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(ControlActivity.this, HistoryActivity.class);
-                    startActivity(intent);
-                    finish();
-                }
+            tvHistory.setOnClickListener(v -> {
+                startActivity(new Intent(ControlActivity.this, HistoryActivity.class));
+                finish();
             });
         }
 
-        // Kontrol (current activity)
         if (tvControl != null) {
-            tvControl.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(ControlActivity.this, "Anda sedang di halaman Kontrol", Toast.LENGTH_SHORT).show();
-                }
-            });
+            tvControl.setOnClickListener(v ->
+                    Toast.makeText(this, "Anda sedang di halaman Kontrol", Toast.LENGTH_SHORT).show()
+            );
         }
 
-        // Akun
         if (tvAccount != null) {
-            tvAccount.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(ControlActivity.this, AccountActivity.class);
-                    startActivity(intent);
-                    finish();
-                }
+            tvAccount.setOnClickListener(v -> {
+                startActivity(new Intent(ControlActivity.this, AccountActivity.class));
+                finish();
             });
         }
     }
