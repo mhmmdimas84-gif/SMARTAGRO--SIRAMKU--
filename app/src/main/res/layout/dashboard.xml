@@ -247,6 +247,77 @@
                     </LinearLayout>
                 </GridLayout>
 
+                <!-- Chart Section (Modernized) -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="22dp"
+                    app:cardElevation="6dp"
+                    android:layout_marginBottom="28dp"
+                    android:layout_marginHorizontal="6dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="#FFFFFF"
+                        android:orientation="vertical"
+                        android:padding="20dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginBottom="16dp">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Riwayat Level Air"
+                                android:textColor="#0D47A1"
+                                android:textSize="15sp"
+                                android:textStyle="bold" />
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:background="@drawable/bg_filter_inactive"
+                                android:padding="3dp">
+
+                                <TextView
+                                    android:id="@+id/tvFilterMinggu"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Mingguan"
+                                    android:textSize="11sp"
+                                    android:textColor="#FFFFFF"
+                                    android:paddingHorizontal="14dp"
+                                    android:paddingVertical="6dp"
+                                    android:background="@drawable/bg_filter_active" />
+
+                                <TextView
+                                    android:id="@+id/tvFilterBulan"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Bulanan"
+                                    android:textSize="11sp"
+                                    android:textColor="#1976D2"
+                                    android:paddingHorizontal="14dp"
+                                    android:paddingVertical="6dp"
+                                    android:background="@android:color/transparent" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <com.github.mikephil.charting.charts.LineChart
+                            android:id="@+id/chartLevelAir"
+                            android:layout_width="match_parent"
+                            android:layout_height="220dp" />
+
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -560,78 +631,72 @@
         </LinearLayout>
     </ScrollView>
 
-    <!-- Bottom Navigation -->
-    <androidx.cardview.widget.CardView
+    <!-- ===== BOTTOM NAVIGATION ===== -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="12dp"
-        app:cardCornerRadius="24dp"
-        app:cardElevation="8dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:background="#FFFFFF"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:elevation="12dp">
+        <TextView
+            android:id="@+id/tvDashboard"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:background="#FFFFFF"
-            android:padding="8dp">
-
-            <TextView
-                android:id="@+id/tvDashboard"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Dashboard"
-                android:textColor="#2E7D32"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:gravity="center"
-                app:drawableTopCompat="@android:drawable/ic_menu_today"
-                android:drawablePadding="4dp"
-                android:clickable="true"
-                android:focusable="true" />
-
-            <TextView
-                android:id="@+id/tvHistory"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Histori"
-                android:textColor="#757575"
-                android:textSize="12sp"
-                android:gravity="center"
-                app:drawableTopCompat="@android:drawable/ic_menu_recent_history"
-                android:drawablePadding="4dp"
-                android:clickable="true"
-                android:focusable="true" />
-
-            <TextView
-                android:id="@+id/tvControl"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Kontrol"
-                android:textColor="#757575"
-                android:textSize="12sp"
-                android:gravity="center"
-                app:drawableTopCompat="@android:drawable/ic_menu_manage"
-                android:drawablePadding="4dp"
-                android:clickable="true"
-                android:focusable="true" />
-
-            <TextView
-                android:id="@+id/tvAccount"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Akun"
-                android:textColor="#757575"
-                android:textSize="12sp"
-                android:gravity="center"
-                app:drawableTopCompat="@android:drawable/ic_menu_myplaces"
-                android:drawablePadding="4dp"
-                android:clickable="true"
-                android:focusable="true" />
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
+            android:layout_weight="1"
+            android:text="Dashboard"
+            android:textColor="#2E7D32"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            app:drawableTopCompat="@drawable/ic_nav_home"
+            app:drawableTint="#2E7D32"
+            android:drawablePadding="4dp"
+            android:clickable="true"
+            android:focusable="true"/>
+        <TextView
+            android:id="@+id/tvHistory"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Histori"
+            android:textColor="#757575"
+            android:textSize="12sp"
+            android:gravity="center"
+            app:drawableTopCompat="@drawable/ic_nav_history"
+            app:drawableTint="#757575"
+            android:drawablePadding="4dp"
+            android:clickable="true"
+            android:focusable="true"/>
+        <TextView
+            android:id="@+id/tvControl"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Kontrol"
+            android:textColor="#757575"
+            android:textSize="12sp"
+            android:gravity="center"
+            app:drawableTopCompat="@drawable/ic_nav_control"
+            app:drawableTint="#757575"
+            android:drawablePadding="4dp"
+            android:clickable="true"
+            android:focusable="true"/>
+        <TextView
+            android:id="@+id/tvAccount"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Akun"
+            android:textColor="#757575"
+            android:textSize="12sp"
+            android:gravity="center"
+            app:drawableTopCompat="@drawable/ic_nav_account"
+            app:drawableTint="#757575"
+            android:drawablePadding="4dp"
+            android:clickable="true"
+            android:focusable="true"/>
+    </LinearLayout>
 
 </LinearLayout>
