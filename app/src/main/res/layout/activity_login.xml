@@ -18,8 +18,8 @@
             android:background="#2E7D32"
             android:paddingStart="28dp"
             android:paddingEnd="28dp"
-            android:paddingTop="40dp"
-            android:paddingBottom="48dp">
+            android:paddingTop="16dp"
+            android:paddingBottom="36dp">
 
             <!-- Logo + App Name -->
             <LinearLayout
@@ -28,7 +28,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:layout_marginBottom="20dp">
+                android:layout_marginBottom="12dp">
 
                 <ImageView
                     android:layout_width="80dp"
@@ -103,7 +103,7 @@
             android:background="@drawable/bg_form_card"
             android:layout_marginTop="-16dp"
             android:orientation="vertical"
-            android:padding="24dp">
+            android:padding="20dp">
 
             <!-- Email -->
             <TextView
@@ -118,7 +118,7 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="10dp"
                 app:boxBackgroundColor="#FAFAFA"
                 app:boxCornerRadiusTopStart="12dp"
                 app:boxCornerRadiusTopEnd="12dp"
@@ -171,28 +171,26 @@
                     android:textSize="13sp"/>
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Forgot Password -->
             <TextView
                 android:id="@+id/tvForgotPassword"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:layout_marginTop="6dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="12dp"
                 android:text="Lupa password?"
                 android:textColor="#2E7D32"
                 android:textSize="12sp"
-                android:textStyle="bold"/>
+                android:textStyle="normal"/>
 
-            <!-- CAPTCHA -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_captcha"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:padding="14dp"
-                android:layout_marginBottom="20dp">
+                android:padding="10dp"
+                android:layout_marginBottom="14dp">
 
                 <CheckBox
                     android:id="@+id/cbCaptcha"
@@ -216,7 +214,6 @@
                     android:padding="6dp"/>
             </LinearLayout>
 
-            <!-- Masuk Button -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnMasuk"
                 android:layout_width="match_parent"
@@ -225,12 +222,9 @@
                 android:textColor="#FFFFFF"
                 android:textSize="15sp"
                 android:textStyle="bold"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="12dp"
                 app:backgroundTint="#2E7D32"
-                app:cornerRadius="14dp"
-                app:icon="@drawable/ic_leaf"
-                app:iconTint="#FFFFFF"
-                app:iconGravity="textStart"/>
+                app:cornerRadius="14dp"/>
 
             <!-- Divider -->
             <LinearLayout
@@ -248,21 +242,21 @@
                     android:layout_weight="1" android:background="#E0E0E0"/>
             </LinearLayout>
 
-            <!-- Google Login -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnGoogleLogin"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:text="Lanjutkan dengan Google"
+                android:text="Google"
                 android:textColor="#424242"
                 android:textSize="13sp"
-                android:layout_marginBottom="20dp"
+                android:layout_marginBottom="12dp"
                 app:strokeColor="#E0E0E0"
                 app:strokeWidth="1.5dp"
                 app:cornerRadius="14dp"
                 app:icon="@drawable/ic_google"
-                app:iconTint="@null"/>
+                app:iconTint="@null"
+                app:iconGravity="textStart"/>
 
             <!-- Register link -->
             <LinearLayout
