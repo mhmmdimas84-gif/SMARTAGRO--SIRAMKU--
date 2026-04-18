@@ -94,20 +94,6 @@
                         </LinearLayout>
                     </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/tvBergabung"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Bergabung sejak Januari 2024"
-                        android:textSize="14sp"
-                        android:textColor="#757575"
-                        android:layout_marginBottom="20dp" />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="#E0E0E0"
-                        android:layout_marginBottom="16dp" />
 
                     <androidx.cardview.widget.CardView
                         android:id="@+id/btnEditProfil"

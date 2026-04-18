@@ -12,11 +12,13 @@ import android.widget.Toast;
 import android.os.Build;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class AccountActivity extends AppCompatActivity {
 
     private CardView btnEditProfil;
-    private TextView tvEmail, tvNama, tvBergabung;
+    private TextView tvEmail, tvNama;
     private TextView tvMerekPerangkat, tvSeriPerangkat, tvSistemOperasi;
     private Button btnLogout;
 
@@ -41,7 +43,6 @@ public class AccountActivity extends AppCompatActivity {
         btnEditProfil = findViewById(R.id.btnEditProfil);
         tvNama = findViewById(R.id.tvNama);
         tvEmail = findViewById(R.id.tvEmail);
-        tvBergabung = findViewById(R.id.tvBergabung);
         tvMerekPerangkat = findViewById(R.id.tvMerekPerangkat);
         tvSeriPerangkat = findViewById(R.id.tvSeriPerangkat);
         tvSistemOperasi = findViewById(R.id.tvSistemOperasi);
@@ -56,6 +57,10 @@ public class AccountActivity extends AppCompatActivity {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.clear();
             editor.apply();
+            
+            // Logout dari Firebase jika login
+            FirebaseAuth.getInstance().signOut();
+            
             Intent intent = new Intent(AccountActivity.this, LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
@@ -80,15 +85,24 @@ public class AccountActivity extends AppCompatActivity {
     }
 
     private void loadUserProfile() {
-        String email = sharedPreferences.getString("user_email", "");
-        if (!email.isEmpty()) {
-            Cursor cursor = db.getUserData(email);
-            if (cursor != null && cursor.moveToFirst()) {
-                String name = cursor.getString(cursor.getColumnIndexOrThrow("NAME"));
-                tvNama.setText(name);
-                tvEmail.setText(email);
-                tvBergabung.setText("User Siramku Terverifikasi");
-                cursor.close();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        
+        if (user != null) {
+            // Data dari Akun Google / Firebase
+            String name = user.getDisplayName();
+            tvNama.setText(name != null && !name.isEmpty() ? name : "User Aplikasi");
+            tvEmail.setText(user.getEmail());
+        } else {
+            // Data lama dari Database Lokal (Bukan Google)
+            String email = sharedPreferences.getString("user_email", "");
+            if (!email.isEmpty()) {
+                Cursor cursor = db.getUserData(email);
+                if (cursor != null && cursor.moveToFirst()) {
+                    String name = cursor.getString(cursor.getColumnIndexOrThrow("NAME"));
+                    tvNama.setText(name);
+                    tvEmail.setText(email);
+                    cursor.close();
+                }
             }
         }
         

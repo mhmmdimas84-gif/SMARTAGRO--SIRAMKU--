@@ -39,6 +39,7 @@ dependencies {
     implementation platform(libs.firebase.bom)
     implementation libs.firebase.auth
     implementation libs.play.services.auth
+    implementation 'com.google.firebase:firebase-database'
 
     // Chart Library
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
