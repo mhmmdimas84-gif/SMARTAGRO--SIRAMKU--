@@ -3,4 +3,8 @@
     </style>
 
     <style name="Theme.SmartAgroSiramku" parent="Base.Theme.SmartAgroSiramku" />
+
+    <style name="SpinnerTimePickerTheme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:timePickerMode">spinner</item>
+    </style>
 </resources>

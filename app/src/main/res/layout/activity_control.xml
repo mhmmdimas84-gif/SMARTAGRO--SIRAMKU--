@@ -238,6 +238,7 @@
                                 android:textSize="11sp"/>
 
                             <TextView
+                                android:id="@+id/tvDurasiNutrisi"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="15 menit"
@@ -272,7 +273,7 @@
                             android:layout_weight="1"
                             android:text="Edit Jadwal"
                             android:textSize="11sp"
-                            android:textColor="#558B2F"
+                            android:textColor="#2E7D32"
                             app:strokeColor="#C5E1A5"
                             app:cornerRadius="10dp"/>
                     </LinearLayout>
@@ -388,6 +389,7 @@
                                 android:textSize="11sp"/>
 
                             <TextView
+                                android:id="@+id/tvDurasiAir"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="20 menit"
@@ -422,7 +424,7 @@
                             android:layout_weight="1"
                             android:text="Edit Jadwal"
                             android:textSize="11sp"
-                            android:textColor="#558B2F"
+                            android:textColor="#2E7D32"
                             app:strokeColor="#BBDEFB"
                             app:cornerRadius="10dp"/>
                     </LinearLayout>

@@ -9,15 +9,15 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.os.Build;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SwitchCompat;
 import androidx.cardview.widget.CardView;
 
 public class AccountActivity extends AppCompatActivity {
 
-    private SwitchCompat switchAutoMode, switchNotifications, switchSoundAlert, switchDarkMode;
     private CardView btnEditProfil;
     private TextView tvEmail, tvNama, tvBergabung;
+    private TextView tvMerekPerangkat, tvSeriPerangkat, tvSistemOperasi;
     private Button btnLogout;
 
     private SharedPreferences sharedPreferences;
@@ -34,27 +34,21 @@ public class AccountActivity extends AppCompatActivity {
 
         initializeViews();
         setupListeners();
-        loadSettings();
         setupBottomNavigation();
     }
 
     private void initializeViews() {
-        switchAutoMode = findViewById(R.id.switchAutoMode);
-        switchNotifications = findViewById(R.id.switchNotifications);
-        switchSoundAlert = findViewById(R.id.switchSoundAlert);
-        switchDarkMode = findViewById(R.id.switchDarkMode);
         btnEditProfil = findViewById(R.id.btnEditProfil);
         tvNama = findViewById(R.id.tvNama);
         tvEmail = findViewById(R.id.tvEmail);
         tvBergabung = findViewById(R.id.tvBergabung);
+        tvMerekPerangkat = findViewById(R.id.tvMerekPerangkat);
+        tvSeriPerangkat = findViewById(R.id.tvSeriPerangkat);
+        tvSistemOperasi = findViewById(R.id.tvSistemOperasi);
         btnLogout = findViewById(R.id.btnLogout);
     }
 
     private void setupListeners() {
-        switchAutoMode.setOnCheckedChangeListener((buttonView, isChecked) -> saveSetting("auto_mode", isChecked));
-        switchNotifications.setOnCheckedChangeListener((buttonView, isChecked) -> saveSetting("notifications", isChecked));
-        switchSoundAlert.setOnCheckedChangeListener((buttonView, isChecked) -> saveSetting("sound_alert", isChecked));
-        switchDarkMode.setOnCheckedChangeListener((buttonView, isChecked) -> saveSetting("dark_mode", isChecked));
 
         btnEditProfil.setOnClickListener(v -> Toast.makeText(AccountActivity.this, "Fitur Edit Profil (Coming Soon)", Toast.LENGTH_SHORT).show());
 
@@ -85,19 +79,6 @@ public class AccountActivity extends AppCompatActivity {
         // tvNotifications was removed from bottom navigation layout
     }
 
-    private void loadSettings() {
-        switchAutoMode.setChecked(sharedPreferences.getBoolean("auto_mode", true));
-        switchNotifications.setChecked(sharedPreferences.getBoolean("notifications", true));
-        switchSoundAlert.setChecked(sharedPreferences.getBoolean("sound_alert", true));
-        switchDarkMode.setChecked(sharedPreferences.getBoolean("dark_mode", false));
-    }
-
-    private void saveSetting(String key, boolean value) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean(key, value);
-        editor.apply();
-    }
-
     private void loadUserProfile() {
         String email = sharedPreferences.getString("user_email", "");
         if (!email.isEmpty()) {
@@ -110,6 +91,16 @@ public class AccountActivity extends AppCompatActivity {
                 cursor.close();
             }
         }
+        
+        // Membaca informasi detail perangkat
+        String manufacturer = Build.MANUFACTURER;
+        if (manufacturer != null && manufacturer.length() > 0) {
+            manufacturer = manufacturer.substring(0, 1).toUpperCase() + manufacturer.substring(1);
+        }
+        
+        if (tvMerekPerangkat != null) tvMerekPerangkat.setText(manufacturer);
+        if (tvSeriPerangkat != null) tvSeriPerangkat.setText(Build.MODEL);
+        if (tvSistemOperasi != null) tvSistemOperasi.setText("Android " + Build.VERSION.RELEASE + " (API " + Build.VERSION.SDK_INT + ")");
     }
 
     @Override

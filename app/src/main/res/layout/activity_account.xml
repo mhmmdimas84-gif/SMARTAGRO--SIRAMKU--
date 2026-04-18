@@ -122,11 +122,11 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Card Pengaturan Sistem -->
+            <!-- Card Informasi Perangkat -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Pengaturan Sistem"
+                android:text="Informasi Perangkat"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:textColor="#333333"
@@ -150,8 +150,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
-                        android:padding="16dp"
-                        android:background="?android:attr/selectableItemBackground">
+                        android:padding="16dp">
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -160,21 +159,18 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Mode Otomatis"
-                                android:textSize="16sp"
-                                android:textColor="#333333" />
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Kontrol sistem otomatis"
+                                android:text="Merek Perangkat"
                                 android:textSize="14sp"
                                 android:textColor="#757575" />
+                            <TextView
+                                android:id="@+id/tvMerekPerangkat"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="-"
+                                android:textSize="16sp"
+                                android:textStyle="bold"
+                                android:textColor="#333333" />
                         </LinearLayout>
-                        <androidx.appcompat.widget.SwitchCompat
-                            android:id="@+id/switchAutoMode"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:checked="true" />
                     </LinearLayout>
 
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#E0E0E0" />
@@ -184,8 +180,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
-                        android:padding="16dp"
-                        android:background="?android:attr/selectableItemBackground">
+                        android:padding="16dp">
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -194,21 +189,18 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Notifikasi"
-                                android:textSize="16sp"
-                                android:textColor="#333333" />
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Terima pemberitahuan"
+                                android:text="Seri / Model"
                                 android:textSize="14sp"
                                 android:textColor="#757575" />
+                            <TextView
+                                android:id="@+id/tvSeriPerangkat"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="-"
+                                android:textSize="16sp"
+                                android:textStyle="bold"
+                                android:textColor="#333333" />
                         </LinearLayout>
-                        <androidx.appcompat.widget.SwitchCompat
-                            android:id="@+id/switchNotifications"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:checked="true" />
                     </LinearLayout>
 
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#E0E0E0" />
@@ -218,8 +210,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
-                        android:padding="16dp"
-                        android:background="?android:attr/selectableItemBackground">
+                        android:padding="16dp">
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -228,55 +219,18 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Peringatan Suara"
-                                android:textSize="16sp"
-                                android:textColor="#333333" />
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Aktifkan suara alarm"
+                                android:text="Sistem Operasi"
                                 android:textSize="14sp"
                                 android:textColor="#757575" />
-                        </LinearLayout>
-                        <androidx.appcompat.widget.SwitchCompat
-                            android:id="@+id/switchSoundAlert"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:checked="true" />
-                    </LinearLayout>
-
-                    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#E0E0E0" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:padding="16dp"
-                        android:background="?android:attr/selectableItemBackground">
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
                             <TextView
+                                android:id="@+id/tvSistemOperasi"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Mode Gelap"
+                                android:text="-"
                                 android:textSize="16sp"
+                                android:textStyle="bold"
                                 android:textColor="#333333" />
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Tampilan tema gelap"
-                                android:textSize="14sp"
-                                android:textColor="#757575" />
                         </LinearLayout>
-                        <androidx.appcompat.widget.SwitchCompat
-                            android:id="@+id/switchDarkMode"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:checked="false" />
                     </LinearLayout>
 
                 </LinearLayout>

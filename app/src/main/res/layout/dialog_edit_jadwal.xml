@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_white_rounded_top"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <TextView
+        android:id="@+id/tvDialogTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Atur Jadwal"
+        android:textColor="#1B5E20"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:baselineAligned="false">
+
+        <!-- Mulai -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mulai"
+                android:textColor="#757575"
+                android:textSize="12sp"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:id="@+id/tvWaktuMulai"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="08:00"
+                android:textColor="#2E7D32"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:background="@drawable/bg_filter_inactive"
+                android:padding="8dp"/>
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="-"
+            android:textColor="#757575"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_marginHorizontal="12dp"
+            android:layout_gravity="center_vertical|center_horizontal"/>
+
+        <!-- Selesai -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Selesai"
+                android:textColor="#757575"
+                android:textSize="12sp"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:id="@+id/tvWaktuSelesai"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="08:15"
+                android:textColor="#2E7D32"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:background="@drawable/bg_filter_inactive"
+                android:padding="8dp"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="24dp">
+
+        <Button
+            android:id="@+id/btnBatalJadwal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Batal"
+            android:textColor="#757575"
+            android:backgroundTint="#EEEEEE"
+            android:layout_marginEnd="8dp"/>
+
+        <Button
+            android:id="@+id/btnSimpanJadwal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Simpan"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#2E7D32"/>
+    </LinearLayout>
+
+</LinearLayout>
