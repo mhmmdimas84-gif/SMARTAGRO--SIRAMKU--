@@ -54,12 +54,16 @@ public class LoginActivity extends AppCompatActivity {
         
         sharedPreferences = getSharedPreferences("SiramkuPrefs", MODE_PRIVATE);
         
-        // Cek jika user sudah login sebelumnya
-        if (sharedPreferences.getBoolean("is_logged_in", false)) {
+        // Cek jika user sudah login sebelumnya (validasi dua lapis: Firebase + SharedPreferences)
+        FirebaseAuth authCheck = FirebaseAuth.getInstance();
+        if (authCheck.getCurrentUser() != null && sharedPreferences.getBoolean("is_logged_in", false)) {
             Intent intent = new Intent(LoginActivity.this, Dashboard.class);
             startActivity(intent);
             finish();
             return;
+        } else {
+            // Jika Firebase session habis, clear SharedPreferences supaya tidak bypass login
+            sharedPreferences.edit().putBoolean("is_logged_in", false).apply();
         }
 
         setContentView(R.layout.activity_login);
@@ -167,20 +171,62 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        // Logic: Jika user belum ada, daftarkan. Jika sudah ada, cek password.
+        // Validasi format email
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            Toast.makeText(this, "Format email tidak valid", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Cek apakah email sudah terdaftar
         if (!db.checkUserExists(email)) {
-            // Daftarkan sebagai user baru (Gunakan bagian email sebagai nama awal)
-            String name = email.split("@")[0];
-            db.registerUser(name, email, password);
-            Toast.makeText(this, "Akun baru berhasil dibuat!", Toast.LENGTH_SHORT).show();
+            // Email belum terdaftar — tawari untuk mendaftar
+            new android.app.AlertDialog.Builder(this)
+                .setTitle("Akun Tidak Ditemukan")
+                .setMessage("Email \"" + email + "\" belum terdaftar.\n\nApakah Anda ingin mendaftar dengan email dan password ini?")
+                .setPositiveButton("Daftar Sekarang", (dialog, which) -> {
+                    if (password.length() < 6) {
+                        Toast.makeText(this, "Password minimal 6 karakter", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    String name = email.split("@")[0];
+                    db.registerUser(name, email, password);
+                    Toast.makeText(this, "Akun berhasil dibuat! Silakan login.", Toast.LENGTH_SHORT).show();
+                })
+                .setNegativeButton("Batal", null)
+                .show();
+            return;
+        }
+
+        // Email terdaftar — cek password
+        if (db.checkLogin(email, password)) {
             performLogin(email);
         } else {
-            // Cek Login
-            if (db.checkLogin(email, password)) {
-                performLogin(email);
-            } else {
-                Toast.makeText(this, "Password salah!", Toast.LENGTH_SHORT).show();
-            }
+            // Password salah — tampilkan dialog lupa password
+            new android.app.AlertDialog.Builder(this)
+                .setTitle("Password Salah")
+                .setMessage("Password yang Anda masukkan tidak sesuai.\n\nJika lupa password, klik \"Reset Password\" untuk membuat password baru.")
+                .setPositiveButton("Reset Password", (dialog, which) -> {
+                    // Dialog untuk ganti password
+                    android.widget.EditText etNewPass = new android.widget.EditText(this);
+                    etNewPass.setHint("Masukkan password baru (min. 6 karakter)");
+                    etNewPass.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                    new android.app.AlertDialog.Builder(this)
+                        .setTitle("Buat Password Baru")
+                        .setView(etNewPass)
+                        .setPositiveButton("Simpan", (d2, w2) -> {
+                            String newPass = etNewPass.getText().toString().trim();
+                            if (newPass.length() < 6) {
+                                Toast.makeText(this, "Password minimal 6 karakter", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                            db.updatePassword(email, newPass);
+                            Toast.makeText(this, "Password berhasil diubah! Silakan login.", Toast.LENGTH_SHORT).show();
+                        })
+                        .setNegativeButton("Batal", null)
+                        .show();
+                })
+                .setNegativeButton("Coba Lagi", null)
+                .show();
         }
     }
 
