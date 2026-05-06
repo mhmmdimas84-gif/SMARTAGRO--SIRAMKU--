@@ -36,7 +36,6 @@ public class LoginActivity extends AppCompatActivity {
     private Button btnLogin;
     private TextView tvRegister;
     private CheckBox cbCaptcha;
-    private DatabaseHelper db;
     private SharedPreferences sharedPreferences;
 
     // Firebase variables
@@ -67,8 +66,6 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         setContentView(R.layout.activity_login);
-
-        db = new DatabaseHelper(this);
 
         initViews();
         // setCurrentTime(); // Removed because tvTime is not in layout
@@ -171,63 +168,69 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        // Validasi format email
         if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             Toast.makeText(this, "Format email tidak valid", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Cek apakah email sudah terdaftar
-        if (!db.checkUserExists(email)) {
-            // Email belum terdaftar — tawari untuk mendaftar
-            new android.app.AlertDialog.Builder(this)
-                .setTitle("Akun Tidak Ditemukan")
-                .setMessage("Email \"" + email + "\" belum terdaftar.\n\nApakah Anda ingin mendaftar dengan email dan password ini?")
-                .setPositiveButton("Daftar Sekarang", (dialog, which) -> {
-                    if (password.length() < 6) {
-                        Toast.makeText(this, "Password minimal 6 karakter", Toast.LENGTH_SHORT).show();
-                        return;
+        // Coba Login dengan Firebase Auth
+        mAuth.signInWithEmailAndPassword(email, password)
+            .addOnCompleteListener(this, task -> {
+                if (task.isSuccessful()) {
+                    // Login sukses
+                    performLogin(email);
+                } else {
+                    // Jika gagal login, cek apakah karena user belum terdaftar atau salah password
+                    String errorMsg = task.getException() != null ? task.getException().getMessage() : "";
+                    
+                    if (errorMsg.contains("There is no user record") || errorMsg.contains("INVALID_LOGIN_CREDENTIALS")) {
+                        // User belum ada atau password salah. Firebase Auth error messages bisa bervariasi.
+                        // Berikan opsi daftar jika memang mau daftar, atau reset jika salah password.
+                        new android.app.AlertDialog.Builder(this)
+                            .setTitle("Login Gagal")
+                            .setMessage("Akun tidak ditemukan atau password salah.\n\nPilih tindakan yang ingin dilakukan:")
+                            .setPositiveButton("Daftar Baru", (dialog, which) -> {
+                                if (password.length() < 6) {
+                                    Toast.makeText(this, "Password minimal 6 karakter", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                                // Daftarkan user ke Firebase
+                                mAuth.createUserWithEmailAndPassword(email, password)
+                                    .addOnCompleteListener(this, taskReg -> {
+                                        if (taskReg.isSuccessful()) {
+                                            FirebaseUser user = mAuth.getCurrentUser();
+                                            if (user != null) {
+                                                String uid = user.getUid();
+                                                DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users").child(uid);
+                                                HashMap<String, Object> userData = new HashMap<>();
+                                                userData.put("nama", email.split("@")[0]);
+                                                userData.put("email", email);
+                                                userData.put("login_perangkat", android.os.Build.MODEL);
+                                                userRef.setValue(userData);
+                                            }
+                                            Toast.makeText(this, "Akun berhasil dibuat! Silakan login kembali.", Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            Toast.makeText(this, "Gagal mendaftar: " + taskReg.getException().getMessage(), Toast.LENGTH_LONG).show();
+                                        }
+                                    });
+                            })
+                            .setNeutralButton("Reset Password", (dialog, which) -> {
+                                mAuth.sendPasswordResetEmail(email)
+                                    .addOnCompleteListener(taskReset -> {
+                                        if (taskReset.isSuccessful()) {
+                                            Toast.makeText(this, "Email reset password telah dikirim ke " + email, Toast.LENGTH_LONG).show();
+                                        } else {
+                                            Toast.makeText(this, "Gagal mengirim email: " + taskReset.getException().getMessage(), Toast.LENGTH_LONG).show();
+                                        }
+                                    });
+                            })
+                            .setNegativeButton("Batal", null)
+                            .show();
+                    } else {
+                         Toast.makeText(this, "Error: " + errorMsg, Toast.LENGTH_SHORT).show();
                     }
-                    String name = email.split("@")[0];
-                    db.registerUser(name, email, password);
-                    Toast.makeText(this, "Akun berhasil dibuat! Silakan login.", Toast.LENGTH_SHORT).show();
-                })
-                .setNegativeButton("Batal", null)
-                .show();
-            return;
-        }
-
-        // Email terdaftar — cek password
-        if (db.checkLogin(email, password)) {
-            performLogin(email);
-        } else {
-            // Password salah — tampilkan dialog lupa password
-            new android.app.AlertDialog.Builder(this)
-                .setTitle("Password Salah")
-                .setMessage("Password yang Anda masukkan tidak sesuai.\n\nJika lupa password, klik \"Reset Password\" untuk membuat password baru.")
-                .setPositiveButton("Reset Password", (dialog, which) -> {
-                    // Dialog untuk ganti password
-                    android.widget.EditText etNewPass = new android.widget.EditText(this);
-                    etNewPass.setHint("Masukkan password baru (min. 6 karakter)");
-                    etNewPass.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                    new android.app.AlertDialog.Builder(this)
-                        .setTitle("Buat Password Baru")
-                        .setView(etNewPass)
-                        .setPositiveButton("Simpan", (d2, w2) -> {
-                            String newPass = etNewPass.getText().toString().trim();
-                            if (newPass.length() < 6) {
-                                Toast.makeText(this, "Password minimal 6 karakter", Toast.LENGTH_SHORT).show();
-                                return;
-                            }
-                            db.updatePassword(email, newPass);
-                            Toast.makeText(this, "Password berhasil diubah! Silakan login.", Toast.LENGTH_SHORT).show();
-                        })
-                        .setNegativeButton("Batal", null)
-                        .show();
-                })
-                .setNegativeButton("Coba Lagi", null)
-                .show();
-        }
+                }
+            });
     }
 
     private void performLogin(String email) {

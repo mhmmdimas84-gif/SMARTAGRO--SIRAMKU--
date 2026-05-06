@@ -2,7 +2,6 @@ package com.example.smartagrosiramku;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -23,7 +22,6 @@ public class AccountActivity extends AppCompatActivity {
     private Button btnLogout;
 
     private SharedPreferences sharedPreferences;
-    private DatabaseHelper db;
     private static final String PREF_NAME = "SiramkuPrefs";
 
     @Override
@@ -32,7 +30,6 @@ public class AccountActivity extends AppCompatActivity {
         setContentView(R.layout.activity_account);
 
         sharedPreferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
-        db = new DatabaseHelper(this);
 
         initializeViews();
         setupListeners();
@@ -90,20 +87,17 @@ public class AccountActivity extends AppCompatActivity {
         if (user != null) {
             // Data dari Akun Google / Firebase
             String name = user.getDisplayName();
-            tvNama.setText(name != null && !name.isEmpty() ? name : "User Aplikasi");
-            tvEmail.setText(user.getEmail());
-        } else {
-            // Data lama dari Database Lokal (Bukan Google)
-            String email = sharedPreferences.getString("user_email", "");
-            if (!email.isEmpty()) {
-                Cursor cursor = db.getUserData(email);
-                if (cursor != null && cursor.moveToFirst()) {
-                    String name = cursor.getString(cursor.getColumnIndexOrThrow("NAME"));
-                    tvNama.setText(name);
-                    tvEmail.setText(email);
-                    cursor.close();
+            // Jika name kosong (daftar manual), ambil dari bagian sebelum @ pada email
+            if (name == null || name.isEmpty()) {
+                String email = user.getEmail();
+                if (email != null && email.contains("@")) {
+                    name = email.split("@")[0];
+                } else {
+                    name = "User Aplikasi";
                 }
             }
+            tvNama.setText(name);
+            tvEmail.setText(user.getEmail());
         }
         
         // Membaca informasi detail perangkat

@@ -14,7 +14,17 @@ import java.util.Locale;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.button.MaterialButton;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import android.util.Log;
+
 public class ControlActivity extends AppCompatActivity {
+
+    private DatabaseReference pompaNutrisiRef;
+    private DatabaseReference pompaAirRef;
 
     // Bottom Navigation
     private TextView tvDashboard, tvHistory, tvControl, tvAccount;
@@ -41,8 +51,61 @@ public class ControlActivity extends AppCompatActivity {
 
         initializeViews();
         setupHeaderActions();
+        
+        pompaNutrisiRef = FirebaseDatabase.getInstance().getReference("Controls/pompa_nutrisi");
+        pompaAirRef = FirebaseDatabase.getInstance().getReference("Controls/pompa_air");
+        
+        listenToFirebase();
         setupPompaListeners();
         setupBottomNavigation();
+    }
+
+    private void listenToFirebase() {
+        pompaNutrisiRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                Boolean status = snapshot.child("status").getValue(Boolean.class);
+                String jadwal = snapshot.child("jadwal").getValue(String.class);
+                Integer durasi = snapshot.child("durasi_menit").getValue(Integer.class);
+
+                if (status != null) {
+                    setStatusPompa(tvStatusNutrisi, status ? "Aktif" : "Tidak Aktif", status);
+                    btnNyalakanNutrisi.setText(status ? "Matikan" : "Nyalakan");
+                    btnNyalakanNutrisi.setBackgroundTintList(getResources().getColorStateList(
+                            status ? android.R.color.holo_red_dark : android.R.color.holo_green_dark));
+                }
+                if (jadwal != null) tvJadwalNutrisi.setText(jadwal);
+                if (durasi != null) tvDurasiNutrisi.setText(durasi + " menit");
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                Log.e("ControlActivity", "Gagal load pompa nutrisi", error.toException());
+            }
+        });
+
+        pompaAirRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                Boolean status = snapshot.child("status").getValue(Boolean.class);
+                String jadwal = snapshot.child("jadwal").getValue(String.class);
+                Integer durasi = snapshot.child("durasi_menit").getValue(Integer.class);
+
+                if (status != null) {
+                    setStatusPompa(tvStatusAir, status ? "Aktif" : "Tidak Aktif", status);
+                    btnNyalakanAir.setText(status ? "Matikan" : "Nyalakan");
+                    btnNyalakanAir.setBackgroundTintList(getResources().getColorStateList(
+                            status ? android.R.color.holo_red_dark : android.R.color.holo_green_dark));
+                }
+                if (jadwal != null) tvJadwalAir.setText(jadwal);
+                if (durasi != null) tvDurasiAir.setText(durasi + " menit");
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                Log.e("ControlActivity", "Gagal load pompa air", error.toException());
+            }
+        });
     }
 
     private void initializeViews() {
@@ -87,30 +150,15 @@ public class ControlActivity extends AppCompatActivity {
         if (btnNyalakanNutrisi != null) {
             btnNyalakanNutrisi.setOnClickListener(v -> {
                 String statusSekarang = tvStatusNutrisi.getText().toString();
-
-                if (statusSekarang.equals("Tidak Aktif")) {
-                    // Nyalakan pompa nutrisi
-                    setStatusPompa(tvStatusNutrisi, "Aktif", true);
-                    btnNyalakanNutrisi.setText("Matikan");
-                    btnNyalakanNutrisi.setBackgroundTintList(
-                            getResources().getColorStateList(android.R.color.holo_red_dark)
-                    );
-                    Toast.makeText(this, "Pompa Nutrisi dinyalakan", Toast.LENGTH_SHORT).show();
-                } else {
-                    // Matikan pompa nutrisi
-                    setStatusPompa(tvStatusNutrisi, "Tidak Aktif", false);
-                    btnNyalakanNutrisi.setText("Nyalakan");
-                    btnNyalakanNutrisi.setBackgroundTintList(
-                            getResources().getColorStateList(android.R.color.holo_green_dark)
-                    );
-                    Toast.makeText(this, "Pompa Nutrisi dimatikan", Toast.LENGTH_SHORT).show();
-                }
+                boolean targetStatus = statusSekarang.equals("Tidak Aktif");
+                pompaNutrisiRef.child("status").setValue(targetStatus);
+                Toast.makeText(this, targetStatus ? "Menyalakan Pompa Nutrisi..." : "Mematikan Pompa Nutrisi...", Toast.LENGTH_SHORT).show();
             });
         }
 
         if (btnEditNutrisi != null) {
             btnEditNutrisi.setOnClickListener(v ->
-                    showEditJadwalDialog("Pompa Nutrisi", tvJadwalNutrisi, tvDurasiNutrisi)
+                    showEditJadwalDialog("Pompa Nutrisi", pompaNutrisiRef, tvJadwalNutrisi, tvDurasiNutrisi)
             );
         }
 
@@ -118,33 +166,20 @@ public class ControlActivity extends AppCompatActivity {
         if (btnNyalakanAir != null) {
             btnNyalakanAir.setOnClickListener(v -> {
                 String statusSekarang = tvStatusAir.getText().toString();
-
-                if (statusSekarang.equals("Tidak Aktif")) {
-                    setStatusPompa(tvStatusAir, "Aktif", true);
-                    btnNyalakanAir.setText("Matikan");
-                    btnNyalakanAir.setBackgroundTintList(
-                            getResources().getColorStateList(android.R.color.holo_red_dark)
-                    );
-                    Toast.makeText(this, "Pompa Air dinyalakan", Toast.LENGTH_SHORT).show();
-                } else {
-                    setStatusPompa(tvStatusAir, "Tidak Aktif", false);
-                    btnNyalakanAir.setText("Nyalakan");
-                    btnNyalakanAir.setBackgroundTintList(
-                            getResources().getColorStateList(android.R.color.holo_green_dark) // <-- Ganti ini
-                    );
-                    Toast.makeText(this, "Pompa Air dimatikan", Toast.LENGTH_SHORT).show();
-                }
+                boolean targetStatus = statusSekarang.equals("Tidak Aktif");
+                pompaAirRef.child("status").setValue(targetStatus);
+                Toast.makeText(this, targetStatus ? "Menyalakan Pompa Air..." : "Mematikan Pompa Air...", Toast.LENGTH_SHORT).show();
             });
         }
 
         if (btnEditAir != null) {
             btnEditAir.setOnClickListener(v ->
-                    showEditJadwalDialog("Pompa Air", tvJadwalAir, tvDurasiAir)
+                    showEditJadwalDialog("Pompa Air", pompaAirRef, tvJadwalAir, tvDurasiAir)
             );
         }
     }
 
-    private void showEditJadwalDialog(String namaPompa, TextView tvJadwalTarget, TextView tvDurasiTarget) {
+    private void showEditJadwalDialog(String namaPompa, DatabaseReference ref, TextView tvJadwalTarget, TextView tvDurasiTarget) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_edit_jadwal, null);
         builder.setView(dialogView);
@@ -180,14 +215,13 @@ public class ControlActivity extends AppCompatActivity {
             String mulai = tvWaktuMulai.getText().toString();
             String selesai = tvWaktuSelesai.getText().toString();
             String baru = mulai + " - " + selesai;
-            tvJadwalTarget.setText(baru);
             
-            if (tvDurasiTarget != null) {
-                int durasi = hitungDurasi(mulai, selesai);
-                tvDurasiTarget.setText(durasi + " menit");
-            }
+            int durasi = hitungDurasi(mulai, selesai);
             
-            Toast.makeText(this, "Jadwal " + namaPompa + " diperbarui", Toast.LENGTH_SHORT).show();
+            ref.child("jadwal").setValue(baru);
+            ref.child("durasi_menit").setValue(durasi);
+            
+            Toast.makeText(this, "Jadwal " + namaPompa + " disimpan ke Cloud", Toast.LENGTH_SHORT).show();
             dialog.dismiss();
         });
 

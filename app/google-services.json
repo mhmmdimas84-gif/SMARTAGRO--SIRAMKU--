@@ -1,42 +1,34 @@
 {
   "project_info": {
-    "project_number": "42022207841",
-    "firebase_url": "https://siramkudb-default-rtdb.firebaseio.com",
-    "project_id": "siramkudb",
-    "storage_bucket": "siramkudb.firebasestorage.app"
+    "project_number": "117722257960",
+    "firebase_url": "https://siramku-10ead-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "siramku-10ead",
+    "storage_bucket": "siramku-10ead.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:42022207841:android:3707c20bb9eee9234dc520",
+        "mobilesdk_app_id": "1:117722257960:android:22e235e1fec48bfbff331d",
         "android_client_info": {
           "package_name": "com.example.smartagrosiramku"
         }
       },
       "oauth_client": [
         {
-          "client_id": "42022207841-o3j39oe8q2v7mn5turu66lomgv70hk9i.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.smartagrosiramku",
-            "certificate_hash": "71f596d26b949037c51203b658c8e711e99a32fc"
-          }
-        },
-        {
-          "client_id": "42022207841-jnm6earqjpvo2m3n94lls2ii0iecjvlc.apps.googleusercontent.com",
+          "client_id": "117722257960-9badctkbsg525395sfcbul36863us0q5.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDaXi1qPVL7guYZvT42ULGRw-kyIFfN5-0"
+          "current_key": "AIzaSyB-FTmbBeDp3It7aSm1uAN4WvF6SNfBJf0"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "42022207841-jnm6earqjpvo2m3n94lls2ii0iecjvlc.apps.googleusercontent.com",
+              "client_id": "117722257960-9badctkbsg525395sfcbul36863us0q5.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

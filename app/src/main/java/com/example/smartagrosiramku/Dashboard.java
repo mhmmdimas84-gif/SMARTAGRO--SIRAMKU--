@@ -20,6 +20,14 @@ import com.github.mikephil.charting.data.LineDataSet;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import android.util.Log;
+
 public class Dashboard extends AppCompatActivity {
 
     // Deklarasi View untuk Bottom Navigation
@@ -31,6 +39,10 @@ public class Dashboard extends AppCompatActivity {
     // View untuk Chart & Filter
     private LineChart chartLevelAir;
     private TextView tvFilterMinggu, tvFilterBulan;
+
+    // View untuk Sensor Real-time
+    private TextView tvTDS, tvLevelAir;
+    private android.widget.ProgressBar progressTDS, progressAir;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +64,9 @@ public class Dashboard extends AppCompatActivity {
         
         // Load default data (Mingguan)
         loadChartDataMingguan();
+
+        // Load data sensor realtime
+        loadRealtimeSensorData();
     }
 
     private void initializeViews() {
@@ -68,6 +83,12 @@ public class Dashboard extends AppCompatActivity {
         chartLevelAir = findViewById(R.id.chartLevelAir);
         tvFilterMinggu = findViewById(R.id.tvFilterMinggu);
         tvFilterBulan = findViewById(R.id.tvFilterBulan);
+
+        // Inisialisasi Sensor Real-time
+        tvTDS = findViewById(R.id.tvTDS);
+        tvLevelAir = findViewById(R.id.tvLevelAir);
+        progressTDS = findViewById(R.id.progressTDS);
+        progressAir = findViewById(R.id.progressAir);
     }
 
     private void setupHeaderActions() {
@@ -181,40 +202,124 @@ public class Dashboard extends AppCompatActivity {
         });
     }
 
+    private void loadRealtimeSensorData() {
+        DatabaseReference sensorRef = FirebaseDatabase.getInstance().getReference("Sensors");
+
+        // Listener untuk TDS
+        sensorRef.child("tds_ppm").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                if (snapshot.exists() && tvTDS != null && progressTDS != null) {
+                    float tdsValue = snapshot.getValue(Float.class);
+                    tvTDS.setText(String.format("%.0f", tdsValue));
+                    
+                    // Update progress bar (asumsi max TDS 1000 untuk tampilan visual)
+                    int progress = (int) ((tdsValue / 1000f) * 100);
+                    progressTDS.setProgress(Math.min(progress, 100));
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                Log.e("Dashboard", "Gagal membaca TDS: " + error.getMessage());
+            }
+        });
+
+        // Listener untuk Water Level
+        sensorRef.child("water_level_pct").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                if (snapshot.exists() && tvLevelAir != null && progressAir != null) {
+                    int waterLevel = snapshot.getValue(Integer.class);
+                    tvLevelAir.setText(String.valueOf(waterLevel));
+                    progressAir.setProgress(waterLevel);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                Log.e("Dashboard", "Gagal membaca Water Level: " + error.getMessage());
+            }
+        });
+    }
+
     private void loadChartDataMingguan() {
         if (chartLevelAir == null) return;
         
-        List<Entry> entries = new ArrayList<>();
-        entries.add(new Entry(0, 60f));
-        entries.add(new Entry(1, 65f));
-        entries.add(new Entry(2, 70f));
-        entries.add(new Entry(3, 50f));
-        entries.add(new Entry(4, 75f));
-        entries.add(new Entry(5, 80f));
-        entries.add(new Entry(6, 75f));
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Sensors/history/mingguan");
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                List<Entry> entries = new ArrayList<>();
+                int i = 0;
+                for (DataSnapshot data : snapshot.getChildren()) {
+                    Float val = data.getValue(Float.class);
+                    if (val != null) {
+                        entries.add(new Entry(i++, val));
+                    }
+                }
+                
+                // Jika kosong dari Firebase, gunakan default (opsional)
+                if (entries.isEmpty()) {
+                    entries.add(new Entry(0, 60f));
+                    entries.add(new Entry(1, 65f));
+                    entries.add(new Entry(2, 70f));
+                    entries.add(new Entry(3, 50f));
+                    entries.add(new Entry(4, 75f));
+                    entries.add(new Entry(5, 80f));
+                    entries.add(new Entry(6, 75f));
+                }
 
-        String[] days = new String[]{"Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"};
-        chartLevelAir.getXAxis().setValueFormatter(new com.github.mikephil.charting.formatter.IndexAxisValueFormatter(days));
-        chartLevelAir.getXAxis().setLabelCount(days.length, true);
+                String[] days = new String[]{"Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"};
+                chartLevelAir.getXAxis().setValueFormatter(new com.github.mikephil.charting.formatter.IndexAxisValueFormatter(days));
+                chartLevelAir.getXAxis().setLabelCount(days.length, true);
 
-        setChartData(entries, "Mingguan");
+                setChartData(entries, "Mingguan");
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                Log.e("Dashboard", "Gagal mengambil data mingguan: " + error.getMessage());
+            }
+        });
     }
 
     private void loadChartDataBulanan() {
         if (chartLevelAir == null) return;
         
-        List<Entry> entries = new ArrayList<>();
-        entries.add(new Entry(0, 75f));
-        entries.add(new Entry(1, 72f));
-        entries.add(new Entry(2, 78f));
-        entries.add(new Entry(3, 85f));
-        entries.add(new Entry(4, 80f));
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Sensors/history/bulanan");
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                List<Entry> entries = new ArrayList<>();
+                int i = 0;
+                for (DataSnapshot data : snapshot.getChildren()) {
+                    Float val = data.getValue(Float.class);
+                    if (val != null) {
+                        entries.add(new Entry(i++, val));
+                    }
+                }
+                
+                if (entries.isEmpty()) {
+                    entries.add(new Entry(0, 75f));
+                    entries.add(new Entry(1, 72f));
+                    entries.add(new Entry(2, 78f));
+                    entries.add(new Entry(3, 85f));
+                    entries.add(new Entry(4, 80f));
+                }
 
-        String[] weeks = new String[]{"Mg 1", "Mg 2", "Mg 3", "Mg 4", "Mg 5"};
-        chartLevelAir.getXAxis().setValueFormatter(new com.github.mikephil.charting.formatter.IndexAxisValueFormatter(weeks));
-        chartLevelAir.getXAxis().setLabelCount(weeks.length, true);
+                String[] weeks = new String[]{"Mg 1", "Mg 2", "Mg 3", "Mg 4", "Mg 5"};
+                chartLevelAir.getXAxis().setValueFormatter(new com.github.mikephil.charting.formatter.IndexAxisValueFormatter(weeks));
+                chartLevelAir.getXAxis().setLabelCount(weeks.length, true);
 
-        setChartData(entries, "Bulanan");
+                setChartData(entries, "Bulanan");
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                Log.e("Dashboard", "Gagal mengambil data bulanan: " + error.getMessage());
+            }
+        });
     }
 
     private void setChartData(List<Entry> entries, String label) {
