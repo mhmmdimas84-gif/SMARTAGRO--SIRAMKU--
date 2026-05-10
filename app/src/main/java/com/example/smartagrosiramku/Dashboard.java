@@ -20,6 +20,7 @@ import com.github.mikephil.charting.data.LineDataSet;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Calendar;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -33,8 +34,9 @@ public class Dashboard extends AppCompatActivity {
     // Deklarasi View untuk Bottom Navigation
     private TextView tvDashboard, tvHistory, tvControl, tvAccount;
     
-    // Deklarasi View untuk Header Notification
+    // Deklarasi View untuk Header Notification & Greeting
     private ImageButton btnNotif;
+    private TextView tvGreeting;
 
     // View untuk Chart & Filter
     private LineChart chartLevelAir;
@@ -44,6 +46,10 @@ public class Dashboard extends AppCompatActivity {
     private TextView tvTDS, tvLevelAir;
     private android.widget.ProgressBar progressTDS, progressAir;
 
+    // Firebase Listeners for Chart
+    private DatabaseReference currentChartRef;
+    private ValueEventListener currentChartListener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +57,9 @@ public class Dashboard extends AppCompatActivity {
 
         // Inisialisasi Views
         initializeViews();
+
+        // Update Greeting dynamically
+        updateGreeting();
 
         // Setup Bottom Navigation
         setupBottomNavigation();
@@ -76,8 +85,9 @@ public class Dashboard extends AppCompatActivity {
         tvControl = findViewById(R.id.tvControl);
         tvAccount = findViewById(R.id.tvAccount);
         
-        // Inisialisasi Header Notification
+        // Inisialisasi Header Notification & Greeting
         btnNotif = findViewById(R.id.btnNotif);
+        tvGreeting = findViewById(R.id.tvGreeting);
 
         // Inisialisasi Chart & Filter
         chartLevelAir = findViewById(R.id.chartLevelAir);
@@ -89,6 +99,26 @@ public class Dashboard extends AppCompatActivity {
         tvLevelAir = findViewById(R.id.tvLevelAir);
         progressTDS = findViewById(R.id.progressTDS);
         progressAir = findViewById(R.id.progressAir);
+    }
+
+    private void updateGreeting() {
+        if (tvGreeting == null) return;
+        
+        Calendar calendar = Calendar.getInstance();
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        String greeting;
+        
+        if (hour >= 0 && hour < 11) {
+            greeting = "Selamat pagi, Petani!";
+        } else if (hour >= 11 && hour < 15) {
+            greeting = "Selamat siang, Petani!";
+        } else if (hour >= 15 && hour < 18) {
+            greeting = "Selamat sore, Petani!";
+        } else {
+            greeting = "Selamat malam, Petani!";
+        }
+        
+        tvGreeting.setText(greeting);
     }
 
     private void setupHeaderActions() {
@@ -246,8 +276,11 @@ public class Dashboard extends AppCompatActivity {
     private void loadChartDataMingguan() {
         if (chartLevelAir == null) return;
         
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Sensors/history/mingguan");
-        ref.addValueEventListener(new ValueEventListener() {
+        if (currentChartRef != null && currentChartListener != null) {
+            currentChartRef.removeEventListener(currentChartListener);
+        }
+        currentChartRef = FirebaseDatabase.getInstance().getReference("Sensors/history/mingguan");
+        currentChartListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 List<Entry> entries = new ArrayList<>();
@@ -281,14 +314,18 @@ public class Dashboard extends AppCompatActivity {
             public void onCancelled(DatabaseError error) {
                 Log.e("Dashboard", "Gagal mengambil data mingguan: " + error.getMessage());
             }
-        });
+        };
+        currentChartRef.addValueEventListener(currentChartListener);
     }
 
     private void loadChartDataBulanan() {
         if (chartLevelAir == null) return;
         
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Sensors/history/bulanan");
-        ref.addValueEventListener(new ValueEventListener() {
+        if (currentChartRef != null && currentChartListener != null) {
+            currentChartRef.removeEventListener(currentChartListener);
+        }
+        currentChartRef = FirebaseDatabase.getInstance().getReference("Sensors/history/bulanan");
+        currentChartListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 List<Entry> entries = new ArrayList<>();
@@ -319,7 +356,8 @@ public class Dashboard extends AppCompatActivity {
             public void onCancelled(DatabaseError error) {
                 Log.e("Dashboard", "Gagal mengambil data bulanan: " + error.getMessage());
             }
-        });
+        };
+        currentChartRef.addValueEventListener(currentChartListener);
     }
 
     private void setChartData(List<Entry> entries, String label) {

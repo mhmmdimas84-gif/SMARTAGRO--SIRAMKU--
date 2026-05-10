@@ -8,7 +8,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
         <!-- ===== HEADER BANNER ===== -->
@@ -99,7 +99,8 @@
         <!-- ===== FORM CARD (rounded top) ===== -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:background="@drawable/bg_form_card"
             android:layout_marginTop="-16dp"
             android:orientation="vertical"
@@ -126,6 +127,7 @@
                 app:boxCornerRadiusBottomEnd="12dp"
                 app:boxStrokeColor="#E0E0E0"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                app:hintTextColor="#2E7D32"
                 app:startIconDrawable="@drawable/ic_email"
                 app:startIconTint="#2E7D32">
 
@@ -158,6 +160,7 @@
                 app:boxCornerRadiusBottomEnd="12dp"
                 app:boxStrokeColor="#E0E0E0"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                app:hintTextColor="#2E7D32"
                 app:startIconDrawable="@drawable/ic_lock"
                 app:startIconTint="#2E7D32"
                 app:endIconMode="password_toggle">
@@ -227,48 +230,6 @@
                 android:textStyle="bold"
                 app:backgroundTint="#2E7D32"
                 app:cornerRadius="19dp" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnGoogleLogin"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:text="Google"
-                android:textColor="#FFFF"
-                android:textSize="13sp"
-                android:layout_marginBottom="12dp"
-                app:strokeColor="#E0E0E0"
-                app:strokeWidth="1.5dp"
-                app:cornerRadius="14dp"
-                app:icon="@drawable/ic_google"
-                app:iconTint="@null"
-                app:backgroundTint="#2E7D32"
-                app:iconGravity="textStart"/>
-
-
-            <!-- Register link -->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Belum punya akun? "
-                    android:textColor="#757575"
-                    android:textSize="13sp"/>
-
-                <TextView
-                    android:id="@+id/tvDaftar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Daftar Sekarang"
-                    android:textColor="#2E7D32"
-                    android:textSize="13sp"
-                    android:textStyle="bold"/>
-            </LinearLayout>
 
         </LinearLayout>
     </LinearLayout>

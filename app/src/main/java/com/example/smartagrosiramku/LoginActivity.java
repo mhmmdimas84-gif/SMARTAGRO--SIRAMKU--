@@ -34,7 +34,6 @@ public class LoginActivity extends AppCompatActivity {
 
     private EditText etEmail, etPassword;
     private Button btnLogin;
-    private TextView tvRegister;
     private CheckBox cbCaptcha;
     private SharedPreferences sharedPreferences;
 
@@ -86,7 +85,6 @@ public class LoginActivity extends AppCompatActivity {
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
         btnLogin = findViewById(R.id.btnMasuk);
-        tvRegister = findViewById(R.id.tvDaftar);
         cbCaptcha = findViewById(R.id.cbCaptcha);
     }
 
@@ -97,21 +95,6 @@ public class LoginActivity extends AppCompatActivity {
                 attemptLogin();
             }
         });
-
-        tvRegister.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(LoginActivity.this, "Masukkan email dan password lalu klik Masuk untuk mendaftar otomatis", Toast.LENGTH_LONG).show();
-            }
-        });
-
-        Button btnGoogleLogin = findViewById(R.id.btnGoogleLogin);
-        if (btnGoogleLogin != null) {
-            btnGoogleLogin.setOnClickListener(v -> {
-                Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-                startActivityForResult(signInIntent, RC_SIGN_IN);
-            });
-        }
     }
 
     @Override
