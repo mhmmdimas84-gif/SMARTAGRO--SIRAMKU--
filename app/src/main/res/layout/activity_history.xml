@@ -78,7 +78,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Histori Pompa"
+            android:text="Histori Sensor"
             android:textColor="#FFFFFF"
             android:textSize="20sp"
             android:textStyle="bold"/>
@@ -86,7 +86,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Riwayat aktivitas sistem pompa"
+            android:text="Riwayat data TDS dan Level Air"
             android:textColor="#A5D6A7"
             android:textSize="12sp"
             android:layout_marginTop="2dp"
@@ -144,9 +144,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Hari Ini"
-                            android:textColor="#6A1B9A"
+                            android:textColor="#757575"
                             android:textSize="12sp"
-                            android:background="@drawable/bg_tab_purple"
+                            android:background="@android:color/transparent"
                             android:paddingHorizontal="16dp"
                             android:paddingVertical="6dp"
                             android:clickable="true"
@@ -154,358 +154,13 @@
                     </LinearLayout>
                 </HorizontalScrollView>
 
-                <!-- Tanggal Label -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="19 MARET 2026"
-                    android:textColor="#9E9E9E"
-                    android:textSize="11sp"
-                    android:textStyle="bold"
-                    android:letterSpacing="0.05"
-                    android:layout_marginBottom="10dp"/>
 
-                <!-- ===== CARD POMPA NUTRISI ===== -->
-                <LinearLayout
-                    android:id="@+id/cardHistoriNutrisi"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvHistory"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/bg_pump_card_green"
-                    android:orientation="vertical"
-                    android:padding="14dp"
-                    android:layout_marginBottom="12dp">
-
-                    <!-- Header Row -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:layout_marginBottom="8dp">
-
-                        <ImageView
-                            android:layout_width="36dp"
-                            android:layout_height="36dp"
-                            android:src="@drawable/ic_water_drop"
-                            android:background="@drawable/bg_icon_green_light"
-                            android:padding="8dp"/>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical"
-                            android:layout_marginStart="10dp">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Pompa Nutrisi"
-                                android:textColor="#1B5E20"
-                                android:textSize="13sp"
-                                android:textStyle="bold"/>
-
-                            <TextView
-                                android:id="@+id/tvWaktuNutrisi"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="2026-03-19 · 08.00"
-                                android:textColor="#757575"
-                                android:textSize="10sp"
-                                android:drawableStart="@drawable/ic_clock_small"
-                                android:drawablePadding="4dp"/>
-                        </LinearLayout>
-
-                        <TextView
-                            android:id="@+id/tvStatusHistoriNutrisi"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Selesai"
-                            android:textColor="#2E7D32"
-                            android:textSize="10sp"
-                            android:textStyle="bold"
-                            android:background="@drawable/bg_badge_active"
-                            android:paddingHorizontal="10dp"
-                            android:paddingVertical="3dp"/>
-                    </LinearLayout>
-
-                    <!-- Durasi & Mode -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:layout_marginBottom="10dp">
-
-                        <TextView
-                            android:id="@+id/tvDurasiNutrisi"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="15 Menit"
-                            android:textColor="#757575"
-                            android:textSize="10sp"/>
-
-                        <View
-                            android:layout_width="3dp"
-                            android:layout_height="3dp"
-                            android:background="@drawable/bg_dot_divider"
-                            android:layout_marginHorizontal="6dp"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Jadwal Otomatis"
-                            android:textColor="#558B2F"
-                            android:textSize="10sp"
-                            android:textStyle="bold"/>
-                    </LinearLayout>
-
-                    <!-- Sensor Values Grid -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:weightSum="3"
-                        android:layout_marginBottom="10dp">
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:layout_marginEnd="6dp"
-                            android:background="@drawable/bg_sensor_green"
-                            android:orientation="vertical"
-                            android:gravity="center"
-                            android:padding="8dp">
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                android:text="TDS" android:textColor="#558B2F" android:textSize="10sp"/>
-                            <TextView android:id="@+id/tvTDSNutrisi"
-                                android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                android:text="840" android:textColor="#1B5E20"
-                                android:textSize="16sp" android:textStyle="bold"/>
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                android:text="ppm" android:textColor="#558B2F" android:textSize="10sp"/>
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:layout_marginEnd="6dp"
-                            android:background="@drawable/bg_sensor_purple"
-                            android:orientation="vertical"
-                            android:gravity="center"
-                            android:padding="8dp">
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                android:text="pH" android:textColor="#8E24AA" android:textSize="10sp"/>
-                            <TextView android:id="@+id/tvPHNutrisi"
-                                android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                android:text="6.5" android:textColor="#4A148C"
-                                android:textSize="16sp" android:textStyle="bold"/>
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                android:text="nilai" android:textColor="#8E24AA" android:textSize="10sp"/>
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:background="@drawable/bg_sensor_amber"
-                            android:orientation="vertical"
-                            android:gravity="center"
-                            android:padding="8dp">
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                android:text="Suhu" android:textColor="#F9A825" android:textSize="10sp"/>
-                            <TextView android:id="@+id/tvSuhuNutrisi"
-                                android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                android:text="28.5°" android:textColor="#E65100"
-                                android:textSize="16sp" android:textStyle="bold"/>
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                android:text="Celsius" android:textColor="#F9A825" android:textSize="10sp"/>
-                        </LinearLayout>
-                    </LinearLayout>
-
-                    <!-- Level Nutrisi Progress -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginBottom="4dp">
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Level nutrisi"
-                            android:textColor="#757575" android:textSize="10sp"/>
-                        <TextView android:id="@+id/tvLevelNutrisi"
-                            android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="840 / 1200 ppm"
-                            android:textColor="#2E7D32" android:textSize="10sp" android:textStyle="bold"/>
-                    </LinearLayout>
-
-                    <ProgressBar
-                        android:id="@+id/progressNutrisi"
-                        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-                        android:layout_width="match_parent"
-                        android:layout_height="5dp"
-                        android:progress="70"
-                        android:progressTint="#2E7D32"
-                        android:progressBackgroundTint="#C8E6C9"/>
-                </LinearLayout>
-
-                <!-- ===== CARD POMPA AIR ===== -->
-                <LinearLayout
-                    android:id="@+id/cardHistoriAir"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/bg_pump_card_blue"
-                    android:orientation="vertical"
-                    android:padding="14dp"
-                    android:layout_marginBottom="12dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:layout_marginBottom="8dp">
-
-                        <ImageView
-                            android:layout_width="36dp"
-                            android:layout_height="36dp"
-                            android:src="@drawable/ic_shower"
-                            android:background="@drawable/bg_icon_blue_light"
-                            android:padding="8dp"/>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical"
-                            android:layout_marginStart="10dp">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Pompa Air"
-                                android:textColor="#0D47A1"
-                                android:textSize="13sp"
-                                android:textStyle="bold"/>
-
-                            <TextView
-                                android:id="@+id/tvWaktuAir"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="2026-03-19 · 12.00"
-                                android:textColor="#757575"
-                                android:textSize="10sp"/>
-                        </LinearLayout>
-
-                        <TextView
-                            android:id="@+id/tvStatusHistoriAir"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Selesai"
-                            android:textColor="#2E7D32"
-                            android:textSize="10sp"
-                            android:textStyle="bold"
-                            android:background="@drawable/bg_badge_active"
-                            android:paddingHorizontal="10dp"
-                            android:paddingVertical="3dp"/>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:layout_marginBottom="10dp">
-
-                        <TextView
-                            android:id="@+id/tvDurasiAir"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="20 Menit"
-                            android:textColor="#757575"
-                            android:textSize="10sp"/>
-
-                        <View
-                            android:layout_width="3dp"
-                            android:layout_height="3dp"
-                            android:background="@drawable/bg_dot_divider"
-                            android:layout_marginHorizontal="6dp"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Jadwal Otomatis"
-                            android:textColor="#1565C0"
-                            android:textSize="10sp"
-                            android:textStyle="bold"/>
-                    </LinearLayout>
-
-                    <!-- Sensor Values -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:weightSum="3">
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:layout_marginEnd="6dp"
-                            android:background="@drawable/bg_sensor_blue"
-                            android:orientation="vertical"
-                            android:gravity="center"
-                            android:padding="8dp">
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                android:text="Debit" android:textColor="#1565C0" android:textSize="10sp"/>
-                            <TextView android:id="@+id/tvDebitAir"
-                                android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                android:text="2.4" android:textColor="#0D47A1"
-                                android:textSize="16sp" android:textStyle="bold"/>
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                android:text="L/min" android:textColor="#1565C0" android:textSize="10sp"/>
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:layout_marginEnd="6dp"
-                            android:background="@drawable/bg_sensor_green"
-                            android:orientation="vertical"
-                            android:gravity="center"
-                            android:padding="8dp">
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                android:text="TDS" android:textColor="#558B2F" android:textSize="10sp"/>
-                            <TextView android:id="@+id/tvTDSAir"
-                                android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                android:text="820" android:textColor="#1B5E20"
-                                android:textSize="16sp" android:textStyle="bold"/>
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                android:text="ppm" android:textColor="#558B2F" android:textSize="10sp"/>
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:background="@drawable/bg_sensor_amber"
-                            android:orientation="vertical"
-                            android:gravity="center"
-                            android:padding="8dp">
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                android:text="Suhu" android:textColor="#F9A825" android:textSize="10sp"/>
-                            <TextView android:id="@+id/tvSuhuAir"
-                                android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                android:text="27.8°" android:textColor="#E65100"
-                                android:textSize="16sp" android:textStyle="bold"/>
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                android:text="Celsius" android:textColor="#F9A825" android:textSize="10sp"/>
-                        </LinearLayout>
-                    </LinearLayout>
-                </LinearLayout>
+                    android:layout_height="match_parent"
+                    android:clipToPadding="false"
+                    android:paddingBottom="16dp" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

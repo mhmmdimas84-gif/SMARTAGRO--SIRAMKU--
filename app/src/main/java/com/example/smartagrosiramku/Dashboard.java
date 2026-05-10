@@ -50,6 +50,17 @@ public class Dashboard extends AppCompatActivity {
     private DatabaseReference currentChartRef;
     private ValueEventListener currentChartListener;
 
+    // Logging History
+    private long lastLogTime = 0;
+    private float currentTds = 0;
+    private int currentAir = 0;
+
+    // Notification Cooldowns
+    private long lastWaterLevelNotifTime = 0;
+    private long lastHighTdsNotifTime = 0;
+    private long lastLowTdsNotifTime = 0;
+    private static final long NOTIF_COOLDOWN = 30 * 60 * 1000; // 30 menit cooldown
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -241,11 +252,14 @@ public class Dashboard extends AppCompatActivity {
             public void onDataChange(DataSnapshot snapshot) {
                 if (snapshot.exists() && tvTDS != null && progressTDS != null) {
                     float tdsValue = snapshot.getValue(Float.class);
+                    currentTds = tdsValue;
                     tvTDS.setText(String.format("%.0f", tdsValue));
                     
                     // Update progress bar (asumsi max TDS 1000 untuk tampilan visual)
                     int progress = (int) ((tdsValue / 1000f) * 100);
                     progressTDS.setProgress(Math.min(progress, 100));
+
+                    checkAndLogHistory();
                 }
             }
 
@@ -261,8 +275,11 @@ public class Dashboard extends AppCompatActivity {
             public void onDataChange(DataSnapshot snapshot) {
                 if (snapshot.exists() && tvLevelAir != null && progressAir != null) {
                     int waterLevel = snapshot.getValue(Integer.class);
+                    currentAir = waterLevel;
                     tvLevelAir.setText(String.valueOf(waterLevel));
                     progressAir.setProgress(waterLevel);
+
+                    checkAndLogHistory();
                 }
             }
 
@@ -271,6 +288,58 @@ public class Dashboard extends AppCompatActivity {
                 Log.e("Dashboard", "Gagal membaca Water Level: " + error.getMessage());
             }
         });
+    }
+
+    private void checkAndLogHistory() {
+        long currentTime = System.currentTimeMillis();
+        // Log setiap 1 menit (60000 ms) agar database tidak penuh
+        if (currentTime - lastLogTime > 60000) {
+            lastLogTime = currentTime;
+            DatabaseReference logRef = FirebaseDatabase.getInstance().getReference("Sensors/history_logs");
+            String key = logRef.push().getKey();
+            if(key != null) {
+                HistoryLog log = new HistoryLog(currentTds, currentAir, currentTime);
+                logRef.child(key).setValue(log);
+            }
+        }
+        
+        // Panggil juga pengecekan notifikasi
+        checkAndPushNotifications();
+    }
+
+    private void checkAndPushNotifications() {
+        long currentTime = System.currentTimeMillis();
+        DatabaseReference notifRef = FirebaseDatabase.getInstance().getReference("Sensors/notifications");
+
+        // 1. Level air rendah ( < 30%)
+        if (currentAir > 0 && currentAir < 30 && (currentTime - lastWaterLevelNotifTime > NOTIF_COOLDOWN)) {
+            lastWaterLevelNotifTime = currentTime;
+            String key = notifRef.push().getKey();
+            if (key != null) {
+                NotifikasiLog log = new NotifikasiLog("Level Air Rendah", "Level air di bawah 30%, segera isi ulang tangki untuk mencegah kerusakan sistem.", "error", currentTime, false);
+                notifRef.child(key).setValue(log);
+            }
+        }
+
+        // 2. Pemberian nutrisi berlebihan (misal TDS > 1000)
+        if (currentTds > 1000 && (currentTime - lastHighTdsNotifTime > NOTIF_COOLDOWN)) {
+            lastHighTdsNotifTime = currentTime;
+            String key = notifRef.push().getKey();
+            if (key != null) {
+                NotifikasiLog log = new NotifikasiLog("Nutrisi Berlebih", "Nilai TDS melebihi batas aman (> 1000 ppm). Tambahkan air bersih untuk menormalkan.", "error", currentTime, false);
+                notifRef.child(key).setValue(log);
+            }
+        }
+
+        // 3. Kekurangan nutrisi (misal TDS < 400)
+        if (currentTds > 0 && currentTds < 400 && (currentTime - lastLowTdsNotifTime > NOTIF_COOLDOWN)) {
+            lastLowTdsNotifTime = currentTime;
+            String key = notifRef.push().getKey();
+            if (key != null) {
+                NotifikasiLog log = new NotifikasiLog("Kekurangan Nutrisi", "Nilai TDS di bawah batas ideal (< 400 ppm). Pompa nutrisi perlu diaktifkan.", "warning", currentTime, false);
+                notifRef.child(key).setValue(log);
+            }
+        }
     }
 
     private void loadChartDataMingguan() {

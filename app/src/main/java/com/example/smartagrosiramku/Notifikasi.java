@@ -9,6 +9,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import android.graphics.Color;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class Notifikasi extends AppCompatActivity {
 
@@ -17,13 +30,12 @@ public class Notifikasi extends AppCompatActivity {
     private TextView tvDashboard, tvHistory, tvControl, tvAccount;
     private ImageView btnBack;
 
-    // Tombol aksi
-    private TextView btnTandaiDibaca1, btnHapus1;
-    private TextView btnTandaiDibaca2, btnHapus2;
-    private TextView btnHapus3;
-
-    // Notifikasi cards
-    private LinearLayout notifikasi1, notifikasi2, notifikasi3;
+    // RecyclerView & Adapter
+    private RecyclerView rvNotifikasi;
+    private NotifikasiAdapter adapter;
+    private List<NotifikasiLog> allNotifList;
+    private List<NotifikasiLog> filteredNotifList;
+    private boolean showingAll = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +50,9 @@ public class Notifikasi extends AppCompatActivity {
 
         // Setup bottom navigation
         setupBottomNavigation();
+
+        // Load data from Firebase
+        loadNotifications();
     }
 
     private void initializeViews() {
@@ -48,17 +63,13 @@ public class Notifikasi extends AppCompatActivity {
         // Inisialisasi Tombol Kembali
         btnBack = findViewById(R.id.btnBack);
 
-        // Inisialisasi Tombol Aksi
-        btnTandaiDibaca1 = findViewById(R.id.btnTandaiDibaca1);
-        btnHapus1 = findViewById(R.id.btnHapus1);
-        btnTandaiDibaca2 = findViewById(R.id.btnTandaiDibaca2);
-        btnHapus2 = findViewById(R.id.btnHapus2);
-        btnHapus3 = findViewById(R.id.btnHapus3);
-
-        // Inisialisasi CardView Notifikasi
-        notifikasi1 = findViewById(R.id.notifikasi1);
-        notifikasi2 = findViewById(R.id.notifikasi2);
-        notifikasi3 = findViewById(R.id.notifikasi3);
+        // Inisialisasi RecyclerView
+        rvNotifikasi = findViewById(R.id.rvNotifikasi);
+        rvNotifikasi.setLayoutManager(new LinearLayoutManager(this));
+        allNotifList = new ArrayList<>();
+        filteredNotifList = new ArrayList<>();
+        adapter = new NotifikasiAdapter(filteredNotifList);
+        rvNotifikasi.setAdapter(adapter);
 
         // Inisialisasi Bottom Navigation
         tvDashboard = findViewById(R.id.tvDashboard);
@@ -84,14 +95,14 @@ public class Notifikasi extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     // Ubah style tab
-                    tabSemua.setBackgroundColor(ContextCompat.getColor(Notifikasi.this, R.color.light_green));
-                    tabSemua.setTextColor(ContextCompat.getColor(Notifikasi.this, R.color.primary_green));
+                    tabSemua.setBackgroundResource(R.drawable.bg_tab_active);
+                    tabSemua.setTextColor(Color.WHITE);
                     if (tabBelumDibaca != null) {
-                        tabBelumDibaca.setBackgroundColor(ContextCompat.getColor(Notifikasi.this, android.R.color.white));
-                        tabBelumDibaca.setTextColor(ContextCompat.getColor(Notifikasi.this, R.color.text_secondary));
+                        tabBelumDibaca.setBackgroundResource(android.R.color.transparent);
+                        tabBelumDibaca.setTextColor(Color.parseColor("#757575"));
                     }
-                    showAllNotifications();
-                    showToast("Menampilkan semua notifikasi");
+                    showingAll = true;
+                    applyFilter();
                 }
             });
         }
@@ -102,38 +113,60 @@ public class Notifikasi extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     // Ubah style tab
-                    tabBelumDibaca.setBackgroundColor(ContextCompat.getColor(Notifikasi.this, R.color.light_green));
-                    tabBelumDibaca.setTextColor(ContextCompat.getColor(Notifikasi.this, R.color.primary_green));
+                    tabBelumDibaca.setBackgroundResource(R.drawable.bg_tab_active);
+                    tabBelumDibaca.setTextColor(Color.WHITE);
                     if (tabSemua != null) {
-                        tabSemua.setBackgroundColor(ContextCompat.getColor(Notifikasi.this, android.R.color.white));
-                        tabSemua.setTextColor(ContextCompat.getColor(Notifikasi.this, R.color.text_secondary));
+                        tabSemua.setBackgroundResource(android.R.color.transparent);
+                        tabSemua.setTextColor(Color.parseColor("#757575"));
                     }
-                    showUnreadNotifications();
-                    showToast("Menampilkan notifikasi belum dibaca");
+                    showingAll = false;
+                    applyFilter();
                 }
             });
         }
-
-        // Setup listeners untuk tombol hapus dan tandai dibaca
-        setupActionListeners();
     }
 
-    private void setupActionListeners() {
-        if (btnTandaiDibaca1 != null) {
-            btnTandaiDibaca1.setOnClickListener(v -> { markAsRead(notifikasi1); showToast("Notifikasi ditandai sudah dibaca"); });
+    private void loadNotifications() {
+        DatabaseReference notifRef = FirebaseDatabase.getInstance().getReference("Sensors/notifications");
+        notifRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                allNotifList.clear();
+                int unreadCount = 0;
+                for (DataSnapshot data : snapshot.getChildren()) {
+                    NotifikasiLog log = data.getValue(NotifikasiLog.class);
+                    if (log != null) {
+                        log.id = data.getKey();
+                        allNotifList.add(log);
+                        if (!log.isRead) {
+                            unreadCount++;
+                        }
+                    }
+                }
+                Collections.reverse(allNotifList);
+                
+                // Update text tabs with count
+                if (tabSemua != null) tabSemua.setText("Semua (" + allNotifList.size() + ")");
+                if (tabBelumDibaca != null) tabBelumDibaca.setText("Belum Dibaca (" + unreadCount + ")");
+                
+                applyFilter();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                showToast("Gagal memuat notifikasi");
+            }
+        });
+    }
+
+    private void applyFilter() {
+        filteredNotifList.clear();
+        for (NotifikasiLog log : allNotifList) {
+            if (showingAll || !log.isRead) {
+                filteredNotifList.add(log);
+            }
         }
-        if (btnHapus1 != null) {
-            btnHapus1.setOnClickListener(v -> { deleteNotification(notifikasi1); showToast("Notifikasi dihapus"); });
-        }
-        if (btnTandaiDibaca2 != null) {
-            btnTandaiDibaca2.setOnClickListener(v -> { markAsRead(notifikasi2); showToast("Notifikasi ditandai sudah dibaca"); });
-        }
-        if (btnHapus2 != null) {
-            btnHapus2.setOnClickListener(v -> { deleteNotification(notifikasi2); showToast("Notifikasi dihapus"); });
-        }
-        if (btnHapus3 != null) {
-            btnHapus3.setOnClickListener(v -> { deleteNotification(notifikasi3); showToast("Notifikasi dihapus"); });
-        }
+        adapter.notifyDataSetChanged();
     }
 
     private void setupBottomNavigation() {
@@ -163,29 +196,7 @@ public class Notifikasi extends AppCompatActivity {
         }
     }
 
-    private void markAsRead(LinearLayout notification) {
-        if (notification != null) {
-            notification.setBackgroundColor(ContextCompat.getColor(this, android.R.color.white));
-        }
-    }
 
-    private void deleteNotification(LinearLayout notification) {
-        if (notification != null) {
-            notification.setVisibility(View.GONE);
-        }
-    }
-
-    private void showAllNotifications() {
-        if (notifikasi1 != null) notifikasi1.setVisibility(View.VISIBLE);
-        if (notifikasi2 != null) notifikasi2.setVisibility(View.VISIBLE);
-        if (notifikasi3 != null) notifikasi3.setVisibility(View.VISIBLE);
-    }
-
-    private void showUnreadNotifications() {
-        if (notifikasi1 != null) notifikasi1.setVisibility(View.VISIBLE);
-        if (notifikasi2 != null) notifikasi2.setVisibility(View.VISIBLE);
-        if (notifikasi3 != null) notifikasi3.setVisibility(View.GONE);
-    }
 
     private void showToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
