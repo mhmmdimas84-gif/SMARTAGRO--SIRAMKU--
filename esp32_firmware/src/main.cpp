@@ -21,6 +21,8 @@
 // Wajib disertakan untuk helper addData dan error print
 #include "addons/TokenHelper.h"
 #include "addons/RTDBHelper.h"
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
 
 // ================================================================
 // KONFIGURASI - ISI SESUAI DATA ANDA
@@ -43,6 +45,8 @@
 #define PIN_WATER_LEVEL  35   // Sinyal Analog dari Sensor Water Level
 #define PIN_RELAY_POMPA_AIR      13   // IN1 Relay -> Pompa Air
 #define PIN_RELAY_POMPA_NUTRISI  14   // IN2 Relay -> Pompa Nutrisi
+#define I2C_SDA          22   // SDA LCD -> kabel terpasang ke GPIO 22 (D22)
+#define I2C_SCL          21   // SCL LCD -> kabel terpasang ke GPIO 21 (D21)
 
 // ================================================================
 // KONFIGURASI THRESHOLD (AMBANG BATAS OTOMATIS)
@@ -56,6 +60,10 @@
 FirebaseData   fbdo;
 FirebaseAuth   auth;
 FirebaseConfig config;
+
+// LCD - alamat akan di-deteksi otomatis saat setup()
+// Kedua alamat yang umum: 0x27 atau 0x3F
+LiquidCrystal_I2C lcd(0x27, 16, 2); // default, bisa berubah saat runtime
 
 unsigned long lastSendTime  = 0;
 const long    SEND_INTERVAL = 5000; // Kirim data setiap 5 detik
@@ -160,7 +168,51 @@ void kirimDataSensor(float tds, int waterLevel) {
 // ================================================================
 void setup() {
     Serial.begin(115200);
+    delay(1000); // Beri waktu Serial Monitor untuk siap
     Serial.println("\n=== SmartAgro Siramku - Booting... ===");
+
+    // ================================================================
+    // INISIALISASI I2C & LCD
+    // Wire.begin() HARUS dipanggil SATU KALI di sini dengan pin kustom.
+    // Jangan panggil lcd.init() karena akan memanggil Wire.begin() ulang!
+    // ================================================================
+    Wire.begin(I2C_SDA, I2C_SCL);
+    delay(300); // Tunggu I2C bus stabil
+
+    // Scan I2C: cari alamat LCD yang aktif
+    Serial.printf("[I2C] Scanning bus... SDA=GPIO%d SCL=GPIO%d\n", I2C_SDA, I2C_SCL);
+    uint8_t alamatLCD = 0;
+    for (uint8_t addr = 1; addr < 127; addr++) {
+        Wire.beginTransmission(addr);
+        if (Wire.endTransmission() == 0) {
+            Serial.printf("[I2C] Device ditemukan di alamat: 0x%02X\n", addr);
+            if (alamatLCD == 0) alamatLCD = addr; // Ambil alamat pertama
+        }
+    }
+
+    if (alamatLCD == 0) {
+        Serial.println("[LCD] GAGAL: Tidak ada device I2C ditemukan!");
+        Serial.println("      Cek kabel: VCC=5V, GND, SDA, SCL");
+    } else {
+        Serial.printf("[LCD] Menggunakan alamat: 0x%02X\n", alamatLCD);
+        
+        // Gunakan alamat yang ditemukan scanner
+        LiquidCrystal_I2C lcdTemp(alamatLCD, 16, 2);
+        lcdTemp.begin(16, 2); // JANGAN lcd.init() -- akan reset Wire!
+        lcdTemp.backlight();
+        delay(200);
+        lcdTemp.clear();
+        lcdTemp.setCursor(0, 0);
+        lcdTemp.print("SmartAgro Siram");
+        lcdTemp.setCursor(0, 1);
+        lcdTemp.print("Booting...");
+        Serial.println("[LCD] Teks sudah dikirim ke layar.");
+
+        // Perbarui juga objek lcd global agar loop() bisa pakai
+        lcd = LiquidCrystal_I2C(alamatLCD, 16, 2);
+        lcd.begin(16, 2);
+        lcd.backlight();
+    }
 
     // Inisialisasi pin
     pinMode(PIN_TDS,          INPUT);
@@ -169,17 +221,30 @@ void setup() {
     pinMode(PIN_RELAY_POMPA_NUTRISI, OUTPUT);
 
     // Pastikan pompa dalam kondisi MATI saat pertama menyala
+    Serial.println("Mematikan Relay Pompa...");
     setRelay(PIN_RELAY_POMPA_AIR,     false);
     setRelay(PIN_RELAY_POMPA_NUTRISI, false);
 
     // ---- Koneksi WiFi ----
     WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-    Serial.print("[WiFi] Menghubungkan ke " WIFI_SSID);
-    while (WiFi.status() != WL_CONNECTED) {
+    Serial.print("[WiFi] Menghubungkan ke ");
+    Serial.println(WIFI_SSID);
+    
+    // Timeout untuk WiFi (jangan sampai stuck)
+    int wifiTries = 0;
+    while (WiFi.status() != WL_CONNECTED && wifiTries < 20) {
         delay(500);
         Serial.print(".");
+        wifiTries++;
     }
-    Serial.println("\n[WiFi] Terhubung! IP: " + WiFi.localIP().toString());
+    
+    if (WiFi.status() == WL_CONNECTED) {
+        Serial.println("\n[WiFi] Terhubung! IP: " + WiFi.localIP().toString());
+    } else {
+        Serial.println("\n[WiFi] GAGAL TERHUBUNG! Silakan cek SSID dan Password.");
+        lcd.clear();
+        lcd.print("WiFi Error!");
+    }
 
     // ---- Inisialisasi Firebase ----
     config.api_key       = API_KEY;
@@ -226,6 +291,18 @@ void loop() {
         Serial.printf("\n--- Pembacaan Sensor ---\n");
         Serial.printf("TDS        : %.1f PPM\n", tds);
         Serial.printf("Water Level: %d%%\n",     waterLevel);
+
+        // Tampilkan di LCD
+        lcd.clear();
+        lcd.setCursor(0, 0);
+        lcd.print("TDS: ");
+        lcd.print(tds, 1);
+        lcd.print(" PPM");
+
+        lcd.setCursor(0, 1);
+        lcd.print("Water: ");
+        lcd.print(waterLevel);
+        lcd.print("%");
 
         // Kirim ke Firebase
         kirimDataSensor(tds, waterLevel);
