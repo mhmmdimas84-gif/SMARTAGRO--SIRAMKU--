@@ -68,7 +68,7 @@ public class ControlActivity extends AppCompatActivity {
                             status ? android.R.color.holo_red_dark : android.R.color.holo_green_dark));
                 }
                 if (jadwal != null) tvJadwalAir.setText(jadwal);
-                if (durasi != null) tvDurasiAir.setText(durasi + " menit");
+                if (durasi != null) tvDurasiAir.setText(formatDurasi(durasi));
             }
 
             @Override
@@ -225,6 +225,26 @@ public class ControlActivity extends AppCompatActivity {
         } catch (Exception e) {
             return 0;
         }
+    }
+
+    private String formatDurasi(int totalMenit) {
+        if (totalMenit <= 0) {
+            return "0 menit";
+        }
+        int jam = totalMenit / 60;
+        int menit = totalMenit % 60;
+        
+        StringBuilder sb = new StringBuilder();
+        if (jam > 0) {
+            sb.append(jam).append(" jam");
+        }
+        if (menit > 0) {
+            if (jam > 0) {
+                sb.append(" ");
+            }
+            sb.append(menit).append(" menit");
+        }
+        return sb.toString();
     }
 
     /**
