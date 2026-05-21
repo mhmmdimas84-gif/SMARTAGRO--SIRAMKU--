@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.widget.Button;
 import java.util.Locale;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 import com.google.android.material.button.MaterialButton;
 
 import com.google.firebase.database.DataSnapshot;
@@ -37,6 +38,10 @@ public class ControlActivity extends AppCompatActivity {
     // Status & Jadwal & Durasi Pompa Air
     private TextView tvStatusAir, tvJadwalAir, tvDurasiAir;
 
+    // Switch Mode Otomatis
+    private SwitchCompat switchModeOtomatis;
+    private boolean isModeOtomatis = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +65,7 @@ public class ControlActivity extends AppCompatActivity {
                 Boolean status = snapshot.child("status").getValue(Boolean.class);
                 String jadwal = snapshot.child("jadwal").getValue(String.class);
                 Integer durasi = snapshot.child("durasi_menit").getValue(Integer.class);
+                Boolean modeOtomatis = snapshot.child("mode_otomatis").getValue(Boolean.class);
 
                 if (status != null) {
                     setStatusPompa(tvStatusAir, status ? "Aktif" : "Tidak Aktif", status);
@@ -69,6 +75,18 @@ public class ControlActivity extends AppCompatActivity {
                 }
                 if (jadwal != null) tvJadwalAir.setText(jadwal);
                 if (durasi != null) tvDurasiAir.setText(formatDurasi(durasi));
+
+                // Sinkronisasi state switch mode otomatis dari Firebase
+                if (modeOtomatis != null) {
+                    isModeOtomatis = modeOtomatis;
+                    // Cegah listener switch terpicu saat sinkronisasi dari Firebase
+                    switchModeOtomatis.setOnCheckedChangeListener(null);
+                    switchModeOtomatis.setChecked(modeOtomatis);
+                    setupSwitchListener(); // Pasang ulang listener setelah set value
+                    // Nonaktifkan tombol manual saat mode otomatis aktif
+                    btnNyalakanAir.setEnabled(!modeOtomatis);
+                    btnNyalakanAir.setAlpha(modeOtomatis ? 0.4f : 1.0f);
+                }
             }
 
             @Override
@@ -96,6 +114,9 @@ public class ControlActivity extends AppCompatActivity {
         tvStatusAir      = findViewById(R.id.tvStatusAir);
         tvJadwalAir      = findViewById(R.id.tvJadwalAir);
         tvDurasiAir      = findViewById(R.id.tvDurasiAir);
+
+        // Switch Mode Otomatis
+        switchModeOtomatis = findViewById(R.id.switchModeOtomatis);
     }
 
     private void setupHeaderActions() {
@@ -109,9 +130,13 @@ public class ControlActivity extends AppCompatActivity {
 
     private void setupPompaListeners() {
 
-        // ===== POMPA AIR =====
+        // ===== POMPA AIR - Tombol Manual =====
         if (btnNyalakanAir != null) {
             btnNyalakanAir.setOnClickListener(v -> {
+                if (isModeOtomatis) {
+                    Toast.makeText(this, "Matikan mode otomatis terlebih dahulu!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 String statusSekarang = tvStatusAir.getText().toString();
                 boolean targetStatus = statusSekarang.equals("Tidak Aktif");
                 pompaAirRef.child("status").setValue(targetStatus);
@@ -124,6 +149,31 @@ public class ControlActivity extends AppCompatActivity {
                     showEditJadwalDialog("Pompa Air", pompaAirRef, tvJadwalAir, tvDurasiAir)
             );
         }
+
+        // ===== SWITCH MODE OTOMATIS =====
+        setupSwitchListener();
+    }
+
+    private void setupSwitchListener() {
+        if (switchModeOtomatis == null) return;
+        switchModeOtomatis.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            isModeOtomatis = isChecked;
+            pompaAirRef.child("mode_otomatis").setValue(isChecked);
+
+            // Jika mode otomatis dimatikan, pastikan pompa juga mati secara manual
+            if (!isChecked) {
+                pompaAirRef.child("status").setValue(false);
+            }
+
+            // Aktifkan/nonaktifkan tombol manual
+            btnNyalakanAir.setEnabled(!isChecked);
+            btnNyalakanAir.setAlpha(isChecked ? 0.4f : 1.0f);
+
+            Toast.makeText(this,
+                    isChecked ? "Mode Otomatis AKTIF — pompa dikendalikan sensor" :
+                                "Mode Otomatis MATI — kendali manual aktif",
+                    Toast.LENGTH_LONG).show();
+        });
     }
 
     private void showEditJadwalDialog(String namaPompa, DatabaseReference ref, TextView tvJadwalTarget, TextView tvDurasiTarget) {

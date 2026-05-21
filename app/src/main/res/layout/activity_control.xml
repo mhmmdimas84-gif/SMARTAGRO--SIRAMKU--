@@ -206,24 +206,36 @@
                             android:gravity="center_vertical"
                             android:layout_marginBottom="6dp">
 
-                            <TextView
+                            <LinearLayout
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:text="Mode Operasi"
-                                android:textColor="#757575"
-                                android:textSize="11sp"/>
+                                android:orientation="vertical">
 
-                            <TextView
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Mode Otomatis"
+                                    android:textColor="#424242"
+                                    android:textSize="11sp"
+                                    android:textStyle="bold"/>
+
+                                <TextView
+                                    android:id="@+id/tvModeOtomatisDesc"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Pompa menyala otomatis saat air rendah"
+                                    android:textColor="#9E9E9E"
+                                    android:textSize="10sp"/>
+                            </LinearLayout>
+
+                            <androidx.appcompat.widget.SwitchCompat
+                                android:id="@+id/switchModeOtomatis"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Otomatis"
-                                android:textColor="#2E7D32"
-                                android:textSize="10sp"
-                                android:textStyle="bold"
-                                android:background="@drawable/bg_badge_mode"
-                                android:paddingHorizontal="8dp"
-                                android:paddingVertical="2dp"/>
+                                android:checked="false"
+                                app:thumbTint="#FFFFFF"
+                                app:trackTint="@color/track_tint_selector"/>
                         </LinearLayout>
 
                         <LinearLayout
