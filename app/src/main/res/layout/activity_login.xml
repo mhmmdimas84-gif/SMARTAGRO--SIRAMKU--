@@ -231,6 +231,58 @@
                 app:backgroundTint="#2E7D32"
                 app:cornerRadius="19dp" />
 
+            <!-- ===== DIVIDER "atau" ===== -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="12dp">
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1"
+                    android:background="#D0D0D0" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="atau"
+                    android:textColor="#9E9E9E"
+                    android:textSize="12sp"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1"
+                    android:background="#D0D0D0" />
+            </LinearLayout>
+
+            <!-- ===== TOMBOL LOGIN GOOGLE ===== -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnLoginGoogle"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginBottom="16dp"
+                android:text="Masuk dengan Google"
+                android:textColor="#424242"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textAllCaps="false"
+                app:backgroundTint="#FFFFFF"
+                app:cornerRadius="19dp"
+                app:strokeColor="#E0E0E0"
+                app:strokeWidth="1dp"
+                app:icon="@drawable/ic_google"
+                app:iconSize="20dp"
+                app:iconGravity="textStart"
+                app:iconPadding="12dp"
+                app:iconTint="@null" />
+
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

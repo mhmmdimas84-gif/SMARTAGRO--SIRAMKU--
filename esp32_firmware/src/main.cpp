@@ -27,8 +27,8 @@
 // ================================================================
 // KONFIGURASI - ISI SESUAI DATA ANDA
 // ================================================================
-#define WIFI_SSID     "Dimjett"
-#define WIFI_PASSWORD "11223344"
+#define WIFI_SSID     "Putrakembar"
+#define WIFI_PASSWORD "Molymocy01"
 
 // Ambil dari Firebase Console > Project Settings > General
 // Contoh: "https://nama-proyek-default-rtdb.asia-southeast1.firebasedatabase.app"
@@ -66,11 +66,10 @@ FirebaseConfig config;
 LiquidCrystal_I2C lcd(0x27, 16, 2); // default, bisa berubah saat runtime
 
 unsigned long lastSendTime  = 0;
-const long    SEND_INTERVAL = 1000; // Kirim data setiap 1 detik (respons cepat)
+const long    SEND_INTERVAL = 5000; // Kirim data setiap 5 detik
 
 bool pompaAirStatus     = false;
 bool pompaNutrisiStatus = false;
-bool modeOtomatisAir    = false;  // Jika true, pompa dikontrol otomatis oleh sensor
 
 // Indeks slot histori (0=Sen, 1=Sel, ..., 6=Min)
 // Setiap hari indeks akan bergeser saat ESP32 baru menyala.
@@ -118,24 +117,13 @@ void setRelay(int pin, bool nyala) {
 // FUNGSI: Dengarkan perintah dari Firebase (Read)
 // ================================================================
 void listenKontrolDariFirebase() {
-    // === Baca mode otomatis dari Firebase ===
-    if (Firebase.RTDB.getBool(&fbdo, "Controls/pompa_air/mode_otomatis")) {
-        bool modeBaru = fbdo.boolData();
-        if (modeBaru != modeOtomatisAir) {
-            modeOtomatisAir = modeBaru;
-            Serial.printf("[Firebase] Mode Otomatis Pompa Air -> %s\n", modeOtomatisAir ? "AKTIF" : "MATI");
-        }
-    }
-
-    // Baca status Pompa Air dari Firebase (hanya dijalankan jika mode MANUAL)
-    if (!modeOtomatisAir) {
-        if (Firebase.RTDB.getBool(&fbdo, "Controls/pompa_air/status")) {
-            bool statusBaru = fbdo.boolData();
-            if (statusBaru != pompaAirStatus) {
-                pompaAirStatus = statusBaru;
-                setRelay(PIN_RELAY_POMPA_AIR, pompaAirStatus);
-                Serial.printf("[Firebase] Pompa Air -> %s\n", pompaAirStatus ? "NYALA" : "MATI");
-            }
+    // Baca status Pompa Air dari Firebase
+    if (Firebase.RTDB.getBool(&fbdo, "Controls/pompa_air/status")) {
+        bool statusBaru = fbdo.boolData();
+        if (statusBaru != pompaAirStatus) {
+            pompaAirStatus = statusBaru;
+            setRelay(PIN_RELAY_POMPA_AIR, pompaAirStatus);
+            Serial.printf("[Firebase] Pompa Air -> %s\n", pompaAirStatus ? "NYALA" : "MATI");
         }
     }
 
@@ -319,33 +307,12 @@ void loop() {
         // Kirim ke Firebase
         kirimDataSensor(tds, waterLevel);
 
-        // 3. Logika Otomatis berdasarkan mode_otomatis dari Aplikasi HP
-        if (modeOtomatisAir) {
-            bool pompaHarusNyala = (waterLevel < WATER_LEVEL_MIN);
-            if (pompaHarusNyala != pompaAirStatus) {
-                pompaAirStatus = pompaHarusNyala;
-                setRelay(PIN_RELAY_POMPA_AIR, pompaAirStatus);
-                // Update status ke Firebase agar HP bisa melihat kondisi nyata
-                Firebase.RTDB.setBool(&fbdo, "Controls/pompa_air/status", pompaAirStatus);
-                Serial.printf("[AUTO] Water Level %d%% -> Pompa Air %s\n",
-                              waterLevel, pompaAirStatus ? "NYALA OTOMATIS" : "MATI OTOMATIS");
-
-                // Tampilkan notifikasi di LCD
-                lcd.clear();
-                lcd.setCursor(0, 0);
-                lcd.print(pompaAirStatus ? "!! Air Rendah !!" : "Air Normal :)");
-                lcd.setCursor(0, 1);
-                lcd.print(pompaAirStatus ? "Pompa -> NYALA" : "Pompa -> MATI");
-                delay(500); // Tampilkan pesan 0.5 detik
-            }
+        // 3. Logika Otomatis: Jika air di bawah batas minimum, tampilkan peringatan
+        if (waterLevel < WATER_LEVEL_MIN) {
+            Serial.println("[PERINGATAN] Level Air RENDAH! Harap isi ulang reservoir.");
+            Firebase.RTDB.setBool(&fbdo, "Sensors/alert_air_rendah", true);
         } else {
-            // Mode manual: hanya tampilkan peringatan
-            if (waterLevel < WATER_LEVEL_MIN) {
-                Serial.println("[PERINGATAN] Level Air RENDAH! Harap isi ulang reservoir.");
-                Firebase.RTDB.setBool(&fbdo, "Sensors/alert_air_rendah", true);
-            } else {
-                Firebase.RTDB.setBool(&fbdo, "Sensors/alert_air_rendah", false);
-            }
+            Firebase.RTDB.setBool(&fbdo, "Sensors/alert_air_rendah", false);
         }
     }
 
@@ -355,5 +322,5 @@ void loop() {
         indeksHari = (indeksHari + 1) % 7; // Berputar: 0,1,2,3,4,5,6,0,1,...
     }
 
-    delay(50); // Jeda minimal agar prosesor tetap stabil
+    delay(200); // Jeda singkat agar prosesor tidak terlalu panas
 }

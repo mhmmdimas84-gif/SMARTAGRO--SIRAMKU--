@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">SmartAgroSiramku</string>
     <!-- Ganti dengan Web Client ID asli dari google-services.json (client_type: 3) -->
-    <string name="default_web_client_id">490495428242-m9pm1cq5p6ls3327ed2t1gddnospkfsh.apps.googleusercontent.com</string>
+    <string name="default_web_client_id">117722257960-9badctkbsg525395sfcbul36863us0q5.apps.googleusercontent.com</string>
 </resources>
