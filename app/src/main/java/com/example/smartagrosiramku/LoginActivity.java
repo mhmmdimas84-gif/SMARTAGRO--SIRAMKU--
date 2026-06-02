@@ -34,6 +34,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private EditText etEmail, etPassword;
     private Button btnLogin;
+    private com.google.android.material.button.MaterialButton btnLoginGoogle;
     private CheckBox cbCaptcha;
     private SharedPreferences sharedPreferences;
 
@@ -85,6 +86,7 @@ public class LoginActivity extends AppCompatActivity {
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
         btnLogin = findViewById(R.id.btnMasuk);
+        btnLoginGoogle = findViewById(R.id.btnLoginGoogle);
         cbCaptcha = findViewById(R.id.cbCaptcha);
     }
 
@@ -95,6 +97,17 @@ public class LoginActivity extends AppCompatActivity {
                 attemptLogin();
             }
         });
+
+        // Tombol Login Google
+        if (btnLoginGoogle != null) {
+            btnLoginGoogle.setOnClickListener(v -> {
+                // Sign out dulu dari Google agar selalu muncul pilihan akun
+                mGoogleSignInClient.signOut().addOnCompleteListener(task -> {
+                    Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+                    startActivityForResult(signInIntent, RC_SIGN_IN);
+                });
+            });
+        }
     }
 
     @Override
@@ -191,7 +204,8 @@ public class LoginActivity extends AppCompatActivity {
                                                 userData.put("login_perangkat", android.os.Build.MODEL);
                                                 userRef.setValue(userData);
                                             }
-                                            Toast.makeText(this, "Akun berhasil dibuat! Silakan login kembali.", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(this, "Akun berhasil dibuat! Masuk otomatis...", Toast.LENGTH_SHORT).show();
+                                            performLogin(email);
                                         } else {
                                             Toast.makeText(this, "Gagal mendaftar: " + taskReg.getException().getMessage(), Toast.LENGTH_LONG).show();
                                         }

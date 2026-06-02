@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "117722257960-bqrr6uaej1n1oe8k1tvqs350bvpj5eej.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.smartagrosiramku",
+            "certificate_hash": "eab7dbb21dfefd5c1d4c04370a24715378ae113f"
+          }
+        },
+        {
           "client_id": "117722257960-9badctkbsg525395sfcbul36863us0q5.apps.googleusercontent.com",
           "client_type": 3
         }
