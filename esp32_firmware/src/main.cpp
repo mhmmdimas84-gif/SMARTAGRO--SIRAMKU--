@@ -27,8 +27,8 @@
 // ================================================================
 // KONFIGURASI - ISI SESUAI DATA ANDA
 // ================================================================
-#define WIFI_SSID     "Putrakembar"
-#define WIFI_PASSWORD "Molymocy01"
+#define WIFI_SSID     "Dimjett"
+#define WIFI_PASSWORD "11223344"
 
 // Ambil dari Firebase Console > Project Settings > General
 // Contoh: "https://nama-proyek-default-rtdb.asia-southeast1.firebasedatabase.app"
@@ -57,7 +57,7 @@
 // ================================================================
 // VARIABEL GLOBAL
 // ================================================================
-FirebaseData   fbdo;
+FirebaseData   fbdo;        // Untuk semua operasi Firebase (read & write)
 FirebaseAuth   auth;
 FirebaseConfig config;
 
@@ -125,16 +125,8 @@ void listenKontrolDariFirebase() {
             setRelay(PIN_RELAY_POMPA_AIR, pompaAirStatus);
             Serial.printf("[Firebase] Pompa Air -> %s\n", pompaAirStatus ? "NYALA" : "MATI");
         }
-    }
-
-    // Baca status Pompa Nutrisi dari Firebase
-    if (Firebase.RTDB.getBool(&fbdo, "Controls/pompa_nutrisi/status")) {
-        bool statusBaru = fbdo.boolData();
-        if (statusBaru != pompaNutrisiStatus) {
-            pompaNutrisiStatus = statusBaru;
-            setRelay(PIN_RELAY_POMPA_NUTRISI, pompaNutrisiStatus);
-            Serial.printf("[Firebase] Pompa Nutrisi -> %s\n", pompaNutrisiStatus ? "NYALA" : "MATI");
-        }
+    } else {
+        Serial.printf("[ERROR] Gagal baca pompa_air: %s\n", fbdo.errorReason().c_str());
     }
 }
 
@@ -230,9 +222,9 @@ void setup() {
     Serial.print("[WiFi] Menghubungkan ke ");
     Serial.println(WIFI_SSID);
     
-    // Timeout untuk WiFi (jangan sampai stuck)
+    // Timeout untuk WiFi — tunggu hingga 20 detik (40 x 500ms)
     int wifiTries = 0;
-    while (WiFi.status() != WL_CONNECTED && wifiTries < 20) {
+    while (WiFi.status() != WL_CONNECTED && wifiTries < 40) {
         delay(500);
         Serial.print(".");
         wifiTries++;
@@ -242,24 +234,28 @@ void setup() {
         Serial.println("\n[WiFi] Terhubung! IP: " + WiFi.localIP().toString());
     } else {
         Serial.println("\n[WiFi] GAGAL TERHUBUNG! Silakan cek SSID dan Password.");
+        Serial.println("[WiFi] Pastikan: 1) SSID benar  2) Password benar  3) Pakai 2.4GHz");
         lcd.clear();
         lcd.print("WiFi Error!");
+        // Jangan lanjut ke Firebase jika WiFi gagal
+        return;
     }
 
-    // ---- Inisialisasi Firebase ----
+    // ---- Inisialisasi Firebase (hanya jika WiFi terhubung) ----
     config.api_key       = API_KEY;
     config.database_url  = DATABASE_URL;
+    config.token_status_callback = tokenStatusCallback;
 
-    // Login Anonim (Wajib diaktifkan di Firebase Console > Authentication)
-    auth.user.email    = "";
-    auth.user.password = "";
+    // Beri waktu jaringan stabil sebelum signUp
+    delay(1000);
+
+    // Daftar sebagai pengguna anonim (aktifkan di Firebase Console > Authentication > Anonymous)
     if (Firebase.signUp(&config, &auth, "", "")) {
-        Serial.println("[Firebase] Login sukses!");
+        Serial.println("[Firebase] Login anonim sukses!");
     } else {
         Serial.printf("[Firebase] Gagal login: %s\n", config.signer.signupError.message.c_str());
+        Serial.println("[Firebase] Pastikan Anonymous Auth diaktifkan di Firebase Console.");
     }
-
-    config.token_status_callback = tokenStatusCallback;
     
     Firebase.begin(&config, &auth);
     Firebase.reconnectWiFi(true);
@@ -271,6 +267,26 @@ void setup() {
 // LOOP UTAMA
 // ================================================================
 void loop() {
+    // Auto-reconnect WiFi jika putus
+    if (WiFi.status() != WL_CONNECTED) {
+        Serial.println("[WiFi] Koneksi terputus! Mencoba reconnect...");
+        WiFi.disconnect();
+        WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+        int tries = 0;
+        while (WiFi.status() != WL_CONNECTED && tries < 10) {
+            delay(500);
+            Serial.print(".");
+            tries++;
+        }
+        if (WiFi.status() == WL_CONNECTED) {
+            Serial.println("\n[WiFi] Reconnect berhasil!");
+        } else {
+            Serial.println("\n[WiFi] Reconnect gagal, coba lagi nanti...");
+            delay(2000);
+            return;
+        }
+    }
+
     if (!Firebase.ready()) {
         Serial.println("[Firebase] Menunggu koneksi...");
         delay(1000);
