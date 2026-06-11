@@ -31,7 +31,18 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         HistoryLog log = historyList.get(position);
         holder.tvTDS.setText(String.format(Locale.getDefault(), "%.0f", log.tds));
         holder.tvAir.setText(String.valueOf(log.waterLevel));
-        
+        if (log.tds < 400) {
+            holder.tvStatus.setText("Status: Nutrisi Rendah");
+            holder.tvStatus.setTextColor(android.graphics.Color.parseColor("#E65100"));
+        }
+        else if (log.tds > 1200) {
+            holder.tvStatus.setText("Status: Nutrisi Tinggi");
+            holder.tvStatus.setTextColor(android.graphics.Color.parseColor("#B71C1C"));
+        }
+        else {
+            holder.tvStatus.setText("Status: Normal");
+            holder.tvStatus.setTextColor(android.graphics.Color.parseColor("#1B5E20"));
+        }
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd · HH:mm:ss", Locale.getDefault());
         String dateStr = sdf.format(new Date(log.timestamp));
         holder.tvWaktu.setText(dateStr);
@@ -43,12 +54,13 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvWaktu, tvTDS, tvAir;
+        TextView tvWaktu, tvTDS, tvAir, tvStatus;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             tvWaktu = itemView.findViewById(R.id.tvWaktuHistory);
             tvTDS = itemView.findViewById(R.id.tvTDSHistory);
             tvAir = itemView.findViewById(R.id.tvAirHistory);
+            tvStatus = itemView.findViewById(R.id.tvStatus);
         }
     }
 }

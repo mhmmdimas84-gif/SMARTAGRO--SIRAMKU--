@@ -2,94 +2,152 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
     android:background="@drawable/bg_pump_card_green"
     android:orientation="vertical"
-    android:padding="14dp"
-    android:layout_marginBottom="12dp">
+    android:padding="14dp">
 
-    <!-- Header Row -->
+    <!-- Header -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:layout_marginBottom="10dp"
         android:gravity="center_vertical"
-        android:layout_marginBottom="8dp">
+        android:orientation="horizontal">
 
         <ImageView
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:src="@drawable/ic_clock_small"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:background="@drawable/bg_icon_green_light"
-            android:padding="8dp"/>
+            android:padding="8dp"
+            android:src="@drawable/ic_clock_small" />
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:layout_marginStart="10dp">
+            android:orientation="vertical">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Data Sensor"
                 android:textColor="#1B5E20"
-                android:textSize="13sp"
-                android:textStyle="bold"/>
+                android:textSize="14sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tvWaktuHistory"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="2026-03-19 · 08.00"
+                android:text="2026-03-19 • 08.00"
                 android:textColor="#757575"
-                android:textSize="10sp"/>
+                android:textSize="11sp" />
         </LinearLayout>
+
     </LinearLayout>
 
-    <!-- Sensor Values Grid -->
+    <!-- Sensor Cards -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
         android:orientation="horizontal"
-        android:weightSum="2"
-        android:layout_marginBottom="4dp">
+        android:weightSum="2">
 
+        <!-- TDS -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginEnd="6dp"
             android:background="@drawable/bg_sensor_green"
-            android:orientation="vertical"
             android:gravity="center"
-            android:padding="8dp">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="TDS" android:textColor="#558B2F" android:textSize="10sp"/>
-            <TextView android:id="@+id/tvTDSHistory"
-                android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="0" android:textColor="#1B5E20"
-                android:textSize="16sp" android:textStyle="bold"/>
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="ppm" android:textColor="#558B2F" android:textSize="10sp"/>
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TDS"
+                android:textColor="#558B2F"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvTDSHistory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="850"
+                android:textColor="#1B5E20"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ppm"
+                android:textColor="#558B2F"
+                android:textSize="11sp" />
         </LinearLayout>
 
+        <!-- Level Air -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/bg_sensor_blue"
-            android:orientation="vertical"
             android:gravity="center"
-            android:padding="8dp">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="Level Air" android:textColor="#1565C0" android:textSize="10sp"/>
-            <TextView android:id="@+id/tvAirHistory"
-                android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="0" android:textColor="#0D47A1"
-                android:textSize="16sp" android:textStyle="bold"/>
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="%" android:textColor="#1565C0" android:textSize="10sp"/>
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Level Air"
+                android:textColor="#1565C0"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvAirHistory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="75"
+                android:textColor="#0D47A1"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="%"
+                android:textColor="#1565C0"
+                android:textSize="11sp" />
         </LinearLayout>
+
     </LinearLayout>
+
+    <!-- Status Sensor -->
+    <LinearLayout
+        android:id="@+id/layoutStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_badge_active"
+        android:paddingStart="10dp"
+        android:paddingTop="4dp"
+        android:paddingEnd="10dp"
+        android:paddingBottom="4dp">
+
+        <TextView
+            android:id="@+id/tvStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Status: Normal"
+            android:textColor="#1B5E20"
+            android:textSize="11sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
 </LinearLayout>
