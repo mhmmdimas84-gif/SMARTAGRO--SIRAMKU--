@@ -1,13 +1,18 @@
 package com.example.smartagrosiramku;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.graphics.Color;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import android.graphics.drawable.Drawable;
 
@@ -87,6 +92,12 @@ public class Dashboard extends AppCompatActivity {
 
         // Load data sensor realtime
         loadRealtimeSensorData();
+
+        // Request runtime permission for notifications on Android 13+
+        checkNotificationPermission();
+
+        // Start Foreground Service for sensor monitoring & alerts
+        startNotificationService();
     }
 
     private void initializeViews() {
@@ -302,42 +313,36 @@ public class Dashboard extends AppCompatActivity {
                 logRef.child(key).setValue(log);
             }
         }
-        
-        // Panggil juga pengecekan notifikasi
-        checkAndPushNotifications();
     }
 
-    private void checkAndPushNotifications() {
-        long currentTime = System.currentTimeMillis();
-        DatabaseReference notifRef = FirebaseDatabase.getInstance().getReference("Sensors/notifications");
+    private static final int REQUEST_CODE_POST_NOTIFICATIONS = 102;
 
-        // 1. Level air rendah ( < 30%)
-        if (currentAir > 0 && currentAir < 30 && (currentTime - lastWaterLevelNotifTime > NOTIF_COOLDOWN)) {
-            lastWaterLevelNotifTime = currentTime;
-            String key = notifRef.push().getKey();
-            if (key != null) {
-                NotifikasiLog log = new NotifikasiLog("Level Air Rendah", "Level air di bawah 30%, segera isi ulang tangki untuk mencegah kerusakan sistem.", "error", currentTime, false);
-                notifRef.child(key).setValue(log);
+    private void checkNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) 
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(
+                        this,
+                        new String[]{Manifest.permission.POST_NOTIFICATIONS},
+                        REQUEST_CODE_POST_NOTIFICATIONS
+                );
             }
         }
+    }
 
-        // 2. Pemberian nutrisi berlebihan (misal TDS > 1000)
-        if (currentTds > 1000 && (currentTime - lastHighTdsNotifTime > NOTIF_COOLDOWN)) {
-            lastHighTdsNotifTime = currentTime;
-            String key = notifRef.push().getKey();
-            if (key != null) {
-                NotifikasiLog log = new NotifikasiLog("Nutrisi Berlebih", "Nilai TDS melebihi batas aman (> 1000 ppm). Tambahkan air bersih untuk menormalkan.", "error", currentTime, false);
-                notifRef.child(key).setValue(log);
-            }
-        }
+    private void startNotificationService() {
+        Intent serviceIntent = new Intent(this, NotificationService.class);
+        ContextCompat.startForegroundService(this, serviceIntent);
+    }
 
-        // 3. Kekurangan nutrisi (misal TDS < 400)
-        if (currentTds > 0 && currentTds < 400 && (currentTime - lastLowTdsNotifTime > NOTIF_COOLDOWN)) {
-            lastLowTdsNotifTime = currentTime;
-            String key = notifRef.push().getKey();
-            if (key != null) {
-                NotifikasiLog log = new NotifikasiLog("Kekurangan Nutrisi", "Nilai TDS di bawah batas ideal (< 400 ppm). Pompa nutrisi perlu diaktifkan.", "warning", currentTime, false);
-                notifRef.child(key).setValue(log);
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_CODE_POST_NOTIFICATIONS) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Izin notifikasi disetujui", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Izin notifikasi ditolak. Anda tidak akan menerima pop-up peringatan.", Toast.LENGTH_LONG).show();
             }
         }
     }
