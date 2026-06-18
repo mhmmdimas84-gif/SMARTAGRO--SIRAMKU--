@@ -16,7 +16,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class AccountActivity extends AppCompatActivity {
 
-    private CardView btnEditProfil;
+    private CardView btnEditProfil, btnWifiConfig;
     private TextView tvEmail, tvNama;
     private TextView tvMerekPerangkat, tvSeriPerangkat, tvSistemOperasi;
     private Button btnLogout;
@@ -44,11 +44,17 @@ public class AccountActivity extends AppCompatActivity {
         tvSeriPerangkat = findViewById(R.id.tvSeriPerangkat);
         tvSistemOperasi = findViewById(R.id.tvSistemOperasi);
         btnLogout = findViewById(R.id.btnLogout);
+        btnWifiConfig = findViewById(R.id.btnWifiConfig);
     }
 
     private void setupListeners() {
 
         btnEditProfil.setOnClickListener(v -> Toast.makeText(AccountActivity.this, "Fitur Edit Profil (Coming Soon)", Toast.LENGTH_SHORT).show());
+
+        btnWifiConfig.setOnClickListener(v -> {
+            Intent intent = new Intent(AccountActivity.this, WifiConfigActivity.class);
+            startActivity(intent);
+        });
 
         btnLogout.setOnClickListener(v -> {
             SharedPreferences.Editor editor = sharedPreferences.edit();

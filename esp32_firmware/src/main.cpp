@@ -5,6 +5,12 @@
  * Deskripsi: Membaca Sensor TDS & Water Level, mengendalikan
  *            2 pompa via Relay, dan sinkronisasi dua arah
  *            dengan Firebase Realtime Database.
+ *
+ *            FITUR BARU: Konfigurasi WiFi via Aplikasi Android
+ *            ESP32 menjalankan Access Point (SIRAMKU_SETUP)
+ *            bersamaan dengan mode Station. Aplikasi Android
+ *            terhubung ke AP, mengirim SSID+Password baru via
+ *            HTTP POST, dan ESP32 menyimpan ke NVS lalu restart.
  * ================================================================
  *
  * === KONFIGURASI PIN ===
@@ -17,6 +23,8 @@
 
 #include <Arduino.h>
 #include <WiFi.h>
+#include <WebServer.h>
+#include <Preferences.h>
 #include <Firebase_ESP_Client.h>
 // Wajib disertakan untuk helper addData dan error print
 #include "addons/TokenHelper.h"
@@ -27,8 +35,12 @@
 // ================================================================
 // KONFIGURASI - ISI SESUAI DATA ANDA
 // ================================================================
-#define WIFI_SSID     "Dimjett"
-#define WIFI_PASSWORD "11223344"
+#define DEFAULT_SSID     "Putrakembar"
+#define DEFAULT_PASSWORD "Molymocy01"
+
+// Access Point untuk konfigurasi WiFi dari Aplikasi Android
+#define AP_SSID     "SIRAMKU_SETUP"
+#define AP_PASSWORD "12345678"
 
 // Ambil dari Firebase Console > Project Settings > General
 // Contoh: "https://nama-proyek-default-rtdb.asia-southeast1.firebasedatabase.app"
@@ -65,6 +77,16 @@ FirebaseConfig config;
 // Kedua alamat yang umum: 0x27 atau 0x3F
 LiquidCrystal_I2C lcd(0x27, 16, 2); // default, bisa berubah saat runtime
 
+// Preferences (NVS) untuk menyimpan WiFi credentials
+Preferences prefs;
+
+// WebServer untuk menerima konfigurasi WiFi dari aplikasi Android
+WebServer server(80);
+
+// WiFi credentials yang aktif (dimuat dari NVS saat boot)
+String activeSSID;
+String activePassword;
+
 unsigned long lastSendTime  = 0;
 const long    SEND_INTERVAL = 5000; // Kirim data setiap 5 detik
 
@@ -77,6 +99,9 @@ bool pompaNutrisiStatus = false;
 int  indeksHari = 0;
 unsigned long lastHistoriTime = 0;
 const long    HISTORI_INTERVAL = 60000; // Update histori setiap 1 menit
+
+// Flag apakah WiFi Station berhasil terhubung
+bool wifiConnected = false;
 
 // ================================================================
 // FUNGSI PEMBANTU: Konversi ADC ESP32 ke Persentase Level Air
@@ -156,6 +181,105 @@ void kirimDataSensor(float tds, int waterLevel) {
 }
 
 // ================================================================
+// FUNGSI: Setup HTTP Server untuk Konfigurasi WiFi
+// ================================================================
+void setupWifiConfigServer() {
+    // ---- Endpoint: GET /status ----
+    // Mengembalikan info status ESP32 dalam format plain text
+    // Format: DEVICE_NAME|STATUS|SSID|IP_ADDRESS
+    server.on("/status", HTTP_GET, []() {
+        server.sendHeader("Access-Control-Allow-Origin", "*");
+        
+        String status = (WiFi.status() == WL_CONNECTED) ? "Online" : "Offline";
+        String ssid   = (WiFi.status() == WL_CONNECTED) ? WiFi.SSID() : activeSSID;
+        String ip     = (WiFi.status() == WL_CONNECTED) ? WiFi.localIP().toString() : "Tidak tersedia";
+        
+        // Format: DEVICE_NAME|STATUS|SSID|IP_ADDRESS
+        String response = "ESP32 SIRAMKU|" + status + "|" + ssid + "|" + ip;
+        server.send(200, "text/plain", response);
+        
+        Serial.println("[Web] GET /status -> " + response);
+    });
+
+    // ---- Endpoint: POST /setwifi ----
+    // Menerima SSID dan password WiFi baru dari aplikasi Android
+    // Format body: SSID,PASSWORD (dipisah koma)
+    server.on("/setwifi", HTTP_POST, []() {
+        server.sendHeader("Access-Control-Allow-Origin", "*");
+        
+        if (server.hasArg("plain")) {
+            String body = server.arg("plain");
+            int commaIdx = body.indexOf(',');
+            
+            if (commaIdx > 0) {
+                String newSSID = body.substring(0, commaIdx);
+                String newPass = body.substring(commaIdx + 1);
+                
+                // Validasi: SSID tidak boleh kosong
+                newSSID.trim();
+                newPass.trim();
+                
+                if (newSSID.length() == 0) {
+                    server.send(400, "text/plain", "ERROR: SSID tidak boleh kosong");
+                    return;
+                }
+                
+                // Simpan ke NVS (Preferences)
+                prefs.putString("wifi_ssid", newSSID);
+                prefs.putString("wifi_pass", newPass);
+                
+                Serial.printf("[Web] WiFi credentials disimpan: SSID='%s'\n", newSSID.c_str());
+                
+                server.send(200, "text/plain", "OK: WiFi berhasil dikonfigurasi. ESP32 akan restart.");
+                
+                // Beri waktu respons terkirim sebelum restart
+                delay(1500);
+                ESP.restart();
+                return;
+            }
+        }
+        server.send(400, "text/plain", "ERROR: Format tidak valid. Gunakan: SSID,PASSWORD");
+    });
+
+    // ---- Endpoint: OPTIONS (CORS preflight) ----
+    server.on("/setwifi", HTTP_OPTIONS, []() {
+        server.sendHeader("Access-Control-Allow-Origin", "*");
+        server.sendHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
+        server.sendHeader("Access-Control-Allow-Headers", "Content-Type");
+        server.send(200);
+    });
+
+    server.begin();
+    Serial.println("[Web] HTTP Server dimulai pada port 80");
+}
+
+// ================================================================
+// FUNGSI: Koneksi WiFi Station
+// ================================================================
+bool connectWiFiStation() {
+    Serial.print("[WiFi] Menghubungkan ke ");
+    Serial.println(activeSSID);
+
+    WiFi.begin(activeSSID.c_str(), activePassword.c_str());
+
+    // Timeout: tunggu hingga 20 detik (40 x 500ms)
+    int wifiTries = 0;
+    while (WiFi.status() != WL_CONNECTED && wifiTries < 40) {
+        delay(500);
+        Serial.print(".");
+        wifiTries++;
+    }
+
+    if (WiFi.status() == WL_CONNECTED) {
+        Serial.println("\n[WiFi] Terhubung! IP: " + WiFi.localIP().toString());
+        return true;
+    } else {
+        Serial.println("\n[WiFi] GAGAL TERHUBUNG! Silakan konfigurasi via aplikasi.");
+        return false;
+    }
+}
+
+// ================================================================
 // SETUP
 // ================================================================
 void setup() {
@@ -217,74 +341,125 @@ void setup() {
     setRelay(PIN_RELAY_POMPA_AIR,     false);
     setRelay(PIN_RELAY_POMPA_NUTRISI, false);
 
-    // ---- Koneksi WiFi ----
-    WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-    Serial.print("[WiFi] Menghubungkan ke ");
-    Serial.println(WIFI_SSID);
+    // ================================================================
+    // INISIALISASI PREFERENCES (NVS) - Muat WiFi credentials tersimpan
+    // ================================================================
+    prefs.begin("wifi", false);
+    activeSSID     = prefs.getString("wifi_ssid", DEFAULT_SSID);
+    activePassword = prefs.getString("wifi_pass", DEFAULT_PASSWORD);
+    Serial.printf("[NVS] SSID tersimpan: '%s'\n", activeSSID.c_str());
+
+    // ================================================================
+    // MODE AP+STA (Access Point + Station bersamaan)
+    // AP selalu aktif agar aplikasi Android bisa konfigurasi WiFi
+    // Station mencoba konek ke WiFi yang tersimpan
+    // ================================================================
+    WiFi.mode(WIFI_AP_STA);
+
+    // Mulai Access Point
+    WiFi.softAP(AP_SSID, AP_PASSWORD);
+    delay(500);
+    Serial.println("[AP] Access Point aktif!");
+    Serial.printf("[AP] SSID: %s | Password: %s\n", AP_SSID, AP_PASSWORD);
+    Serial.println("[AP] IP: " + WiFi.softAPIP().toString());
+
+    // Tampilkan di LCD
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("AP: SIRAMKU");
+    lcd.setCursor(0, 1);
+    lcd.print(WiFi.softAPIP().toString());
+
+    // Mulai HTTP Server (selalu aktif, baik STA konek maupun tidak)
+    setupWifiConfigServer();
+
+    // Coba koneksi WiFi Station
+    wifiConnected = connectWiFiStation();
     
-    // Timeout untuk WiFi — tunggu hingga 20 detik (40 x 500ms)
-    int wifiTries = 0;
-    while (WiFi.status() != WL_CONNECTED && wifiTries < 40) {
-        delay(500);
-        Serial.print(".");
-        wifiTries++;
-    }
-    
-    if (WiFi.status() == WL_CONNECTED) {
-        Serial.println("\n[WiFi] Terhubung! IP: " + WiFi.localIP().toString());
-    } else {
-        Serial.println("\n[WiFi] GAGAL TERHUBUNG! Silakan cek SSID dan Password.");
-        Serial.println("[WiFi] Pastikan: 1) SSID benar  2) Password benar  3) Pakai 2.4GHz");
+    if (wifiConnected) {
         lcd.clear();
-        lcd.print("WiFi Error!");
-        // Jangan lanjut ke Firebase jika WiFi gagal
-        return;
+        lcd.setCursor(0, 0);
+        lcd.print("WiFi OK!");
+        lcd.setCursor(0, 1);
+        lcd.print(WiFi.localIP().toString());
+    } else {
+        lcd.clear();
+        lcd.setCursor(0, 0);
+        lcd.print("WiFi GAGAL!");
+        lcd.setCursor(0, 1);
+        lcd.print("Config via App");
+        // Jangan return! AP tetap aktif untuk konfigurasi
     }
 
     // ---- Inisialisasi Firebase (hanya jika WiFi terhubung) ----
-    config.api_key       = API_KEY;
-    config.database_url  = DATABASE_URL;
-    config.token_status_callback = tokenStatusCallback;
+    if (wifiConnected) {
+        config.api_key       = API_KEY;
+        config.database_url  = DATABASE_URL;
+        config.token_status_callback = tokenStatusCallback;
 
-    // Beri waktu jaringan stabil sebelum signUp
-    delay(1000);
+        // Beri waktu jaringan stabil sebelum signUp
+        delay(1000);
 
-    // Daftar sebagai pengguna anonim (aktifkan di Firebase Console > Authentication > Anonymous)
-    if (Firebase.signUp(&config, &auth, "", "")) {
-        Serial.println("[Firebase] Login anonim sukses!");
-    } else {
-        Serial.printf("[Firebase] Gagal login: %s\n", config.signer.signupError.message.c_str());
-        Serial.println("[Firebase] Pastikan Anonymous Auth diaktifkan di Firebase Console.");
+        // Daftar sebagai pengguna anonim (aktifkan di Firebase Console > Authentication > Anonymous)
+        if (Firebase.signUp(&config, &auth, "", "")) {
+            Serial.println("[Firebase] Login anonim sukses!");
+        } else {
+            Serial.printf("[Firebase] Gagal login: %s\n", config.signer.signupError.message.c_str());
+            Serial.println("[Firebase] Pastikan Anonymous Auth diaktifkan di Firebase Console.");
+        }
+        
+        Firebase.begin(&config, &auth);
+        Firebase.reconnectWiFi(true);
+
+        Serial.println("[Firebase] Menghubungkan ke database...");
     }
-    
-    Firebase.begin(&config, &auth);
-    Firebase.reconnectWiFi(true);
-
-    Serial.println("[Firebase] Menghubungkan ke database...");
 }
 
 // ================================================================
 // LOOP UTAMA
 // ================================================================
 void loop() {
+    // Selalu handle HTTP requests (AP selalu aktif)
+    server.handleClient();
+
     // Auto-reconnect WiFi jika putus
     if (WiFi.status() != WL_CONNECTED) {
-        Serial.println("[WiFi] Koneksi terputus! Mencoba reconnect...");
-        WiFi.disconnect();
-        WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-        int tries = 0;
-        while (WiFi.status() != WL_CONNECTED && tries < 10) {
-            delay(500);
-            Serial.print(".");
-            tries++;
+        if (wifiConnected) {
+            // Sebelumnya terhubung, coba reconnect
+            Serial.println("[WiFi] Koneksi terputus! Mencoba reconnect...");
+            wifiConnected = false;
         }
-        if (WiFi.status() == WL_CONNECTED) {
-            Serial.println("\n[WiFi] Reconnect berhasil!");
-        } else {
-            Serial.println("\n[WiFi] Reconnect gagal, coba lagi nanti...");
-            delay(2000);
-            return;
+        
+        // Coba reconnect setiap 10 detik (tidak blocking)
+        static unsigned long lastReconnect = 0;
+        if (millis() - lastReconnect > 10000) {
+            lastReconnect = millis();
+            WiFi.disconnect();
+            WiFi.begin(activeSSID.c_str(), activePassword.c_str());
+            int tries = 0;
+            while (WiFi.status() != WL_CONNECTED && tries < 10) {
+                delay(500);
+                Serial.print(".");
+                tries++;
+            }
+            if (WiFi.status() == WL_CONNECTED) {
+                Serial.println("\n[WiFi] Reconnect berhasil!");
+                wifiConnected = true;
+                
+                // Re-init Firebase setelah reconnect
+                if (!Firebase.ready()) {
+                    config.api_key       = API_KEY;
+                    config.database_url  = DATABASE_URL;
+                    config.token_status_callback = tokenStatusCallback;
+                    Firebase.signUp(&config, &auth, "", "");
+                    Firebase.begin(&config, &auth);
+                    Firebase.reconnectWiFi(true);
+                }
+            } else {
+                Serial.println("\n[WiFi] Reconnect gagal, coba lagi nanti...");
+            }
         }
+        return; // Jangan lanjut ke Firebase jika belum terhubung
     }
 
     if (!Firebase.ready()) {
