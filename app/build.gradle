@@ -19,8 +19,16 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            debuggable false
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile(
+                    'proguard-android-optimize.txt'),
+                    'proguard-rules.pro'
+        }
+
+        debug {
+            debuggable true
         }
     }
     compileOptions {
@@ -34,6 +42,7 @@ dependencies {
     implementation libs.material
     implementation libs.activity
     implementation libs.constraintlayout
+    implementation libs.security.crypto
 
     // Firebase & Auth (Gunakan dari Version Catalog)
     implementation platform(libs.firebase.bom)
@@ -43,7 +52,7 @@ dependencies {
 
     // Chart Library
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
-
+    implementation "androidx.security:security-crypto:1.1.0-alpha06"
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core

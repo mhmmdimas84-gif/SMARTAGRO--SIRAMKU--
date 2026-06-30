@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!--
+        PENTING: Android tidak mendukung alamat IP (seperti 192.168.4.1) di tag <domain>.
+        Kita izinkan cleartext secara global agar koneksi ke ESP32 lancar.
+        Keamanan Firebase tetap terjaga karena Firebase menggunakan HTTPS secara internal.
+    -->
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>

@@ -13,6 +13,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import androidx.security.crypto.EncryptedSharedPreferences;
+import androidx.security.crypto.MasterKey;
 
 public class AccountActivity extends AppCompatActivity {
 
@@ -29,13 +31,30 @@ public class AccountActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account);
 
-        sharedPreferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
+        try {
+
+            MasterKey masterKey = new MasterKey.Builder(this)
+                    .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+                    .build();
+
+            sharedPreferences = EncryptedSharedPreferences.create(
+                    this,
+                    PREF_NAME,
+                    masterKey,
+                    EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                    EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+            );
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+        }
 
         initializeViews();
         setupListeners();
         setupBottomNavigation();
     }
-
     private void initializeViews() {
         btnEditProfil = findViewById(R.id.btnEditProfil);
         tvNama = findViewById(R.id.tvNama);

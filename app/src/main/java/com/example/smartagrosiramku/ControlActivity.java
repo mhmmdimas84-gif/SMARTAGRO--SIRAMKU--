@@ -25,22 +25,17 @@ import android.util.Log;
 public class ControlActivity extends AppCompatActivity {
 
     private DatabaseReference pompaAirRef;
+    private DatabaseReference sensorRef;
 
-    // Bottom Navigation
     private TextView tvDashboard, tvHistory, tvControl, tvAccount;
-
-    // Header
     private ImageButton btnNotif;
-
-    // Tombol Aksi Pompa Air
     private MaterialButton btnNyalakanAir, btnEditAir;
-
-    // Status & Jadwal & Durasi Pompa Air
     private TextView tvStatusAir, tvJadwalAir, tvDurasiAir;
-
-    // Switch Mode Otomatis
     private SwitchCompat switchModeOtomatis;
+    
     private boolean isModeOtomatis = false;
+    private int currentWaterLevel = 100;
+    private Boolean lastPumpStatus = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,106 +46,115 @@ public class ControlActivity extends AppCompatActivity {
         setupHeaderActions();
         
         pompaAirRef = FirebaseDatabase.getInstance().getReference("Controls/pompa_air");
-        
+        sensorRef = FirebaseDatabase.getInstance().getReference("Sensors/water_level_pct");
+
         listenToFirebase();
+        listenToSensorForAutomation(); // Tambahkan otomatisasi di sini
         setupPompaListeners();
         setupBottomNavigation();
     }
 
     private void listenToFirebase() {
-
         pompaAirRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
+                if (!snapshot.exists()) return;
+
                 Boolean status = snapshot.child("status").getValue(Boolean.class);
                 String jadwal = snapshot.child("jadwal").getValue(String.class);
-                Integer durasi = snapshot.child("durasi_menit").getValue(Integer.class);
-                Boolean modeOtomatis = snapshot.child("mode_otomatis").getValue(Boolean.class);
+                
+                Number durasiVal = snapshot.child("durasi_menit").getValue(Number.class);
+                Integer durasi = durasiVal != null ? durasiVal.intValue() : 0;
+                
+                Boolean modeOto = snapshot.child("mode_otomatis").getValue(Boolean.class);
 
                 if (status != null) {
+                    lastPumpStatus = status;
                     setStatusPompa(tvStatusAir, status ? "Aktif" : "Tidak Aktif", status);
                     btnNyalakanAir.setText(status ? "Matikan" : "Nyalakan");
                     btnNyalakanAir.setBackgroundTintList(getResources().getColorStateList(
                             status ? android.R.color.holo_red_dark : android.R.color.holo_green_dark));
                 }
                 if (jadwal != null) tvJadwalAir.setText(jadwal);
-                if (durasi != null) tvDurasiAir.setText(formatDurasi(durasi));
+                tvDurasiAir.setText(formatDurasi(durasi));
 
-                // Sinkronisasi state switch mode otomatis dari Firebase
-                if (modeOtomatis != null) {
-                    isModeOtomatis = modeOtomatis;
-                    // Cegah listener switch terpicu saat sinkronisasi dari Firebase
+                if (modeOto != null) {
+                    isModeOtomatis = modeOto;
                     switchModeOtomatis.setOnCheckedChangeListener(null);
-                    switchModeOtomatis.setChecked(modeOtomatis);
-                    setupSwitchListener(); // Pasang ulang listener setelah set value
-                    // Nonaktifkan tombol manual saat mode otomatis aktif
-                    btnNyalakanAir.setEnabled(!modeOtomatis);
-                    btnNyalakanAir.setAlpha(modeOtomatis ? 0.4f : 1.0f);
+                    switchModeOtomatis.setChecked(isModeOtomatis);
+                    setupSwitchListener();
+                    btnNyalakanAir.setEnabled(!isModeOtomatis);
+                    btnNyalakanAir.setAlpha(isModeOtomatis ? 0.4f : 1.0f);
+                    
+                    runAutomationLogic(); 
                 }
             }
-
             @Override
-            public void onCancelled(DatabaseError error) {
-                Log.e("ControlActivity", "Gagal load pompa air", error.toException());
-            }
+            public void onCancelled(DatabaseError error) {}
         });
     }
 
+    private void listenToSensorForAutomation() {
+        sensorRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                if (snapshot.exists() && snapshot.getValue() != null) {
+                    currentWaterLevel = ((Number) snapshot.getValue()).intValue();
+                    runAutomationLogic();
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError error) {}
+        });
+    }
+
+    private void runAutomationLogic() {
+        if (isModeOtomatis) {
+            if (currentWaterLevel < 20) {
+                if (lastPumpStatus == null || !lastPumpStatus) {
+                    pompaAirRef.child("status").setValue(true);
+                    Toast.makeText(this, "Otomatis: Air < 20%, Pompa dinyalakan", Toast.LENGTH_SHORT).show();
+                }
+            } else if (currentWaterLevel >= 95) {
+                if (lastPumpStatus == null || lastPumpStatus) {
+                    pompaAirRef.child("status").setValue(false);
+                    Toast.makeText(this, "Otomatis: Air Penuh, Pompa dimatikan", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
+
     private void initializeViews() {
-        // Bottom Navigation
         tvDashboard = findViewById(R.id.tvDashboard);
         tvHistory   = findViewById(R.id.tvHistory);
         tvControl   = findViewById(R.id.tvControl);
         tvAccount   = findViewById(R.id.tvAccount);
-
-        // Header
         btnNotif = findViewById(R.id.btnNotif);
-
-        // Tombol Pompa Air
         btnNyalakanAir = findViewById(R.id.btnNyalakanAir);
         btnEditAir     = findViewById(R.id.btnEditAir);
-
-        // TextView Status & Jadwal
         tvStatusAir      = findViewById(R.id.tvStatusAir);
         tvJadwalAir      = findViewById(R.id.tvJadwalAir);
         tvDurasiAir      = findViewById(R.id.tvDurasiAir);
-
-        // Switch Mode Otomatis
         switchModeOtomatis = findViewById(R.id.switchModeOtomatis);
     }
 
     private void setupHeaderActions() {
         if (btnNotif != null) {
-            btnNotif.setOnClickListener(v -> {
-                Intent intent = new Intent(ControlActivity.this, Notifikasi.class);
-                startActivity(intent);
-            });
+            btnNotif.setOnClickListener(v -> startActivity(new Intent(this, Notifikasi.class)));
         }
     }
 
     private void setupPompaListeners() {
+        btnNyalakanAir.setOnClickListener(v -> {
+            if (isModeOtomatis) {
+                Toast.makeText(this, "Matikan mode otomatis untuk kendali manual", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            boolean target = tvStatusAir.getText().toString().equals("Tidak Aktif");
+            pompaAirRef.child("status").setValue(target);
+        });
 
-        // ===== POMPA AIR - Tombol Manual =====
-        if (btnNyalakanAir != null) {
-            btnNyalakanAir.setOnClickListener(v -> {
-                if (isModeOtomatis) {
-                    Toast.makeText(this, "Matikan mode otomatis terlebih dahulu!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                String statusSekarang = tvStatusAir.getText().toString();
-                boolean targetStatus = statusSekarang.equals("Tidak Aktif");
-                pompaAirRef.child("status").setValue(targetStatus);
-                Toast.makeText(this, targetStatus ? "Menyalakan Pompa Air" : "Mematikan Pompa Air", Toast.LENGTH_SHORT).show();
-            });
-        }
-
-        if (btnEditAir != null) {
-            btnEditAir.setOnClickListener(v ->
-                    showEditJadwalDialog("Pompa Air", pompaAirRef, tvJadwalAir, tvDurasiAir)
-            );
-        }
-
-        // ===== SWITCH MODE OTOMATIS =====
+        btnEditAir.setOnClickListener(v -> showEditJadwalDialog("Pompa Air", pompaAirRef, tvJadwalAir, tvDurasiAir));
         setupSwitchListener();
     }
 
@@ -159,188 +163,62 @@ public class ControlActivity extends AppCompatActivity {
         switchModeOtomatis.setOnCheckedChangeListener((buttonView, isChecked) -> {
             isModeOtomatis = isChecked;
             pompaAirRef.child("mode_otomatis").setValue(isChecked);
-
-            // Jika mode otomatis dimatikan, pastikan pompa juga mati secara manual
-            if (!isChecked) {
-                pompaAirRef.child("status").setValue(false);
-            }
-
-            // Aktifkan/nonaktifkan tombol manual
+            if (!isChecked) pompaAirRef.child("status").setValue(false);
             btnNyalakanAir.setEnabled(!isChecked);
             btnNyalakanAir.setAlpha(isChecked ? 0.4f : 1.0f);
-
-            Toast.makeText(this,
-                    isChecked ? "Mode Otomatis AKTIF — pompa dikendalikan sensor" :
-                                "Mode Otomatis MATI — kendali manual aktif",
-                    Toast.LENGTH_LONG).show();
         });
     }
 
-    private void showEditJadwalDialog(String namaPompa, DatabaseReference ref, TextView tvJadwalTarget, TextView tvDurasiTarget) {
+    private void showEditJadwalDialog(String nama, DatabaseReference ref, TextView tvJ, TextView tvD) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_edit_jadwal, null);
-        builder.setView(dialogView);
-
+        View view = LayoutInflater.from(this).inflate(R.layout.dialog_edit_jadwal, null);
+        builder.setView(view);
         AlertDialog dialog = builder.create();
-        if (dialog.getWindow() != null) {
-            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        }
 
-        TextView tvTitle = dialogView.findViewById(R.id.tvDialogTitle);
-        TextView tvWaktuMulai = dialogView.findViewById(R.id.tvWaktuMulai);
-        TextView tvWaktuSelesai = dialogView.findViewById(R.id.tvWaktuSelesai);
-        Button btnBatal = dialogView.findViewById(R.id.btnBatalJadwal);
-        Button btnSimpan = dialogView.findViewById(R.id.btnSimpanJadwal);
+        TextView tvM = view.findViewById(R.id.tvWaktuMulai);
+        TextView tvS = view.findViewById(R.id.tvWaktuSelesai);
+        Button btnSimpan = view.findViewById(R.id.btnSimpanJadwal);
 
-        tvTitle.setText("Atur Jadwal " + namaPompa);
-
-        String jadwalSekarang = tvJadwalTarget.getText().toString();
-        if (jadwalSekarang.contains("-")) {
-            String[] split = jadwalSekarang.split("-");
-            if (split.length == 2) {
-                tvWaktuMulai.setText(split[0].trim());
-                tvWaktuSelesai.setText(split[1].trim());
-            }
-        }
-
-        tvWaktuMulai.setOnClickListener(v -> showTimePicker(tvWaktuMulai));
-        tvWaktuSelesai.setOnClickListener(v -> showTimePicker(tvWaktuSelesai));
-
-        btnBatal.setOnClickListener(v -> dialog.dismiss());
+        tvM.setOnClickListener(v -> showTimePicker(tvM));
+        tvS.setOnClickListener(v -> showTimePicker(tvS));
 
         btnSimpan.setOnClickListener(v -> {
-            String mulai = tvWaktuMulai.getText().toString();
-            String selesai = tvWaktuSelesai.getText().toString();
-            String baru = mulai + " - " + selesai;
-            
-            int durasi = hitungDurasi(mulai, selesai);
-            
+            String baru = tvM.getText().toString() + " - " + tvS.getText().toString();
             ref.child("jadwal").setValue(baru);
-            ref.child("durasi_menit").setValue(durasi);
-            
-            Toast.makeText(this, "Jadwal " + namaPompa + " disimpan ke Cloud", Toast.LENGTH_SHORT).show();
+            ref.child("durasi_menit").setValue(hitungDurasi(tvM.getText().toString(), tvS.getText().toString()));
             dialog.dismiss();
         });
-
         dialog.show();
     }
 
-    private void showTimePicker(TextView targetTextView) {
-        String currentTime = targetTextView.getText().toString();
-        int hour = 8;
-        int minute = 0;
-        if (currentTime.contains(":")) {
-            String[] split = currentTime.split(":");
-            if (split.length == 2) {
-                try {
-                    hour = Integer.parseInt(split[0]);
-                    minute = Integer.parseInt(split[1]);
-                } catch (NumberFormatException e) {
-                    // Abaikan dan gunakan default
-                }
-            }
-        }
-
-        // Menggunakan THEME_HOLO_LIGHT agar tampilannya spinner yang mudah diatur
-        TimePickerDialog timePickerDialog = new TimePickerDialog(this,
-                android.app.AlertDialog.THEME_HOLO_LIGHT,
-                (view, hourOfDay, minuteOfHour) -> {
-                    String time = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minuteOfHour);
-                    targetTextView.setText(time);
-                }, hour, minute, true);
-        
-        // Agar window tidak transparan yang bikin tulisan susah dibaca, kasih background putih
-        if (timePickerDialog.getWindow() != null) {
-            timePickerDialog.getWindow().setBackgroundDrawableResource(android.R.color.white);
-        }
-        timePickerDialog.show();
+    private void showTimePicker(TextView target) {
+        new TimePickerDialog(this, android.app.AlertDialog.THEME_HOLO_LIGHT, (view, h, m) -> {
+            target.setText(String.format(Locale.getDefault(), "%02d:%02d", h, m));
+        }, 8, 0, true).show();
     }
 
-    private int hitungDurasi(String jamMulai, String jamSelesai) {
+    private int hitungDurasi(String m, String s) {
         try {
-            String[] mSplit = jamMulai.split(":");
-            String[] sSplit = jamSelesai.split(":");
-            int mHour = Integer.parseInt(mSplit[0]);
-            int mMin = Integer.parseInt(mSplit[1]);
-            int sHour = Integer.parseInt(sSplit[0]);
-            int sMin = Integer.parseInt(sSplit[1]);
-
-            int totalMulai = mHour * 60 + mMin;
-            int totalSelesai = sHour * 60 + sMin;
-            
-            if (totalSelesai < totalMulai) {
-                totalSelesai += 24 * 60;
-            }
-            return totalSelesai - totalMulai;
-        } catch (Exception e) {
-            return 0;
-        }
+            String[] mS = m.split(":"), sS = s.split(":");
+            int mTot = Integer.parseInt(mS[0]) * 60 + Integer.parseInt(mS[1]);
+            int sTot = Integer.parseInt(sS[0]) * 60 + Integer.parseInt(sS[1]);
+            return (sTot < mTot) ? (sTot + 1440 - mTot) : (sTot - mTot);
+        } catch (Exception e) { return 0; }
     }
 
-    private String formatDurasi(int totalMenit) {
-        if (totalMenit <= 0) {
-            return "0 menit";
-        }
-        int jam = totalMenit / 60;
-        int menit = totalMenit % 60;
-        
-        StringBuilder sb = new StringBuilder();
-        if (jam > 0) {
-            sb.append(jam).append(" jam");
-        }
-        if (menit > 0) {
-            if (jam > 0) {
-                sb.append(" ");
-            }
-            sb.append(menit).append(" menit");
-        }
-        return sb.toString();
+    private String formatDurasi(int t) {
+        return (t/60 > 0 ? t/60 + " jam " : "") + (t%60 + " menit");
     }
 
-    /**
-     * Helper untuk mengubah tampilan badge status pompa.
-     * @param tvStatus  TextView badge yang ingin diubah
-     * @param teks      Teks baru ("Aktif" / "Tidak Aktif")
-     * @param isAktif   true = warna hijau, false = warna merah
-     */
-    private void setStatusPompa(TextView tvStatus, String teks, boolean isAktif) {
-        if (tvStatus == null) return;
-        tvStatus.setText(teks);
-        if (isAktif) {
-            tvStatus.setTextColor(getResources().getColor(R.color.status_aktif_text));
-            tvStatus.setBackgroundResource(R.drawable.bg_badge_active);
-        } else {
-            tvStatus.setTextColor(getResources().getColor(R.color.status_inactive_text));
-            tvStatus.setBackgroundResource(R.drawable.bg_badge_inactive);
-        }
+    private void setStatusPompa(TextView tv, String teks, boolean aktif) {
+        if (tv == null) return;
+        tv.setText(teks);
+        tv.setBackgroundResource(aktif ? R.drawable.bg_badge_active : R.drawable.bg_badge_inactive);
     }
 
     private void setupBottomNavigation() {
-        if (tvDashboard != null) {
-            tvDashboard.setOnClickListener(v -> {
-                startActivity(new Intent(ControlActivity.this, Dashboard.class));
-                finish();
-            });
-        }
-
-        if (tvHistory != null) {
-            tvHistory.setOnClickListener(v -> {
-                startActivity(new Intent(ControlActivity.this, HistoryActivity.class));
-                finish();
-            });
-        }
-
-        if (tvControl != null) {
-            tvControl.setOnClickListener(v ->
-                    Toast.makeText(this, "Anda sedang di halaman Kontrol", Toast.LENGTH_SHORT).show()
-            );
-        }
-
-        if (tvAccount != null) {
-            tvAccount.setOnClickListener(v -> {
-                startActivity(new Intent(ControlActivity.this, AccountActivity.class));
-                finish();
-            });
-        }
+        tvDashboard.setOnClickListener(v -> { startActivity(new Intent(this, Dashboard.class)); finish(); });
+        tvHistory.setOnClickListener(v -> { startActivity(new Intent(this, HistoryActivity.class)); finish(); });
+        tvAccount.setOnClickListener(v -> { startActivity(new Intent(this, AccountActivity.class)); finish(); });
     }
 }

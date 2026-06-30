@@ -14,6 +14,7 @@ firebaseBom = "33.10.0"
 compileSdk = "34"
 minSdk = "24"
 targetSdk = "34"
+securityCrypto = "1.1.0-alpha06"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -26,7 +27,7 @@ constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayo
 play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "playServicesAuth" }
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
-
+security-crypto = { group = "androidx.security", name = "security-crypto", version.ref = "securityCrypto" }
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }

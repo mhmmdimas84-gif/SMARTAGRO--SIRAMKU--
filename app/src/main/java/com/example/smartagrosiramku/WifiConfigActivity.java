@@ -1,5 +1,10 @@
 package com.example.smartagrosiramku;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.net.NetworkRequest;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -24,39 +29,22 @@ import java.net.URL;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-/**
- * WifiConfigActivity - Halaman konfigurasi WiFi untuk ESP32 SIRAMKU.
- *
- * Cara kerja:
- * 1. Pengguna menghubungkan ponsel ke AP "SIRAMKU_SETUP" (password: 12345678)
- * 2. Halaman ini mengirim HTTP GET ke 192.168.4.1/status untuk cek status ESP32
- * 3. Pengguna memasukkan SSID + password WiFi baru
- * 4. Aplikasi mengirim HTTP POST ke 192.168.4.1/setwifi dengan body "SSID,PASSWORD"
- * 5. ESP32 menyimpan credentials ke NVS, restart, dan terhubung ke WiFi baru
- */
 public class WifiConfigActivity extends AppCompatActivity {
 
-    // IP default Access Point ESP32
     private static final String ESP_AP_IP = "192.168.4.1";
-    private static final int CONNECT_TIMEOUT = 5000;  // 5 detik
-    private static final int READ_TIMEOUT    = 5000;  // 5 detik
+    private static final int CONNECT_TIMEOUT = 5000;
+    private static final int READ_TIMEOUT    = 5000;
 
-    // Views - Info perangkat
     private TextView tvStatusBadge, tvDeviceName, tvDeviceStatus;
     private TextView tvCurrentSSID, tvIPAddress;
-
-    // Views - Form input
     private TextInputEditText etSSID, etPassword;
     private Button btnConnect;
     private LinearLayout layoutLoading;
     private TextView tvLoadingText;
-
-    // Views - Status result
     private CardView cardStatusResult;
     private View viewStatusDot;
     private TextView tvStatusResult;
 
-    // Threading
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
@@ -68,66 +56,80 @@ public class WifiConfigActivity extends AppCompatActivity {
         initializeViews();
         setupListeners();
 
-        // Otomatis cek status ESP32 saat halaman dibuka
+        // Memaksa Android menggunakan jalur WiFi meskipun tidak ada internet
+        forceRouteOverWifi();
+
+        // Otomatis cek status ESP32
         checkESP32Status();
     }
 
+    /**
+     * Memaksa aplikasi untuk berkomunikasi melalui WiFi jika terhubung ke AP ESP32.
+     * Ini sangat penting untuk Android 10 ke atas agar tidak "lari" ke Mobile Data.
+     */
+    private void forceRouteOverWifi() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager == null) return;
+
+        NetworkRequest request = new NetworkRequest.Builder()
+                .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+                .build();
+
+        connectivityManager.registerNetworkCallback(request, new ConnectivityManager.NetworkCallback() {
+            @Override
+            public void onAvailable(Network network) {
+                // Ikat proses aplikasi ke jaringan WiFi ini
+                connectivityManager.bindProcessToNetwork(network);
+                mainHandler.post(() -> {
+                    Toast.makeText(WifiConfigActivity.this, "Terhubung ke jalur WiFi ESP32", Toast.LENGTH_SHORT).show();
+                    checkESP32Status(); // Cek ulang status setelah jaringan siap
+                });
+            }
+
+            @Override
+            public void onLost(Network network) {
+                connectivityManager.bindProcessToNetwork(null);
+            }
+        });
+    }
+
     private void initializeViews() {
-        // Tombol kembali (menggunakan icon wifi yang dirotasi sebagai arrow)
         ImageView btnBack = findViewById(R.id.btnBack);
         btnBack.setImageResource(android.R.drawable.ic_menu_revert);
-        btnBack.setRotation(0);
 
-        // Info perangkat
         tvStatusBadge  = findViewById(R.id.tvStatusBadge);
         tvDeviceName   = findViewById(R.id.tvDeviceName);
         tvDeviceStatus = findViewById(R.id.tvDeviceStatus);
         tvCurrentSSID  = findViewById(R.id.tvCurrentSSID);
         tvIPAddress    = findViewById(R.id.tvIPAddress);
-
-        // Form input
         etSSID      = findViewById(R.id.etSSID);
         etPassword  = findViewById(R.id.etPassword);
         btnConnect  = findViewById(R.id.btnConnect);
-
-        // Loading
         layoutLoading = findViewById(R.id.layoutLoading);
         tvLoadingText = findViewById(R.id.tvLoadingText);
-
-        // Status result
         cardStatusResult = findViewById(R.id.cardStatusResult);
         viewStatusDot    = findViewById(R.id.viewStatusDot);
         tvStatusResult   = findViewById(R.id.tvStatusResult);
     }
 
     private void setupListeners() {
-        // Tombol kembali
         findViewById(R.id.btnBack).setOnClickListener(v -> finish());
-
-        // Tombol Hubungkan
         btnConnect.setOnClickListener(v -> {
             String ssid = etSSID.getText() != null ? etSSID.getText().toString().trim() : "";
             String pass = etPassword.getText() != null ? etPassword.getText().toString().trim() : "";
-
             if (ssid.isEmpty()) {
                 etSSID.setError("SSID tidak boleh kosong");
-                etSSID.requestFocus();
                 return;
             }
-
             sendWifiConfig(ssid, pass);
         });
     }
 
-    /**
-     * Cek status ESP32 via HTTP GET ke /status
-     * Format respons: DEVICE_NAME|STATUS|SSID|IP_ADDRESS
-     */
     private void checkESP32Status() {
-        tvStatusBadge.setText("Mengecek...");
-        tvStatusBadge.setBackgroundResource(R.drawable.bg_badge_inactive);
-        tvDeviceStatus.setText("Mengecek...");
-        tvDeviceStatus.setTextColor(0xFF757575);
+        mainHandler.post(() -> {
+            tvStatusBadge.setText("Mengecek...");
+            tvStatusBadge.setBackgroundResource(R.drawable.bg_badge_inactive);
+        });
 
         executor.execute(() -> {
             try {
@@ -139,45 +141,18 @@ public class WifiConfigActivity extends AppCompatActivity {
 
                 int responseCode = conn.getResponseCode();
                 if (responseCode == 200) {
-                    BufferedReader reader = new BufferedReader(
-                            new InputStreamReader(conn.getInputStream()));
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                     String response = reader.readLine();
                     reader.close();
-                    conn.disconnect();
 
-                    // Parse: DEVICE_NAME|STATUS|SSID|IP_ADDRESS
                     String[] parts = response.split("\\|");
                     if (parts.length >= 4) {
-                        String deviceName = parts[0];
-                        String status     = parts[1];
-                        String ssid       = parts[2];
-                        String ipAddr     = parts[3];
-
-                        mainHandler.post(() -> {
-                            tvDeviceName.setText(deviceName);
-
-                            if ("Online".equals(status)) {
-                                tvDeviceStatus.setText("Online");
-                                tvDeviceStatus.setTextColor(0xFF2E7D32);
-                                tvStatusBadge.setText("● Online");
-                                tvStatusBadge.setTextColor(0xFF2E7D32);
-                                tvStatusBadge.setBackgroundResource(R.drawable.bg_badge_green);
-                            } else {
-                                tvDeviceStatus.setText("Offline");
-                                tvDeviceStatus.setTextColor(0xFFF44336);
-                                tvStatusBadge.setText("● Offline");
-                                tvStatusBadge.setTextColor(0xFFF44336);
-                                tvStatusBadge.setBackgroundResource(R.drawable.bg_badge_inactive);
-                            }
-
-                            tvCurrentSSID.setText(ssid);
-                            tvIPAddress.setText(ipAddr);
-                        });
+                        mainHandler.post(() -> updateUIStatus(parts[0], parts[1], parts[2], parts[3]));
                     }
                 } else {
-                    conn.disconnect();
                     mainHandler.post(this::setStatusOffline);
                 }
+                conn.disconnect();
             } catch (Exception e) {
                 e.printStackTrace();
                 mainHandler.post(this::setStatusOffline);
@@ -185,27 +160,32 @@ public class WifiConfigActivity extends AppCompatActivity {
         });
     }
 
+    private void updateUIStatus(String name, String status, String ssid, String ip) {
+        tvDeviceName.setText(name);
+        tvCurrentSSID.setText(ssid);
+        tvIPAddress.setText(ip);
+
+        if ("Online".equalsIgnoreCase(status)) {
+            tvDeviceStatus.setText("Online");
+            tvDeviceStatus.setTextColor(0xFF2E7D32);
+            tvStatusBadge.setText("● Online");
+            tvStatusBadge.setBackgroundResource(R.drawable.bg_badge_green);
+        } else {
+            setStatusOffline();
+        }
+    }
+
     private void setStatusOffline() {
-        tvDeviceName.setText("ESP32 SIRAMKU");
         tvDeviceStatus.setText("Tidak Terhubung");
         tvDeviceStatus.setTextColor(0xFFF44336);
         tvStatusBadge.setText("● Offline");
-        tvStatusBadge.setTextColor(0xFFF44336);
         tvStatusBadge.setBackgroundResource(R.drawable.bg_badge_inactive);
-        tvCurrentSSID.setText("-");
-        tvIPAddress.setText("-");
     }
 
-    /**
-     * Kirim konfigurasi WiFi baru ke ESP32 via HTTP POST ke /setwifi
-     * Body: SSID,PASSWORD (plain text dipisah koma)
-     */
     private void sendWifiConfig(String ssid, String password) {
-        // Tampilkan loading
         btnConnect.setEnabled(false);
         layoutLoading.setVisibility(View.VISIBLE);
-        tvLoadingText.setText("Mengirim konfigurasi ke ESP32...");
-        cardStatusResult.setVisibility(View.GONE);
+        tvLoadingText.setText("Mengirim konfigurasi...");
 
         executor.execute(() -> {
             try {
@@ -214,10 +194,8 @@ public class WifiConfigActivity extends AppCompatActivity {
                 conn.setRequestMethod("POST");
                 conn.setDoOutput(true);
                 conn.setConnectTimeout(CONNECT_TIMEOUT);
-                conn.setReadTimeout(READ_TIMEOUT);
                 conn.setRequestProperty("Content-Type", "text/plain");
 
-                // Kirim body: SSID,PASSWORD
                 String body = ssid + "," + password;
                 OutputStream os = conn.getOutputStream();
                 os.write(body.getBytes("UTF-8"));
@@ -225,77 +203,44 @@ public class WifiConfigActivity extends AppCompatActivity {
                 os.close();
 
                 int responseCode = conn.getResponseCode();
-                BufferedReader reader = new BufferedReader(
-                        new InputStreamReader(conn.getInputStream()));
-                StringBuilder response = new StringBuilder();
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    response.append(line);
-                }
-                reader.close();
-                conn.disconnect();
-
-                String responseText = response.toString();
-
-                mainHandler.post(() -> {
-                    layoutLoading.setVisibility(View.GONE);
-                    btnConnect.setEnabled(true);
-
-                    if (responseCode == 200 && responseText.startsWith("OK")) {
-                        // Berhasil!
-                        showSuccessResult();
+                if (responseCode == 200) {
+                    mainHandler.post(() -> {
+                        layoutLoading.setVisibility(View.GONE);
+                        btnConnect.setEnabled(true);
                         showSuccessDialog();
-                    } else {
-                        // Server merespons tapi ada error
-                        showErrorResult("ESP32: " + responseText);
-                    }
-                });
-
+                    });
+                } else {
+                    mainHandler.post(() -> {
+                        layoutLoading.setVisibility(View.GONE);
+                        btnConnect.setEnabled(true);
+                        Toast.makeText(this, "Gagal mengirim data", Toast.LENGTH_SHORT).show();
+                    });
+                }
+                conn.disconnect();
             } catch (Exception e) {
                 e.printStackTrace();
                 mainHandler.post(() -> {
                     layoutLoading.setVisibility(View.GONE);
                     btnConnect.setEnabled(true);
-                    showErrorResult("Koneksi gagal, periksa SSID dan password.");
                     showErrorDialog();
                 });
             }
         });
     }
 
-    private void showSuccessResult() {
-        cardStatusResult.setVisibility(View.VISIBLE);
-        viewStatusDot.setBackgroundResource(R.drawable.bg_circle_green);
-        tvStatusResult.setText("ESP32 berhasil dikonfigurasi! Perangkat akan restart dan terhubung ke WiFi baru.");
-        tvStatusResult.setTextColor(0xFF2E7D32);
-
-        // Refresh status setelah 5 detik (waktu ESP32 restart)
-        mainHandler.postDelayed(this::checkESP32Status, 5000);
-    }
-
-    private void showErrorResult(String message) {
-        cardStatusResult.setVisibility(View.VISIBLE);
-        viewStatusDot.setBackgroundResource(R.drawable.bg_circle_red);
-        tvStatusResult.setText(message);
-        tvStatusResult.setTextColor(0xFFF44336);
-    }
-
     private void showSuccessDialog() {
         new AlertDialog.Builder(this)
-                .setTitle("Berhasil! ✅")
-                .setMessage("ESP32 berhasil terhubung ke jaringan WiFi.\n\nPerangkat akan restart secara otomatis dan terhubung ke jaringan baru.")
-                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
-                .setCancelable(true)
+                .setTitle("Berhasil!")
+                .setMessage("ESP32 akan segera terhubung ke WiFi baru dan restart.")
+                .setPositiveButton("OK", (dialog, which) -> finish())
                 .show();
     }
 
     private void showErrorDialog() {
         new AlertDialog.Builder(this)
-                .setTitle("Gagal ❌")
-                .setMessage("Koneksi gagal, periksa SSID dan password.\n\nPastikan:\n• Ponsel terhubung ke WiFi SIRAMKU_SETUP\n• ESP32 dalam kondisi menyala\n• SSID dan password WiFi benar")
-                .setPositiveButton("Coba Lagi", (dialog, which) -> dialog.dismiss())
-                .setNegativeButton("Batal", (dialog, which) -> dialog.dismiss())
-                .setCancelable(true)
+                .setTitle("Gagal")
+                .setMessage("Pastikan Anda terhubung ke WiFi SIRAMKU_SETUP")
+                .setPositiveButton("Coba Lagi", null)
                 .show();
     }
 
