@@ -1,10 +1,5 @@
-# Add project specific ProGuard rules here.
-# By default, the flags in this file are appended to flags specified
-# in the Android SDK's default ProGuard configuration.
+# Hapus Log
 
-############################################
-# REMOVE LOGS IN RELEASE
-############################################
 -assumenosideeffects class android.util.Log {
     public static *** d(...);
     public static *** i(...);
@@ -13,43 +8,25 @@
     public static *** e(...);
 }
 
-############################################
-# FIREBASE
-############################################
-
--keep class com.google.firebase.** { *; }
--dontwarn com.google.firebase.**
-
-############################################
-# GOOGLE PLAY SERVICES
-############################################
-
--keep class com.google.android.gms.** { *; }
--dontwarn com.google.android.gms.**
-
-############################################
-# RETROFIT
-############################################
-
--dontwarn okhttp3.**
--dontwarn retrofit2.**
-
-############################################
-# GSON
-############################################
-
--keep class com.google.gson.** { *; }
--keepattributes Signature
--keepattributes *Annotation*
-
-############################################
-# KOTLIN
-############################################
-
--dontwarn kotlin.**
-
-############################################
-# ANDROIDX
-############################################
+# Jangan beri keep untuk seluruh AndroidX
+# Biarkan R8 mengoptimalkan
 
 -dontwarn androidx.**
+
+# Firebase
+
+-keep class com.google.firebase.provider.FirebaseInitProvider
+
+-keep class com.google.firebase.messaging.FirebaseMessagingService
+
+-keep class com.google.firebase.components.ComponentRegistrar
+
+# Retrofit
+
+-dontwarn okhttp3.**
+
+-dontwarn retrofit2.**
+
+# Kotlin
+
+-dontwarn kotlin.**
